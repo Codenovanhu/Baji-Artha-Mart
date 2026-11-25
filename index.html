@@ -280,13 +280,14 @@
               class="w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
             >
               <i data-lucide="user-cog" class="w-4 h-4 text-[#2C2C2C]"></i>
-              <span>Pengaturan Profil &amp; Toko</span>
+              <span id="dropdown-profile-label">Pengaturan Profil &amp; Toko</span>
             </button>
 
             <button
               type="button"
+              id="dropdown-item-supabase"
               onclick="closeAdminDropdown(); navigateTo('supabase');"
-              class="w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
+              class="admin-only-control w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
             >
               <i data-lucide="database-zap" class="w-4 h-4 text-[#FFAB00]"></i>
               <span>Sinkronisasi Supabase</span>
@@ -294,8 +295,9 @@
 
             <button
               type="button"
+              id="dropdown-item-users"
               onclick="closeAdminDropdown(); navigateTo('users');"
-              class="w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
+              class="admin-only-control w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
             >
               <i data-lucide="users" class="w-4 h-4 text-[#2C2C2C]"></i>
               <span>Manajemen Pengguna</span>
@@ -356,7 +358,7 @@
             <button
               type="button"
               onclick="openConfirmModal('seed')"
-              class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 transition cursor-pointer"
+              class="admin-only-control inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 transition cursor-pointer"
             >
               <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
               <span>Muat Data Contoh</span>
@@ -364,7 +366,7 @@
             <button
               type="button"
               onclick="openConfirmModal('clearAll')"
-              class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 transition cursor-pointer"
+              class="admin-only-control inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 transition cursor-pointer"
             >
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
               <span>Kosongkan Data</span>
@@ -761,7 +763,7 @@
               <button
                 type="button"
                 onclick="openConfirmModal('seed')"
-                class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 cursor-pointer"
+                class="admin-only-control inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 cursor-pointer"
               >
                 <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
                 <span>Data Contoh</span>
@@ -770,7 +772,7 @@
               <button
                 type="button"
                 onclick="openConfirmModal('clearAll')"
-                class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer"
+                class="admin-only-control inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer"
               >
                 <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
                 <span>Kosongkan</span>
@@ -1829,16 +1831,19 @@ WITH CHECK (true);</pre>
           </form>
         </div>
 
-        <!-- Form Identitas Toko (Nama, Alamat & Kontak Terpisah) -->
-        <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
-          <div class="flex items-center gap-3 pb-4 mb-4 border-b border-neutral-200">
-            <div class="w-10 h-10 rounded-xl bg-[#FFAB00] text-[#000000] flex items-center justify-center">
-              <i data-lucide="store" class="w-5 h-5"></i>
+        <!-- Form Identitas Toko (Khusus Administrator) -->
+        <div id="warehouse-profile-card" class="admin-only-control bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
+          <div class="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-neutral-200">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-[#FFAB00] text-[#000000] flex items-center justify-center">
+                <i data-lucide="store" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h2 class="text-base font-extrabold text-[#000000]">Identitas Toko &amp; Gudang</h2>
+                <p class="text-xs text-[#2C2C2C]">Ditampilkan pada header aplikasi serta kop struk &amp; laporan PDF</p>
+              </div>
             </div>
-            <div>
-              <h2 class="text-base font-extrabold text-[#000000]">Identitas Toko &amp; Gudang</h2>
-              <p class="text-xs text-[#2C2C2C]">Ditampilkan pada header aplikasi serta kop struk &amp; laporan PDF</p>
-            </div>
+            <span class="px-2.5 py-1 rounded-full text-[10px] font-black bg-[#000000] text-[#FFAB00] uppercase">Khusus Admin</span>
           </div>
 
           <form onsubmit="handleSaveWarehouseProfile(event)" class="space-y-4">
@@ -1899,6 +1904,32 @@ WITH CHECK (true);</pre>
               </button>
             </div>
           </form>
+        </div>
+
+        <!-- Kartu Informasi Hak Akses Terbatas untuk Staff Gudang -->
+        <div id="staff-profile-notice" class="hidden bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6 flex flex-col justify-between space-y-4">
+          <div class="space-y-3">
+            <div class="flex items-center gap-3 pb-3 border-b border-neutral-200">
+              <div class="w-10 h-10 rounded-xl bg-[#2C2C2C] text-[#FFAB00] flex items-center justify-center shrink-0">
+                <i data-lucide="shield-check" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h2 class="text-base font-extrabold text-[#000000]">Hak Akses Staff Gudang</h2>
+                <p class="text-xs text-[#2C2C2C]">Pengaturan sistem dikunci untuk keamanan operasional toko</p>
+              </div>
+            </div>
+            <p class="text-xs text-[#2C2C2C] leading-relaxed">
+              Anda masuk sebagai <strong>Staff Gudang</strong>. Anda memiliki akses penuh untuk mencatat stok barang, barang keluar, pemesanan ke pemasok (PO), retur barang expired, cetak struk PDF, serta mengunduh laporan transaksi.
+            </p>
+            <div class="p-3.5 rounded-xl bg-[#F5F5F5] border border-neutral-300 text-xs text-[#000000] space-y-1">
+              <p class="font-extrabold">Pengaturan Khusus Administrator:</p>
+              <ul class="list-disc list-inside text-[#2C2C2C] space-y-0.5">
+                <li>Ubah nama toko, alamat &amp; kontak utama</li>
+                <li>Tambah, edit, atau hapus akun pengguna lain</li>
+                <li>Konfigurasi sinkronisasi Supabase &amp; reset data</li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -2873,7 +2904,7 @@ WITH CHECK (true);</pre>
           hargaSatuan: 204000,
           totalHarga: 612000,
           tujuan: 'Penjualan Grosir Pelanggan',
-          keterangan: 'Nota #INV-2026-114',
+          keterangan: 'Nota #INV-2026-088',
           sisaSetelah: 4,
           petugas: 'Administrator Baji Artha Mart',
         },
@@ -2882,41 +2913,60 @@ WITH CHECK (true);</pre>
       state.purchaseOrders = [
         {
           id: 'PO-001',
-          nomorPO: 'PO-BAM-20261124-101',
-          tglPesan: addDaysISO(-2),
-          itemId: 'ITM-001',
-          itemKode: 'BAM-001',
-          itemNama: 'Beras Premium Pandan Wangi 5kg',
-          satuan: 'sak',
-          pemasok: 'PT Sumber Pangan Nusantara',
-          qty: 20,
-          hargaBeli: 64000,
-          totalHarga: 1280000,
-          estimasiTiba: addDaysISO(1),
-          status: 'Dipesan',
-          tglSampai: '',
-          catatan: 'Kirim langsung ke pintu loading gudang',
-        },
-        {
-          id: 'PO-002',
-          nomorPO: 'PO-BAM-20261118-088',
-          tglPesan: addDaysISO(-7),
+          nomorPO: 'PO-BAM-20261120-104',
+          tglPesan: addDaysISO(-5),
           itemId: 'ITM-004',
           itemKode: 'BAM-004',
           itemNama: 'Gula Pasir Putih Kristal 1kg',
           satuan: 'pack',
           pemasok: 'PT Manis Alami Sulawesi',
-          qty: 30,
+          qty: 20,
           hargaBeli: 15500,
-          totalHarga: 465000,
-          estimasiTiba: addDaysISO(-4),
+          totalHarga: 310000,
+          estimasiTiba: addDaysISO(-2),
           status: 'Diterima',
-          tglSampai: addDaysISO(-4),
-          catatan: 'Barang tiba lengkap & segel aman',
+          tglSampai: addDaysISO(-2),
+          catatan: 'Diterima lengkap di gudang utama',
+        },
+        {
+          id: 'PO-002',
+          nomorPO: 'PO-BAM-20261124-209',
+          tglPesan: addDaysISO(-1),
+          itemId: 'ITM-001',
+          itemKode: 'BAM-001',
+          itemNama: 'Beras Premium Pandan Wangi 5kg',
+          satuan: 'sak',
+          pemasok: 'PT Sumber Pangan Nusantara',
+          qty: 15,
+          hargaBeli: 64000,
+          totalHarga: 960000,
+          estimasiTiba: addDaysISO(1),
+          status: 'Dipesan',
+          tglSampai: '',
+          catatan: 'Restock mingguan beras premium',
         },
       ];
 
-      state.returns = [];
+      state.returns = [
+        {
+          id: 'RET-001',
+          nomorRetur: 'RET-BAM-20261123-301',
+          tanggal: addDaysISO(-2),
+          itemId: 'ITM-003',
+          itemKode: 'BAM-003',
+          itemNama: 'Susu UHT Full Cream 1 Liter',
+          satuan: 'dus',
+          tglExpiredBarang: addDaysISO(-3),
+          qty: 2,
+          hargaSatuan: 192000,
+          totalHarga: 384000,
+          pemasok: 'PT Dairy Sejahtera',
+          settlement: 'Tukar Barang Baru (Ganti Batch)',
+          alasan: 'Batch mendekati kadaluarsa saat pengecekan rak',
+          sisaSetelah: 15,
+          petugas: 'Administrator Baji Artha Mart',
+        },
+      ];
 
       saveAllStateToStorage(!silent);
       if (!silent) {
@@ -2925,7 +2975,52 @@ WITH CHECK (true);</pre>
       }
     }
 
-    // ==================== AUTENTIKASI LOGIN & LOGOUT ====================
+    // ==================== AUTENTIKASI LOGIN, ROLE & LOGOUT ====================
+    function isCurrentUserAdmin() {
+      if (!state.currentUser) return false;
+      const r = (state.currentUser.role || '').toLowerCase();
+      return r === 'administrator' || r === 'admin';
+    }
+
+    function applyRoleBasedPermissions() {
+      const isAdmin = isCurrentUserAdmin();
+
+      document.querySelectorAll('.admin-only-control').forEach((el) => {
+        if (isAdmin) {
+          el.classList.remove('hidden');
+        } else {
+          el.classList.add('hidden');
+        }
+      });
+
+      const staffNotice = document.getElementById('staff-profile-notice');
+      if (staffNotice) {
+        if (isAdmin) {
+          staffNotice.classList.add('hidden');
+        } else {
+          staffNotice.classList.remove('hidden');
+        }
+      }
+
+      const profLabel = document.getElementById('dropdown-profile-label');
+      if (profLabel) {
+        profLabel.textContent = isAdmin ? 'Pengaturan Profil & Toko' : 'Pengaturan Profil Saya';
+      }
+
+      const sbHeaderBtn = document.getElementById('header-supabase-btn');
+      if (sbHeaderBtn) {
+        if (isAdmin) {
+          sbHeaderBtn.disabled = false;
+          sbHeaderBtn.classList.add('cursor-pointer');
+          sbHeaderBtn.title = 'Klik untuk membuka pengaturan Sinkronisasi Supabase';
+        } else {
+          sbHeaderBtn.disabled = true;
+          sbHeaderBtn.classList.remove('cursor-pointer');
+          sbHeaderBtn.title = 'Status Sinkronisasi Cloud (Pengaturan khusus Administrator)';
+        }
+      }
+    }
+
     function checkAuthSession() {
       const loginView = document.getElementById('login-view');
       const appView = document.getElementById('app-view');
@@ -2934,7 +3029,14 @@ WITH CHECK (true);</pre>
         loginView.classList.add('hidden');
         appView.classList.remove('hidden');
         updateUserHeaderAndProfileUI();
-        navigateTo(state.activeTab || 'dashboard');
+        applyRoleBasedPermissions();
+
+        const restrictedTabs = ['users', 'supabase'];
+        const targetTab =
+          !isCurrentUserAdmin() && restrictedTabs.includes(state.activeTab)
+            ? 'dashboard'
+            : state.activeTab || 'dashboard';
+        navigateTo(targetTab);
       } else {
         appView.classList.add('hidden');
         loginView.classList.remove('hidden');
@@ -3022,6 +3124,12 @@ WITH CHECK (true);</pre>
     }
 
     function navigateTo(tabName) {
+      const adminOnlyTabs = ['users', 'supabase'];
+      if (adminOnlyTabs.includes(tabName) && !isCurrentUserAdmin()) {
+        showToast('Akses ditolak: Menu ini hanya tersedia untuk Administrator.', 'error');
+        tabName = 'dashboard';
+      }
+
       state.activeTab = tabName;
 
       document.querySelectorAll('.app-section').forEach((sec) => sec.classList.add('hidden'));
@@ -3159,6 +3267,10 @@ WITH CHECK (true);</pre>
 
     function handleSaveWarehouseProfile(event) {
       event.preventDefault();
+      if (!isCurrentUserAdmin()) {
+        showToast('Akses ditolak: Hanya Administrator yang dapat mengubah identitas toko.', 'error');
+        return;
+      }
       state.profile.storeName = document.getElementById('wh-name').value.trim() || 'Baji Artha Mart';
       state.profile.address = document.getElementById('wh-address').value.trim();
       state.profile.phone = document.getElementById('wh-phone').value.trim();
@@ -5044,6 +5156,10 @@ WITH CHECK (true);</pre>
     // ==================== MANAJEMEN PENGGUNA ====================
     function handleUserSubmit(event) {
       event.preventDefault();
+      if (!isCurrentUserAdmin()) {
+        showToast('Akses ditolak: Hanya Administrator yang dapat mengelola pengguna.', 'error');
+        return;
+      }
       const editId = document.getElementById('user-edit-id').value;
       const fullName = document.getElementById('user-fullname').value.trim();
       const username = document.getElementById('user-username').value.trim();
@@ -5113,6 +5229,10 @@ WITH CHECK (true);</pre>
     }
 
     function deleteUser(id) {
+      if (!isCurrentUserAdmin()) {
+        showToast('Akses ditolak: Hanya Administrator yang dapat menghapus pengguna.', 'error');
+        return;
+      }
       if (state.currentUser && state.currentUser.id === id) {
         showToast('Akun yang sedang aktif login tidak dapat dihapus.', 'error');
         return;
@@ -5265,6 +5385,10 @@ WITH CHECK (true);</pre>
 
     async function handleSaveSupabaseConfig(event) {
       event.preventDefault();
+      if (!isCurrentUserAdmin()) {
+        showToast('Akses ditolak: Hanya Administrator yang dapat mengubah konfigurasi Supabase.', 'error');
+        return;
+      }
       const url = document.getElementById('sb-url').value.trim();
       const anonKey = document.getElementById('sb-anon-key').value.trim();
 
@@ -5384,6 +5508,10 @@ WITH CHECK (true);</pre>
     }
 
     function disconnectSupabase() {
+      if (!isCurrentUserAdmin()) {
+        showToast('Akses ditolak: Hanya Administrator yang dapat memutuskan koneksi Supabase.', 'error');
+        return;
+      }
       state.supabaseConfig = { url: '', anonKey: '', lastSync: '' };
       supabaseClient = null;
       supabaseConnected = false;
@@ -5493,6 +5621,12 @@ WITH CHECK (true);</pre>
 
     // ==================== MODAL KONFIRMASI & TOAST NOTIFICATION ====================
     function openConfirmModal(actionType, targetId = null) {
+      const adminOnlyActions = ['seed', 'clearAll', 'deleteUser'];
+      if (adminOnlyActions.includes(actionType) && !isCurrentUserAdmin()) {
+        showToast('Akses ditolak: Tindakan ini hanya diperbolehkan untuk Administrator.', 'error');
+        return;
+      }
+
       const titleEl = document.getElementById('confirm-title');
       const msgEl = document.getElementById('confirm-message');
 
