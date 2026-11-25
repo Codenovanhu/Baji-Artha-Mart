@@ -347,11 +347,11 @@
           <div class="flex flex-wrap items-center gap-2 shrink-0">
             <button
               type="button"
-              onclick="exportCSV('semua')"
+              onclick="openReportModal()"
               class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
             >
-              <i data-lucide="download" class="w-3.5 h-3.5"></i>
-              <span>Export CSV</span>
+              <i data-lucide="file-spreadsheet" class="w-3.5 h-3.5"></i>
+              <span>Buat Laporan</span>
             </button>
             <button
               type="button"
@@ -893,6 +893,35 @@
               <span id="out-subtotal-preview" class="text-base font-black text-[#000000]">Rp 0</span>
             </div>
 
+            <!-- Upload Nota / Bukti Barang Keluar -->
+            <div class="sm:col-span-2 lg:col-span-4 p-3.5 rounded-xl bg-[#F5F5F5] border border-dashed border-neutral-400">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <label for="out-attachment" class="block text-xs font-extrabold text-[#000000]">
+                    Upload Nota / Bukti Barang Keluar (Foto atau PDF, Opsional)
+                  </label>
+                  <p class="text-[11px] text-[#2C2C2C]">Foto otomatis dikompresi agar ringan disinkronkan ke cloud; PDF maksimal 500 KB.</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <label
+                    for="out-attachment"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer shrink-0"
+                  >
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Pilih File Nota</span>
+                  </label>
+                  <input
+                    type="file"
+                    id="out-attachment"
+                    accept="image/*,application/pdf"
+                    onchange="handleAttachmentInput(event, 'out')"
+                    class="hidden"
+                  />
+                </div>
+              </div>
+              <div id="out-attachment-preview" class="hidden mt-3 pt-3 border-t border-neutral-300 flex items-center justify-between gap-3"></div>
+            </div>
+
             <div class="sm:col-span-2 lg:col-span-4 flex justify-end">
               <button
                 type="submit"
@@ -909,7 +938,7 @@
           <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h3 class="text-base font-extrabold text-[#000000]">Riwayat Barang Keluar Gudang</h3>
-              <p class="text-xs text-[#2C2C2C]">Dilengkapi nominal Rupiah dan tombol cetak struk PDF thermal 80mm</p>
+              <p class="text-xs text-[#2C2C2C]">Dilengkapi nominal Rupiah, bukti nota transaksi, dan cetak struk PDF thermal 80mm</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <input
@@ -945,11 +974,236 @@
                   <th class="py-3.5 px-4 text-right">Qty Keluar</th>
                   <th class="py-3.5 px-4 text-right">Harga &amp; Total</th>
                   <th class="py-3.5 px-4">Tujuan &amp; Ket.</th>
-                  <th class="py-3.5 px-4 text-right">Sisa Stok</th>
+                  <th class="py-3.5 px-4 text-center">Nota / Bukti</th>
                   <th class="py-3.5 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody id="tbody-outgoing" class="divide-y divide-neutral-200 text-sm">
+                <!-- Diisi via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           HALAMAN BARU: MENU RETUR BARANG EXPIRED
+      ==================================================================== -->
+      <section id="view-returns" class="app-section hidden space-y-6">
+        <!-- Panel Daftar Cepat Barang Expired / Mendekati Expired -->
+        <div class="bg-[#FFFFFF] rounded-2xl border border-[#2C2C2C] shadow-xs overflow-hidden">
+          <div class="bg-[#000000] px-5 py-4 text-[#FFFFFF] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b-4 border-[#FFAB00]">
+            <div class="flex items-center gap-2.5">
+              <span class="p-2 rounded-xl bg-red-600 text-[#FFFFFF]">
+                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+              </span>
+              <div>
+                <h2 class="text-base font-extrabold leading-tight">Barang Kadaluarsa / Mendekati Expired Siap Retur</h2>
+                <p class="text-xs text-neutral-300">Klik <strong>Proses Retur</strong> untuk langsung mengisi form retur ke pemasok atau pemusnahan stok</p>
+              </div>
+            </div>
+            <span id="badge-return-candidates" class="px-3 py-1 rounded-full text-xs font-black bg-[#FFAB00] text-[#000000] self-start sm:self-center">0 Item</span>
+          </div>
+
+          <div id="return-candidates-list" class="p-4 grid grid-cols-1 md:grid-cols-2 gap-3 max-h-80 overflow-y-auto">
+            <!-- Diisi otomatis via JS -->
+          </div>
+        </div>
+
+        <!-- Form Pencatatan Retur Barang Expired -->
+        <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+            <div>
+              <h3 class="text-lg font-extrabold text-[#000000]">Form Pencatatan Retur Barang Expired</h3>
+              <p class="text-xs text-[#2C2C2C]">Stok barang otomatis dikurangi setelah retur dicatat dan tersinkron ke Riwayat Transaksi.</p>
+            </div>
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#000000] text-[#FFAB00]">
+              <i data-lucide="file-check-2" class="w-3.5 h-3.5"></i>
+              <span>No. Retur Otomatis</span>
+            </span>
+          </div>
+
+          <form id="form-return" onsubmit="handleReturnSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="lg:col-span-2">
+              <label for="ret-item-id" class="block text-xs font-bold text-[#000000] mb-1">Pilih Barang <span class="text-red-600">*</span></label>
+              <select
+                id="ret-item-id"
+                required
+                onchange="handleReturnItemChange()"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              >
+                <option value="">-- Pilih Barang yang Akan Diretur --</option>
+              </select>
+              <p id="ret-stock-hint" class="mt-1 text-xs text-[#2C2C2C]">Pilih barang untuk melihat sisa stok, tanggal expired &amp; harga modal.</p>
+            </div>
+
+            <div>
+              <label for="ret-tanggal" class="block text-xs font-bold text-[#000000] mb-1">Tanggal Retur <span class="text-red-600">*</span></label>
+              <input
+                type="date"
+                id="ret-tanggal"
+                required
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="ret-qty" class="block text-xs font-bold text-[#000000] mb-1">Jumlah Diretur <span class="text-red-600">*</span></label>
+              <input
+                type="number"
+                id="ret-qty"
+                min="1"
+                step="1"
+                required
+                oninput="updateReturnTotalPreview()"
+                placeholder="0"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="ret-pemasok" class="block text-xs font-bold text-[#000000] mb-1">Nama Pemasok / Tujuan Retur <span class="text-red-600">*</span></label>
+              <input
+                type="text"
+                id="ret-pemasok"
+                required
+                placeholder="Contoh: PT Dairy Sejahtera"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="ret-settlement" class="block text-xs font-bold text-[#000000] mb-1">Jenis Penyelesaian Retur <span class="text-red-600">*</span></label>
+              <select
+                id="ret-settlement"
+                required
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              >
+                <option value="Tukar Barang Baru (Ganti Batch)">Tukar Barang Baru (Ganti Batch)</option>
+                <option value="Potong Tagihan / Refund Dana">Potong Tagihan / Refund Dana</option>
+                <option value="Pemusnahan / Hapus Buku">Pemusnahan / Hapus Buku</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="ret-harga-satuan" class="block text-xs font-bold text-[#000000] mb-1">Nilai Modal Satuan (Rp) <span class="text-red-600">*</span></label>
+              <input
+                type="number"
+                id="ret-harga-satuan"
+                min="0"
+                step="100"
+                required
+                oninput="updateReturnTotalPreview()"
+                placeholder="0"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div class="p-3 rounded-xl bg-[#F5F5F5] border border-neutral-300 flex flex-col justify-center">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Nilai Retur</span>
+              <span id="ret-total-preview" class="text-base font-black text-[#000000]">Rp 0</span>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-4">
+              <label for="ret-alasan" class="block text-xs font-bold text-[#000000] mb-1">Alasan / Keterangan Retur <span class="text-red-600">*</span></label>
+              <input
+                type="text"
+                id="ret-alasan"
+                required
+                placeholder="Contoh: Melewati tanggal kadaluarsa / kemasan rusak saat pengecekan rak"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <!-- Upload Nota / Berita Acara Retur -->
+            <div class="sm:col-span-2 lg:col-span-4 p-3.5 rounded-xl bg-[#F5F5F5] border border-dashed border-neutral-400">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <label for="ret-attachment" class="block text-xs font-extrabold text-[#000000]">
+                    Upload Nota / Berita Acara Retur (Foto atau PDF, Opsional)
+                  </label>
+                  <p class="text-[11px] text-[#2C2C2C]">Lampirkan foto barang expired atau tanda terima retur pemasok (PDF maksimal 500 KB).</p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <label
+                    for="ret-attachment"
+                    class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer shrink-0"
+                  >
+                    <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+                    <span>Pilih File Bukti Retur</span>
+                  </label>
+                  <input
+                    type="file"
+                    id="ret-attachment"
+                    accept="image/*,application/pdf"
+                    onchange="handleAttachmentInput(event, 'ret')"
+                    class="hidden"
+                  />
+                </div>
+              </div>
+              <div id="ret-attachment-preview" class="hidden mt-3 pt-3 border-t border-neutral-300 flex items-center justify-between gap-3"></div>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-4 flex justify-end">
+              <button
+                type="submit"
+                class="w-full sm:w-auto py-2.5 px-6 text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
+              >
+                Simpan Retur Barang Expired
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Tabel Riwayat Retur Barang Expired -->
+        <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs overflow-hidden">
+          <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h3 class="text-base font-extrabold text-[#000000]">Daftar Riwayat Retur Barang Expired</h3>
+              <p class="text-xs text-[#2C2C2C]">Dilengkapi pratinjau nota/berita acara retur dan cetak struk PDF 80mm</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <select
+                id="filter-ret-settlement"
+                onchange="renderReturnsTable()"
+                class="px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              >
+                <option value="all">Penyelesaian: Semua</option>
+                <option value="Tukar Barang Baru (Ganti Batch)">Tukar Barang Baru</option>
+                <option value="Potong Tagihan / Refund Dana">Potong Tagihan / Refund</option>
+                <option value="Pemusnahan / Hapus Buku">Pemusnahan / Hapus Buku</option>
+              </select>
+              <input
+                type="text"
+                id="search-returns"
+                oninput="renderReturnsTable()"
+                placeholder="Cari no. retur, barang, pemasok..."
+                class="px-3.5 py-2 text-xs sm:text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              />
+              <button
+                type="button"
+                onclick="exportCSV('retur')"
+                class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer"
+              >
+                <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
+                <span>CSV</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-[#F5F5F5] border-b border-neutral-200 text-[11px] font-extrabold uppercase tracking-wider text-[#2C2C2C]">
+                  <th class="py-3.5 px-4">No. Retur &amp; Tanggal</th>
+                  <th class="py-3.5 px-4">Barang &amp; Pemasok</th>
+                  <th class="py-3.5 px-4 text-right">Qty &amp; Nilai Retur</th>
+                  <th class="py-3.5 px-4">Penyelesaian &amp; Alasan</th>
+                  <th class="py-3.5 px-4 text-center">Bukti Retur</th>
+                  <th class="py-3.5 px-4 text-center">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-returns" class="divide-y divide-neutral-200 text-sm">
                 <!-- Diisi via JS -->
               </tbody>
             </table>
@@ -1110,7 +1364,7 @@
                   <th class="py-3.5 px-4">Barang &amp; Pemasok</th>
                   <th class="py-3.5 px-4 text-right">Qty &amp; Total Biaya</th>
                   <th class="py-3.5 px-4">Status</th>
-                  <th class="py-3.5 px-4">Tanggal Sampai di Gudang</th>
+                  <th class="py-3.5 px-4">Tanggal Sampai &amp; Nota</th>
                   <th class="py-3.5 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -1134,27 +1388,27 @@
             </div>
             <div>
               <h2 class="text-lg font-extrabold text-[#000000]">Riwayat Transaksi Terpadu &amp; Cetak Struk PDF</h2>
-              <p class="text-xs text-[#2C2C2C]">Gabungan kronologis Barang Keluar &amp; Pemesanan PO dengan struk PDF 80mm dan rekap A4 PDF.</p>
+              <p class="text-xs text-[#2C2C2C]">Gabungan kronologis Barang Keluar, Pemesanan PO &amp; Retur Expired dengan bukti nota dan struk PDF.</p>
             </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onclick="printHistorySummaryPDF()"
+              onclick="openReportModal()"
               class="inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
             >
-              <i data-lucide="printer" class="w-4 h-4"></i>
-              <span>Cetak Rekap Laporan PDF (A4)</span>
+              <i data-lucide="file-bar-chart-2" class="w-4 h-4"></i>
+              <span>Buat Laporan Periode (PDF / CSV)</span>
             </button>
           </div>
         </div>
 
-        <!-- 3 Kartu Ringkasan Riwayat & Nominal -->
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <!-- 4 Kartu Ringkasan Riwayat & Nominal -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
             <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Aktivitas Tercatat</p>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Aktivitas</p>
               <p id="hist-stat-total" class="text-2xl font-black text-[#000000] mt-1">0</p>
               <p class="text-[11px] text-[#2C2C2C] mt-0.5">Sesuai filter aktif</p>
             </div>
@@ -1165,8 +1419,8 @@
 
           <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
             <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Nominal Barang Keluar</p>
-              <p id="hist-stat-out-nominal" class="text-xl sm:text-2xl font-black text-red-600 mt-1">Rp 0</p>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Nominal Barang Keluar</p>
+              <p id="hist-stat-out-nominal" class="text-lg sm:text-xl font-black text-red-600 mt-1">Rp 0</p>
               <p id="hist-stat-out-count" class="text-[11px] text-[#2C2C2C] mt-0.5">0 transaksi keluar</p>
             </div>
             <span class="p-2.5 rounded-xl bg-red-100 text-red-700">
@@ -1176,12 +1430,23 @@
 
           <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
             <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Nominal Belanja PO</p>
-              <p id="hist-stat-po-nominal" class="text-xl sm:text-2xl font-black text-[#000000] mt-1">Rp 0</p>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Nominal Belanja PO</p>
+              <p id="hist-stat-po-nominal" class="text-lg sm:text-xl font-black text-[#000000] mt-1">Rp 0</p>
               <p id="hist-stat-po-count" class="text-[11px] text-[#2C2C2C] mt-0.5">0 pesanan pemasok</p>
             </div>
             <span class="p-2.5 rounded-xl bg-[#FFAB00]/30 text-[#000000]">
               <i data-lucide="truck" class="w-5 h-5"></i>
+            </span>
+          </div>
+
+          <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Nominal Retur Expired</p>
+              <p id="hist-stat-ret-nominal" class="text-lg sm:text-xl font-black text-amber-700 mt-1">Rp 0</p>
+              <p id="hist-stat-ret-count" class="text-[11px] text-[#2C2C2C] mt-0.5">0 transaksi retur</p>
+            </div>
+            <span class="p-2.5 rounded-xl bg-amber-100 text-amber-800">
+              <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
             </span>
           </div>
         </div>
@@ -1209,6 +1474,7 @@
                 <option value="all">Jenis: Semua Transaksi</option>
                 <option value="OUT">Barang Keluar Gudang</option>
                 <option value="PO">Pemesanan Pemasok (PO)</option>
+                <option value="RET">Retur Barang Expired</option>
               </select>
 
               <div class="flex items-center gap-1.5 text-xs">
@@ -1249,7 +1515,7 @@
                   <th class="py-3.5 px-4 text-right">Qty &amp; Nominal</th>
                   <th class="py-3.5 px-4">Pemasok / Tujuan</th>
                   <th class="py-3.5 px-4">Status / Keterangan</th>
-                  <th class="py-3.5 px-4 text-center">Struk PDF</th>
+                  <th class="py-3.5 px-4 text-center">Nota &amp; Struk</th>
                 </tr>
               </thead>
               <tbody id="tbody-history" class="divide-y divide-neutral-200 text-sm">
@@ -1522,205 +1788,414 @@ WITH CHECK (true);</pre>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label for="prof-username" class="block text-xs font-bold text-[#000000] mb-1">Username <span class="text-red-600">*</span></label>
-                  <input
-                    type="text"
-                    id="prof-username"
-                    required
-                    class="w-full px-3.5 py-2.5 text-sm font-mono rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
-                  />
-                </div>
-                <div>
-                  <label for="prof-role" class="block text-xs font-bold text-[#000000] mb-1">Peran Akses</label>
-                  <input
-                    type="text"
-                    id="prof-role"
-                    disabled
-                    class="w-full px-3.5 py-2.5 text-sm font-bold rounded-xl bg-neutral-200 text-[#2C2C2C] border border-neutral-300 cursor-not-allowed"
-                  />
-                </div>
-              </div>
-
               <div>
-                <label for="prof-password" class="block text-xs font-bold text-[#000000] mb-1">Password Baru <span class="text-red-600">*</span></label>
+                <label for="prof-username" class="block text-xs font-bold text-[#000000] mb-1">Username <span class="text-red-600">*</span></label>
                 <input
                   type="text"
-                  id="prof-password"
+                  id="prof-username"
                   required
+                  class="w-full px-3.5 py-2.5 text-sm font-mono rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
+                />
+              </div>
+              <div>
+                <label for="prof-role" class="block text-xs font-bold text-[#000000] mb-1">Peran Akses</label>
+                <input
+                  type="text"
+                  id="prof-role"
+                  disabled
+                  class="w-full px-3.5 py-2.5 text-sm font-bold rounded-xl bg-neutral-200 text-[#2C2C2C] border border-neutral-300 cursor-not-allowed"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="prof-password" class="block text-xs font-bold text-[#000000] mb-1">Password Baru <span class="text-red-600">*</span></label>
+              <input
+                type="text"
+                id="prof-password"
+                required
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              />
+            </div>
+
+            <div class="pt-2 flex justify-end">
+              <button
+                type="submit"
+                class="px-5 py-2.5 text-sm font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
+              >
+                Simpan Profil Akun
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Form Identitas Toko (Nama, Alamat & Kontak Terpisah) -->
+        <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
+          <div class="flex items-center gap-3 pb-4 mb-4 border-b border-neutral-200">
+            <div class="w-10 h-10 rounded-xl bg-[#FFAB00] text-[#000000] flex items-center justify-center">
+              <i data-lucide="store" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-base font-extrabold text-[#000000]">Identitas Toko &amp; Gudang</h2>
+              <p class="text-xs text-[#2C2C2C]">Ditampilkan pada header aplikasi serta kop struk &amp; laporan PDF</p>
+            </div>
+          </div>
+
+          <form onsubmit="handleSaveWarehouseProfile(event)" class="space-y-4">
+            <div>
+              <label for="wh-name" class="block text-xs font-bold text-[#000000] mb-1">Nama Toko / Gudang <span class="text-red-600">*</span></label>
+              <input
+                type="text"
+                id="wh-name"
+                required
+                placeholder="Baji Artha Mart"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="wh-address" class="block text-xs font-bold text-[#000000] mb-1">Alamat Lengkap Toko <span class="text-red-600">*</span></label>
+              <textarea
+                id="wh-address"
+                rows="2"
+                required
+                placeholder="Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan"
+                class="w-full px-3.5 py-2 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              ></textarea>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="wh-phone" class="block text-xs font-bold text-[#000000] mb-1">Kontak / No. Telepon <span class="text-red-600">*</span></label>
+                <input
+                  type="text"
+                  id="wh-phone"
+                  required
+                  placeholder="0812-3456-7890"
                   class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
                 />
               </div>
 
-              <div class="pt-2 flex justify-end">
-                <button
-                  type="submit"
-                  class="px-5 py-2.5 text-sm font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
-                >
-                  Simpan Perubahan Akun
-                </button>
-              </div>
-            </form>
-          </div>
-
-          <!-- Form Pengaturan Toko & Gudang (TERPISAH TEGAS: NAMA, ALAMAT, KONTAK) -->
-          <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
-            <div class="flex items-center gap-3 pb-4 mb-4 border-b border-neutral-200">
-              <div class="w-10 h-10 rounded-xl bg-[#FFAB00] text-[#000000] flex items-center justify-center">
-                <i data-lucide="store" class="w-5 h-5"></i>
-              </div>
               <div>
-                <h2 class="text-base font-extrabold text-[#000000]">Identitas Toko &amp; Ambang Reminder</h2>
-                <p class="text-xs text-[#2C2C2C]">Nama toko, alamat toko, dan kontak telepon terpisah untuk struk PDF &amp; laporan</p>
+                <label for="wh-exp-days" class="block text-xs font-bold text-[#000000] mb-1">Batas Peringatan Expired (Hari)</label>
+                <input
+                  type="number"
+                  id="wh-exp-days"
+                  min="1"
+                  max="365"
+                  required
+                  value="30"
+                  class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
+                />
               </div>
             </div>
 
-            <form onsubmit="handleSaveWarehouseProfile(event)" class="space-y-4">
-              <div>
-                <label for="wh-name" class="block text-xs font-bold text-[#000000] mb-1">1. Nama Toko <span class="text-red-600">*</span></label>
-                <input
-                  type="text"
-                  id="wh-name"
-                  required
-                  placeholder="Baji Artha Mart"
-                  class="w-full px-3.5 py-2.5 text-sm font-bold rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
-                />
-              </div>
-
-              <div>
-                <label for="wh-address" class="block text-xs font-bold text-[#000000] mb-1">2. Alamat Toko <span class="text-red-600">*</span></label>
-                <textarea
-                  id="wh-address"
-                  rows="2"
-                  required
-                  placeholder="Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan"
-                  class="w-full px-3.5 py-2 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none resize-none"
-                ></textarea>
-              </div>
-
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label for="wh-phone" class="block text-xs font-bold text-[#000000] mb-1">3. Kontak / No. Telepon Toko <span class="text-red-600">*</span></label>
-                  <input
-                    type="text"
-                    id="wh-phone"
-                    required
-                    placeholder="0812-3456-7890"
-                    class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
-                  />
-                </div>
-                <div>
-                  <label for="wh-exp-days" class="block text-xs font-bold text-[#000000] mb-1">Ambang Reminder Expired (Hari) <span class="text-red-600">*</span></label>
-                  <input
-                    type="number"
-                    id="wh-exp-days"
-                    min="1"
-                    max="365"
-                    required
-                    class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
-                  />
-                </div>
-              </div>
-
-              <div class="pt-2 flex justify-end">
-                <button
-                  type="submit"
-                  class="px-5 py-2.5 text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 transition cursor-pointer"
-                >
-                  Simpan Pengaturan Toko
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- =========================================================================
-         3. BOTTOM NAVIGATION BAR 5 SLOT SIMETRIS (HOME DI TENGAH)
-    ========================================================================== -->
-    <nav
-      aria-label="Navigasi Utama Baji Artha Mart"
-      class="fixed bottom-0 inset-x-0 z-40 px-3 sm:px-4 pb-2.5 pt-1 pointer-events-none"
-    >
-      <div class="max-w-xl mx-auto bg-[#000000] text-[#FFFFFF] rounded-2xl sm:rounded-3xl shadow-2xl border border-[#2C2C2C] px-2 sm:px-4 py-1.5 pointer-events-auto">
-        <div class="grid grid-cols-5 items-center gap-1 sm:gap-2">
-
-          <!-- KIRI 1: Stok -->
-          <button
-            type="button"
-            data-nav="inventory"
-            onclick="navigateTo('inventory')"
-            class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
-          >
-            <i data-lucide="package-search" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Stok</span>
-          </button>
-
-          <!-- KIRI 2: Keluar -->
-          <button
-            type="button"
-            data-nav="outgoing"
-            onclick="navigateTo('outgoing')"
-            class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
-          >
-            <i data-lucide="package-minus" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Keluar</span>
-          </button>
-
-          <!-- TENGAH (SLOT 3): TOMBOL HOME UTAMA (#FFAB00) -->
-          <div class="flex items-center justify-center -mt-6 sm:-mt-7">
-            <button
-              type="button"
-              id="btn-bottom-home"
-              data-nav="dashboard"
-              onclick="navigateTo('dashboard')"
-              class="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-[#FFAB00] text-[#000000] shadow-xl ring-4 ring-[#000000] hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center cursor-pointer"
-              title="Home — Dashboard & Pusat Reminder"
-            >
-              <i data-lucide="home" class="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]"></i>
-              <span class="text-[10px] sm:text-[11px] font-black uppercase tracking-tight mt-0.5 leading-none">Home</span>
-              <span
-                id="home-reminder-dot"
-                class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-600 ring-2 ring-[#000000] badge-pulse-danger"
-              ></span>
-            </button>
-          </div>
-
-          <!-- KANAN 1: Pesan PO -->
-          <button
-            type="button"
-            data-nav="po"
-            onclick="navigateTo('po')"
-            class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
-          >
-            <i data-lucide="truck" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Pesan PO</span>
-          </button>
-
-          <!-- KANAN 2: Riwayat -->
-          <button
-            type="button"
-            data-nav="history"
-            onclick="navigateTo('history')"
-            class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
-          >
-            <i data-lucide="history" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Riwayat</span>
-          </button>
-
+            <div class="pt-2 flex justify-end">
+              <button
+                type="submit"
+                class="px-5 py-2.5 text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
+              >
+                Simpan Identitas Toko
+              </button>
+            </div>
+          </form>
         </div>
       </div>
-    </nav>
+    </section>
 
+  </main>
+
+  <!-- =========================================================================
+       BILAH NAVIGASI BAWAH SIMETRIS (7 SLOT DENGAN TOMBOL HOME DI TENGAH)
+  ========================================================================== -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-[#000000] border-t-2 border-[#FFAB00] shadow-2xl">
+    <div class="max-w-3xl mx-auto px-1 sm:px-3 py-1.5">
+      <div class="grid grid-cols-7 items-center gap-0.5">
+        <!-- KIRI 1: Stok -->
+        <button
+          type="button"
+          data-nav="inventory"
+          onclick="navigateTo('inventory')"
+          class="bottom-nav-item relative flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl bg-transparent text-white/80 hover:text-white active:scale-95 transition cursor-pointer"
+        >
+          <span class="nav-active-pill hidden absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full bg-[#FFAB00]"></span>
+          <i data-lucide="boxes" class="w-4 h-4 mb-1"></i>
+          <span class="text-[9.5px] sm:text-[11px] font-bold leading-tight whitespace-nowrap text-center">Stok</span>
+        </button>
+
+        <!-- KIRI 2: Keluar -->
+        <button
+          type="button"
+          data-nav="outgoing"
+          onclick="navigateTo('outgoing')"
+          class="bottom-nav-item relative flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl bg-transparent text-white/80 hover:text-white active:scale-95 transition cursor-pointer"
+        >
+          <span class="nav-active-pill hidden absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full bg-[#FFAB00]"></span>
+          <i data-lucide="package-minus" class="w-4 h-4 mb-1"></i>
+          <span class="text-[9.5px] sm:text-[11px] font-bold leading-tight whitespace-nowrap text-center">Keluar</span>
+        </button>
+
+        <!-- KIRI 3: Pesan PO -->
+        <button
+          type="button"
+          data-nav="po"
+          onclick="navigateTo('po')"
+          class="bottom-nav-item relative flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl bg-transparent text-white/80 hover:text-white active:scale-95 transition cursor-pointer"
+        >
+          <span class="nav-active-pill hidden absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full bg-[#FFAB00]"></span>
+          <i data-lucide="truck" class="w-4 h-4 mb-1"></i>
+          <span class="text-[9.5px] sm:text-[11px] font-bold leading-tight whitespace-nowrap text-center">Pesan PO</span>
+        </button>
+
+        <!-- TENGAH: Tombol Home Melayang -->
+        <div class="flex items-center justify-center">
+          <button
+            type="button"
+            id="btn-bottom-home"
+            onclick="navigateTo('dashboard')"
+            class="relative w-14 h-14 -mt-5 rounded-2xl bg-[#FFAB00] text-[#000000] border-4 border-[#000000] shadow-lg flex flex-col items-center justify-center active:scale-95 transition cursor-pointer"
+            title="Home — Dashboard & Pusat Reminder"
+          >
+            <i data-lucide="home" class="w-5 h-5 stroke-[2.4]"></i>
+            <span class="text-[9.5px] font-black leading-tight mt-0.5">Home</span>
+            <span
+              id="home-reminder-dot"
+              class="hidden absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-red-600 border-2 border-[#FFFFFF] badge-pulse-danger"
+            ></span>
+          </button>
+        </div>
+
+        <!-- KANAN 1: Retur Expired -->
+        <button
+          type="button"
+          data-nav="returns"
+          onclick="navigateTo('returns')"
+          class="bottom-nav-item relative flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl bg-transparent text-white/80 hover:text-white active:scale-95 transition cursor-pointer"
+        >
+          <span class="nav-active-pill hidden absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full bg-[#FFAB00]"></span>
+          <i data-lucide="rotate-ccw" class="w-4 h-4 mb-1"></i>
+          <span class="text-[9.5px] sm:text-[11px] font-bold leading-tight whitespace-nowrap text-center">Retur</span>
+          <span
+            id="nav-return-badge"
+            class="hidden absolute top-0.5 right-1 min-w-[15px] h-3.5 px-1 rounded-full bg-red-600 text-[#FFFFFF] text-[8.5px] font-black flex items-center justify-center"
+          >
+            0
+          </span>
+        </button>
+
+        <!-- KANAN 2: Riwayat -->
+        <button
+          type="button"
+          data-nav="history"
+          onclick="navigateTo('history')"
+          class="bottom-nav-item relative flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl bg-transparent text-white/80 hover:text-white active:scale-95 transition cursor-pointer"
+        >
+          <span class="nav-active-pill hidden absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full bg-[#FFAB00]"></span>
+          <i data-lucide="history" class="w-4 h-4 mb-1"></i>
+          <span class="text-[9.5px] sm:text-[11px] font-bold leading-tight whitespace-nowrap text-center">Riwayat</span>
+        </button>
+
+        <!-- KANAN 3: Laporan -->
+        <button
+          type="button"
+          data-nav="report"
+          onclick="openReportModal()"
+          class="bottom-nav-item relative flex flex-col items-center justify-center py-1.5 px-0.5 rounded-xl bg-transparent text-white/80 hover:text-white active:scale-95 transition cursor-pointer"
+          title="Buat Laporan Bulanan / Rentang Tanggal (PDF & CSV)"
+        >
+          <span class="nav-active-pill hidden absolute top-0 left-1/2 -translate-x-1/2 w-5 h-0.5 rounded-full bg-[#FFAB00]"></span>
+          <i data-lucide="file-spreadsheet" class="w-4 h-4 mb-1"></i>
+          <span class="text-[9.5px] sm:text-[11px] font-bold leading-tight whitespace-nowrap text-center">Laporan</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+</div>
+
+<!-- =========================================================================
+     MODAL PENGATURAN & FILTER LAPORAN BULANAN / RENTANG TANGGAL (#report-modal)
+========================================================================== -->
+  <div id="report-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 backdrop-blur-xs p-4">
+    <div class="bg-[#FFFFFF] rounded-2xl shadow-2xl border-2 border-[#000000] max-w-lg w-full overflow-hidden flex flex-col max-h-[92vh]">
+      <!-- Header Modal -->
+      <div class="bg-[#000000] px-5 py-4 text-[#FFFFFF] flex items-center justify-between border-b-4 border-[#FFAB00]">
+        <div class="flex items-center gap-2.5">
+          <div class="p-2 rounded-xl bg-[#FFAB00] text-[#000000]">
+            <i data-lucide="file-bar-chart-2" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-extrabold leading-tight">Pengaturan &amp; Filter Laporan</h3>
+            <p class="text-[11px] text-neutral-300">Pilih periode bulan, rentang tanggal, dan jenis transaksi sebelum mengunduh</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeReportModal()" class="p-1.5 rounded-lg bg-[#2C2C2C] text-neutral-300 hover:text-[#FFFFFF] cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Konten Pengaturan Laporan -->
+      <div class="p-5 space-y-4 overflow-y-auto">
+        <!-- Tab Pilihan Mode Periode -->
+        <div>
+          <label class="block text-xs font-extrabold text-[#000000] mb-1.5">1. Pilih Mode Periode Laporan</label>
+          <div class="grid grid-cols-3 gap-1.5 p-1 rounded-xl bg-[#F5F5F5] border border-neutral-300">
+            <button
+              type="button"
+              id="rep-mode-btn-month"
+              onclick="setReportPeriodMode('month')"
+              class="rep-mode-btn py-2 px-2 rounded-lg text-xs font-extrabold bg-[#000000] text-[#FFAB00] transition cursor-pointer"
+            >
+              Per Bulan &amp; Tahun
+            </button>
+            <button
+              type="button"
+              id="rep-mode-btn-range"
+              onclick="setReportPeriodMode('range')"
+              class="rep-mode-btn py-2 px-2 rounded-lg text-xs font-bold text-[#2C2C2C] hover:text-[#000000] transition cursor-pointer"
+            >
+              Rentang Tanggal
+            </button>
+            <button
+              type="button"
+              id="rep-mode-btn-all"
+              onclick="setReportPeriodMode('all')"
+              class="rep-mode-btn py-2 px-2 rounded-lg text-xs font-bold text-[#2C2C2C] hover:text-[#000000] transition cursor-pointer"
+            >
+              Semua Periode
+            </button>
+          </div>
+        </div>
+
+        <!-- Kontrol Mode 1: Per Bulan & Tahun -->
+        <div id="rep-controls-month" class="grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#F5F5F5] border border-neutral-200">
+          <div>
+            <label for="rep-select-month" class="block text-xs font-bold text-[#000000] mb-1">Bulan</label>
+            <select
+              id="rep-select-month"
+              onchange="updateReportPreview()"
+              class="w-full px-3 py-2 text-sm font-semibold rounded-xl bg-[#FFFFFF] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+            >
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
+            </select>
+          </div>
+          <div>
+            <label for="rep-select-year" class="block text-xs font-bold text-[#000000] mb-1">Tahun</label>
+            <select
+              id="rep-select-year"
+              onchange="updateReportPreview()"
+              class="w-full px-3 py-2 text-sm font-semibold rounded-xl bg-[#FFFFFF] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+            >
+              <!-- Diisi dinamis via JS -->
+            </select>
+          </div>
+        </div>
+
+        <!-- Kontrol Mode 2: Rentang Tanggal Kustom -->
+        <div id="rep-controls-range" class="hidden grid grid-cols-2 gap-3 p-3.5 rounded-xl bg-[#F5F5F5] border border-neutral-200">
+          <div>
+            <label for="rep-date-start" class="block text-xs font-bold text-[#000000] mb-1">Dari Tanggal</label>
+            <input
+              type="date"
+              id="rep-date-start"
+              onchange="updateReportPreview()"
+              class="w-full px-3 py-2 text-sm rounded-xl bg-[#FFFFFF] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+            />
+          </div>
+          <div>
+            <label for="rep-date-end" class="block text-xs font-bold text-[#000000] mb-1">Sampai Tanggal</label>
+            <input
+              type="date"
+              id="rep-date-end"
+              onchange="updateReportPreview()"
+              class="w-full px-3 py-2 text-sm rounded-xl bg-[#FFFFFF] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+            />
+          </div>
+        </div>
+
+        <!-- Filter Jenis Transaksi -->
+        <div>
+          <label for="rep-select-type" class="block text-xs font-extrabold text-[#000000] mb-1.5">2. Filter Jenis Transaksi</label>
+          <select
+            id="rep-select-type"
+            onchange="updateReportPreview()"
+            class="w-full px-3.5 py-2.5 text-sm font-semibold rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
+          >
+            <option value="all">Semua Transaksi (Keluar, Pesan PO &amp; Retur Expired)</option>
+            <option value="OUT">Barang Keluar Gudang Saja</option>
+            <option value="PO">Pemesanan ke Pemasok (PO) Saja</option>
+            <option value="RET">Retur Barang Expired Saja</option>
+          </select>
+        </div>
+
+        <!-- Kotak Pratinjau Ringkasan Dinamis (Real-Time Preview) -->
+        <div class="p-4 rounded-2xl bg-[#000000] text-[#FFFFFF] border-2 border-[#FFAB00] space-y-3">
+          <div class="flex items-center justify-between border-b border-neutral-800 pb-2">
+            <span class="text-[11px] font-extrabold uppercase tracking-wider text-[#FFAB00]">Pratinjau Ringkasan Laporan</span>
+            <span id="rep-preview-period-label" class="text-[11px] font-bold text-neutral-300">-</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="p-2.5 rounded-xl bg-[#2C2C2C]">
+              <p class="text-[10px] font-semibold text-neutral-300 uppercase">Transaksi</p>
+              <p id="rep-preview-count" class="text-lg font-black text-[#FFFFFF] mt-0.5">0</p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-[#2C2C2C]">
+              <p class="text-[10px] font-semibold text-neutral-300 uppercase">Total Qty</p>
+              <p id="rep-preview-qty" class="text-lg font-black text-[#FFAB00] mt-0.5">0</p>
+            </div>
+            <div class="p-2.5 rounded-xl bg-[#2C2C2C]">
+              <p class="text-[10px] font-semibold text-neutral-300 uppercase">Total Nominal</p>
+              <p id="rep-preview-nominal" class="text-xs sm:text-sm font-black text-emerald-400 mt-1 truncate">Rp 0</p>
+            </div>
+          </div>
+
+          <!-- Peringatan jika 0 transaksi ditemukan -->
+          <div id="rep-empty-warning" class="hidden p-2.5 rounded-xl bg-red-950/90 border border-red-500 text-xs font-semibold text-red-200 flex items-center gap-2">
+            <i data-lucide="alert-circle" class="w-4 h-4 text-red-400 shrink-0"></i>
+            <span>Tidak ada transaksi ditemukan pada periode dan jenis filter yang dipilih.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tombol Aksi Unduh di Bagian Bawah Modal -->
+      <div class="px-5 py-4 bg-[#F5F5F5] border-t border-neutral-300 flex flex-col sm:flex-row items-center justify-end gap-2.5">
+        <button
+          type="button"
+          onclick="downloadFilteredReportCSV()"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl bg-[#2C2C2C] text-[#FFFFFF] hover:bg-[#000000] transition cursor-pointer"
+        >
+          <i data-lucide="file-spreadsheet" class="w-4 h-4 text-[#FFAB00]"></i>
+          <span>Unduh Excel (CSV)</span>
+        </button>
+        <button
+          type="button"
+          onclick="downloadFilteredReportPDF()"
+          class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
+        >
+          <i data-lucide="file-down" class="w-4 h-4"></i>
+          <span>Unduh Laporan PDF (A4)</span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- =========================================================================
-       MODAL KONFIRMASI KEDATANGAN BARANG PO (TANGGAL SAMPAI DI GUDANG)
+       MODAL KONFIRMASI KEDATANGAN BARANG PO (TANGGAL SAMPAI + UPLOAD NOTA)
   ========================================================================== -->
   <div id="modal-receive-po" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
-    <div class="bg-[#FFFFFF] rounded-2xl shadow-2xl border border-[#2C2C2C] max-w-md w-full overflow-hidden">
+    <div class="bg-[#FFFFFF] rounded-2xl shadow-2xl border border-[#2C2C2C] max-w-md w-full overflow-hidden max-h-[92vh] overflow-y-auto">
       <div class="bg-[#000000] px-5 py-4 text-[#FFFFFF] flex items-center justify-between border-b-4 border-[#FFAB00]">
         <div class="flex items-center gap-2">
           <i data-lucide="package-check" class="w-5 h-5 text-[#FFAB00]"></i>
@@ -1779,6 +2254,31 @@ WITH CHECK (true);</pre>
           </div>
         </div>
 
+        <!-- Upload Nota Supplier / Surat Jalan -->
+        <div class="p-3 rounded-xl bg-[#F5F5F5] border border-dashed border-neutral-400">
+          <div class="flex items-center justify-between gap-2">
+            <div>
+              <label for="po-attachment" class="block text-xs font-extrabold text-[#000000]">Upload Surat Jalan / Nota Supplier</label>
+              <p class="text-[11px] text-[#2C2C2C]">Foto atau PDF (maks. 500 KB, opsional)</p>
+            </div>
+            <label
+              for="po-attachment"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer shrink-0"
+            >
+              <i data-lucide="upload" class="w-3.5 h-3.5"></i>
+              <span>Pilih Nota</span>
+            </label>
+            <input
+              type="file"
+              id="po-attachment"
+              accept="image/*,application/pdf"
+              onchange="handleAttachmentInput(event, 'po')"
+              class="hidden"
+            />
+          </div>
+          <div id="po-attachment-preview" class="hidden mt-2.5 pt-2.5 border-t border-neutral-300 flex items-center justify-between gap-2"></div>
+        </div>
+
         <div class="flex items-center justify-end gap-2 pt-2">
           <button
             type="button"
@@ -1795,6 +2295,38 @@ WITH CHECK (true);</pre>
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       MODAL PRATINJAU NOTA / BUKTI TRANSAKSI (GAMBAR & PDF)
+  ========================================================================== -->
+  <div id="modal-view-attachment" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/75 backdrop-blur-xs p-4">
+    <div class="bg-[#FFFFFF] rounded-2xl shadow-2xl border border-[#2C2C2C] max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="bg-[#000000] px-5 py-4 text-[#FFFFFF] flex items-center justify-between border-b-4 border-[#FFAB00]">
+        <div class="min-w-0 pr-3">
+          <h3 id="att-modal-title" class="text-sm sm:text-base font-extrabold truncate">Pratinjau Nota / Bukti Transaksi</h3>
+          <p id="att-modal-subtitle" class="text-[11px] text-neutral-300 truncate">-</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <a
+            id="att-modal-download"
+            href="#"
+            download="Nota_Transaksi"
+            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#FFAB00] text-[#000000] hover:brightness-95 transition"
+          >
+            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+            <span>Unduh</span>
+          </a>
+          <button type="button" onclick="closeAttachmentModal()" class="p-1.5 rounded-lg bg-[#2C2C2C] text-neutral-300 hover:text-[#FFFFFF] cursor-pointer">
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+      </div>
+
+      <div id="att-modal-body" class="p-4 sm:p-6 bg-[#F5F5F5] flex-1 overflow-auto flex items-center justify-center min-h-[280px]">
+        <!-- Konten gambar atau PDF diisi via JS -->
+      </div>
     </div>
   </div>
 
@@ -1846,6 +2378,7 @@ WITH CHECK (true);</pre>
       ITEMS: 'baji_artha_mart_items_v2',
       OUTGOING: 'baji_artha_mart_outgoing_v2',
       PO: 'baji_artha_mart_po_v2',
+      RETURNS: 'baji_artha_mart_returns_v2',
       USERS: 'baji_artha_mart_users_v2',
       SESSION: 'baji_artha_mart_session_v2',
       PROFILE: 'baji_artha_mart_profile_v2',
@@ -1862,6 +2395,7 @@ WITH CHECK (true);</pre>
       items: [],
       outgoing: [],
       purchaseOrders: [],
+      returns: [],
       users: [],
       currentUser: null,
       profile: {
@@ -1878,9 +2412,32 @@ WITH CHECK (true);</pre>
       activeTab: 'dashboard',
     };
 
+    // Buffer sementara lampiran nota sebelum form disubmit
+    let tempAttachments = {
+      out: null,
+      po: null,
+      ret: null,
+    };
+
     let supabaseClient = null;
     let supabaseConnected = false;
     let pendingConfirmCallback = null;
+    let reportPeriodMode = 'month';
+
+    const INDONESIAN_MONTHS = {
+      '01': 'Januari',
+      '02': 'Februari',
+      '03': 'Maret',
+      '04': 'April',
+      '05': 'Mei',
+      '06': 'Juni',
+      '07': 'Juli',
+      '08': 'Agustus',
+      '09': 'September',
+      '10': 'Oktober',
+      '11': 'November',
+      '12': 'Desember',
+    };
 
     // ==================== INISIALISASI ====================
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1949,9 +2506,11 @@ WITH CHECK (true);</pre>
       const today = getTodayISO();
       const outTgl = document.getElementById('out-tanggal');
       const poTgl = document.getElementById('po-tgl-pesan');
+      const retTgl = document.getElementById('ret-tanggal');
       const poNomor = document.getElementById('po-nomor');
       if (outTgl) outTgl.value = today;
       if (poTgl) poTgl.value = today;
+      if (retTgl) retTgl.value = today;
       if (poNomor && !poNomor.value) poNomor.value = generatePONumber();
     }
 
@@ -1961,12 +2520,19 @@ WITH CHECK (true);</pre>
       return `PO-BAM-${ymd}-${rand}`;
     }
 
+    function generateReturnNumber() {
+      const ymd = getTodayISO().replace(/-/g, '');
+      const rand = Math.floor(100 + Math.random() * 900);
+      return `RET-BAM-${ymd}-${rand}`;
+    }
+
     // ==================== PENYIMPANAN LOCALSTORAGE ====================
     function loadStateFromStorage() {
       try {
         const items = localStorage.getItem(STORAGE_KEYS.ITEMS);
         const outgoing = localStorage.getItem(STORAGE_KEYS.OUTGOING);
         const po = localStorage.getItem(STORAGE_KEYS.PO);
+        const returns = localStorage.getItem(STORAGE_KEYS.RETURNS);
         const users = localStorage.getItem(STORAGE_KEYS.USERS);
         const session = localStorage.getItem(STORAGE_KEYS.SESSION);
         const profile = localStorage.getItem(STORAGE_KEYS.PROFILE);
@@ -1975,6 +2541,7 @@ WITH CHECK (true);</pre>
         if (items) state.items = JSON.parse(items);
         if (outgoing) state.outgoing = JSON.parse(outgoing);
         if (po) state.purchaseOrders = JSON.parse(po);
+        if (returns) state.returns = JSON.parse(returns);
         if (users) state.users = JSON.parse(users);
         if (session) state.currentUser = JSON.parse(session);
         if (profile) {
@@ -2004,6 +2571,7 @@ WITH CHECK (true);</pre>
         localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(state.items));
         localStorage.setItem(STORAGE_KEYS.OUTGOING, JSON.stringify(state.outgoing));
         localStorage.setItem(STORAGE_KEYS.PO, JSON.stringify(state.purchaseOrders));
+        localStorage.setItem(STORAGE_KEYS.RETURNS, JSON.stringify(state.returns));
         localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(state.users));
         localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify(state.profile));
         localStorage.setItem(STORAGE_KEYS.SUPABASE, JSON.stringify(state.supabaseConfig));
@@ -2017,8 +2585,168 @@ WITH CHECK (true);</pre>
           backgroundPushToSupabase();
         }
       } catch (err) {
-        showToast('Gagal menyimpan data ke penyimpanan lokal browser.', 'error');
+        showToast('Gagal menyimpan data ke penyimpanan lokal (kuota penuh jika lampiran terlalu besar).', 'error');
       }
+    }
+
+    // ==================== KOMPRESI & PENGELOLAAN UPLOAD NOTA / BUKTI ====================
+    function handleAttachmentInput(event, contextKey) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const isImage = file.type.startsWith('image/');
+      const isPDF = file.type === 'application/pdf';
+
+      if (!isImage && !isPDF) {
+        showToast('Format file tidak didukung. Harap pilih Foto (JPG/PNG/WebP) atau PDF.', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      if (isPDF) {
+        const maxPDFBytes = 500 * 1024; // 500 KB
+        if (file.size > maxPDFBytes) {
+          showToast('Ukuran file PDF melebihi 500 KB. Silakan gunakan foto nota agar sinkronisasi cloud tetap cepat.', 'error');
+          event.target.value = '';
+          return;
+        }
+        const reader = new FileReader();
+        reader.onload = () => {
+          tempAttachments[contextKey] = {
+            attachmentName: file.name,
+            attachmentType: 'application/pdf',
+            attachmentData: reader.result,
+          };
+          renderAttachmentPreviewBox(contextKey);
+          showToast(`File PDF "${file.name}" siap dilampirkan.`, 'success');
+        };
+        reader.readAsDataURL(file);
+      } else if (isImage) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const maxWidth = 900;
+            let width = img.width;
+            let height = img.height;
+            if (width > maxWidth) {
+              height = Math.round((height * maxWidth) / width);
+              width = maxWidth;
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            const compressedDataUrl = canvas.toDataURL('image/jpeg', 0.72);
+
+            tempAttachments[contextKey] = {
+              attachmentName: file.name.replace(/\.[^/.]+$/, '') + '.jpg',
+              attachmentType: 'image/jpeg',
+              attachmentData: compressedDataUrl,
+            };
+            renderAttachmentPreviewBox(contextKey);
+            showToast(`Foto nota "${file.name}" berhasil dikompresi & siap dilampirkan.`, 'success');
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function renderAttachmentPreviewBox(contextKey) {
+      const box = document.getElementById(`${contextKey}-attachment-preview`);
+      if (!box) return;
+      const att = tempAttachments[contextKey];
+
+      if (!att) {
+        box.classList.add('hidden');
+        box.innerHTML = '';
+        return;
+      }
+
+      const isImg = att.attachmentType.startsWith('image/');
+      box.classList.remove('hidden');
+      box.innerHTML = `
+        <div class="flex items-center gap-3 min-w-0">
+          ${
+            isImg
+              ? `<img src="${att.attachmentData}" alt="Preview Nota" class="w-12 h-12 rounded-lg object-cover border border-neutral-300 shrink-0" />`
+              : `<div class="w-12 h-12 rounded-lg bg-red-100 text-red-700 flex items-center justify-center font-black text-xs shrink-0">PDF</div>`
+          }
+          <div class="min-w-0">
+            <p class="text-xs font-extrabold text-[#000000] truncate">${escapeHTML(att.attachmentName)}</p>
+            <span class="text-[11px] text-emerald-700 font-bold">Siap dilampirkan saat simpan</span>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick="clearTempAttachment('${contextKey}')"
+          class="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 shrink-0 cursor-pointer"
+        >
+          Hapus File
+        </button>
+      `;
+    }
+
+    function clearTempAttachment(contextKey) {
+      tempAttachments[contextKey] = null;
+      const inputEl = document.getElementById(`${contextKey}-attachment`);
+      if (inputEl) inputEl.value = '';
+      renderAttachmentPreviewBox(contextKey);
+    }
+
+    function openAttachmentViewer(sourceType, recordId) {
+      let record = null;
+      let titleText = 'Pratinjau Nota / Bukti Transaksi';
+
+      if (sourceType === 'OUT') {
+        record = state.outgoing.find((o) => o.id === recordId);
+        if (record) titleText = `Nota Barang Keluar — ${record.id} (${record.itemNama})`;
+      } else if (sourceType === 'PO') {
+        record = state.purchaseOrders.find((p) => p.id === recordId);
+        if (record) titleText = `Surat Jalan / Nota Supplier — ${record.nomorPO}`;
+      } else if (sourceType === 'RET') {
+        record = state.returns.find((r) => r.id === recordId);
+        if (record) titleText = `Bukti Retur Expired — ${record.nomorRetur}`;
+      }
+
+      if (!record || !record.attachmentData) {
+        showToast('Tidak ada lampiran nota pada transaksi ini.', 'info');
+        return;
+      }
+
+      document.getElementById('att-modal-title').textContent = titleText;
+      document.getElementById('att-modal-subtitle').textContent = `Nama File: ${record.attachmentName || 'Bukti_Transaksi'}`;
+
+      const dlBtn = document.getElementById('att-modal-download');
+      dlBtn.href = record.attachmentData;
+      dlBtn.setAttribute('download', record.attachmentName || 'Bukti_Transaksi');
+
+      const bodyEl = document.getElementById('att-modal-body');
+      const isImg = (record.attachmentType || '').startsWith('image/');
+
+      if (isImg) {
+        bodyEl.innerHTML = `<img src="${record.attachmentData}" alt="Bukti Nota" class="max-w-full max-h-[65vh] rounded-xl shadow-md border border-neutral-300 object-contain" />`;
+      } else {
+        bodyEl.innerHTML = `
+          <div class="w-full flex flex-col items-center gap-3">
+            <iframe src="${record.attachmentData}" class="w-full h-[60vh] rounded-xl border border-neutral-300 bg-white"></iframe>
+            <p class="text-xs text-[#2C2C2C]">Jika PDF tidak tampil di browser seluler, silakan tekan tombol <strong>Unduh</strong> di kanan atas.</p>
+          </div>`;
+      }
+
+      const modal = document.getElementById('modal-view-attachment');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeAttachmentModal() {
+      const modal = document.getElementById('modal-view-attachment');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.getElementById('att-modal-body').innerHTML = '';
     }
 
     // ==================== DATA CONTOH & AKUN DEFAULT ====================
@@ -2188,6 +2916,8 @@ WITH CHECK (true);</pre>
         },
       ];
 
+      state.returns = [];
+
       saveAllStateToStorage(!silent);
       if (!silent) {
         renderAllViews();
@@ -2259,11 +2989,38 @@ WITH CHECK (true);</pre>
     function logoutUser() {
       state.currentUser = null;
       saveAllStateToStorage(false);
+      closeAdminDropdown();
+      closeNotifPopover();
       checkAuthSession();
-      showToast('Anda telah keluar dari sistem.', 'info');
+      showToast('Anda telah keluar dari sesi Baji Artha Mart.', 'info');
     }
 
-    // ==================== NAVIGASI BOTTOM BAR (5 SLOT SIMETRIS) ====================
+    // ==================== NAVIGASI BOTTOM BAR (7 SLOT SIMETRIS) ====================
+    function setActiveNav(activeKey) {
+      document.querySelectorAll('.bottom-nav-item').forEach((btn) => {
+        const navKey = btn.getAttribute('data-nav');
+        const pill = btn.querySelector('.nav-active-pill');
+        if (navKey === activeKey) {
+          btn.classList.remove('text-white/80', 'hover:text-white');
+          btn.classList.add('text-[#FFAB00]');
+          if (pill) pill.classList.remove('hidden');
+        } else {
+          btn.classList.remove('text-[#FFAB00]');
+          btn.classList.add('text-white/80', 'hover:text-white');
+          if (pill) pill.classList.add('hidden');
+        }
+      });
+
+      const btnHome = document.getElementById('btn-bottom-home');
+      if (btnHome) {
+        if (activeKey === 'dashboard') {
+          btnHome.classList.add('ring-2', 'ring-[#FFAB00]');
+        } else {
+          btnHome.classList.remove('ring-2', 'ring-[#FFAB00]');
+        }
+      }
+    }
+
     function navigateTo(tabName) {
       state.activeTab = tabName;
 
@@ -2271,27 +3028,7 @@ WITH CHECK (true);</pre>
       const targetSection = document.getElementById(`view-${tabName}`);
       if (targetSection) targetSection.classList.remove('hidden');
 
-      document.querySelectorAll('.bottom-nav-item').forEach((btn) => {
-        const navKey = btn.getAttribute('data-nav');
-        if (navKey === tabName) {
-          btn.classList.remove('text-neutral-300', 'hover:text-[#FFFFFF]', 'hover:bg-[#2C2C2C]');
-          btn.classList.add('bg-[#FFAB00]', 'text-[#000000]');
-        } else {
-          btn.classList.remove('bg-[#FFAB00]', 'text-[#000000]');
-          btn.classList.add('text-neutral-300', 'hover:text-[#FFFFFF]', 'hover:bg-[#2C2C2C]');
-        }
-      });
-
-      const btnHome = document.getElementById('btn-bottom-home');
-      if (btnHome) {
-        if (tabName === 'dashboard') {
-          btnHome.classList.add('ring-[#FFAB00]', 'scale-105');
-          btnHome.classList.remove('ring-[#000000]');
-        } else {
-          btnHome.classList.remove('ring-[#FFAB00]', 'scale-105');
-          btnHome.classList.add('ring-[#000000]');
-        }
-      }
+      setActiveNav(tabName);
 
       renderAllViews();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2439,6 +3176,7 @@ WITH CHECK (true);</pre>
       renderDashboardAndReminders();
       renderInventoryTable();
       renderOutgoingTable();
+      renderReturnsView();
       renderPOTable();
       renderHistoryTable();
       renderUsersTable();
@@ -2449,8 +3187,10 @@ WITH CHECK (true);</pre>
     function populateItemSelectDropdowns() {
       const outSelect = document.getElementById('out-item-id');
       const poSelect = document.getElementById('po-item-id');
+      const retSelect = document.getElementById('ret-item-id');
       const prevOut = outSelect ? outSelect.value : '';
       const prevPO = poSelect ? poSelect.value : '';
+      const prevRet = retSelect ? retSelect.value : '';
 
       const optionsHTML = state.items
         .map(
@@ -2466,6 +3206,10 @@ WITH CHECK (true);</pre>
       if (poSelect) {
         poSelect.innerHTML = `<option value="">-- Pilih Barang --</option>${optionsHTML}`;
         poSelect.value = prevPO;
+      }
+      if (retSelect) {
+        retSelect.innerHTML = `<option value="">-- Pilih Barang yang Akan Diretur --</option>${optionsHTML}`;
+        retSelect.value = prevRet;
       }
     }
 
@@ -2491,16 +3235,17 @@ WITH CHECK (true);</pre>
       const transitPOs = state.purchaseOrders.filter((po) => po.status === 'Dipesan');
 
       document.getElementById('stat-total-jenis').textContent = totalJenis;
-      document.getElementById('stat-total-unit').textContent = totalUnit.toLocaleString('id-ID');
-      document.getElementById('stat-total-asset').textContent = `Aset: ${formatRupiah(totalModalAsset)}`;
+      document.getElementById('stat-total-unit').textContent = totalUnit;
+      document.getElementById('stat-total-asset').textContent = `Nilai Aset: ${formatRupiah(totalModalAsset)}`;
       document.getElementById('stat-min-stock').textContent = restockItems.length;
       document.getElementById('stat-expired').textContent = expiryItems.length;
       document.getElementById('stat-po-transit').textContent = transitPOs.length;
 
-      // Badge Lonceng Header & Titik Merah Tombol Home Tengah
+      // Badge Lonceng Header, Badge Nav Retur & Titik Merah Tombol Home Tengah
       const totalAlerts = restockItems.length + expiryItems.length;
       const bellBadge = document.getElementById('header-bell-badge');
       const homeDot = document.getElementById('home-reminder-dot');
+      const navRetBadge = document.getElementById('nav-return-badge');
       const popCount = document.getElementById('popover-notif-count');
 
       if (totalAlerts > 0) {
@@ -2511,6 +3256,17 @@ WITH CHECK (true);</pre>
         bellBadge.classList.add('hidden');
         if (homeDot) homeDot.classList.add('hidden');
       }
+
+      const expWithStockCount = expiryItems.filter((it) => Number(it.stok) > 0).length;
+      if (navRetBadge) {
+        if (expWithStockCount > 0) {
+          navRetBadge.textContent = expWithStockCount;
+          navRetBadge.classList.remove('hidden');
+        } else {
+          navRetBadge.classList.add('hidden');
+        }
+      }
+
       if (popCount) popCount.textContent = `${totalAlerts} Peringatan`;
 
       // Isi Popover Lonceng Notifikasi
@@ -2631,13 +3387,26 @@ WITH CHECK (true);</pre>
                   Stok: <strong>${it.stok} ${escapeHTML(it.satuan)}</strong>
                 </p>
               </div>
-              <button
-                type="button"
-                onclick="navigateTo('inventory')"
-                class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FFFFFF] text-[#000000] border border-neutral-300 hover:border-[#000000] shrink-0 cursor-pointer"
-              >
-                Cek Stok
-              </button>
+              <div class="flex items-center gap-1.5 shrink-0">
+                ${
+                  Number(it.stok) > 0
+                    ? `<button
+                        type="button"
+                        onclick="quickReturnFromReminder('${escapeHTML(it.id)}')"
+                        class="px-3 py-1.5 rounded-xl text-xs font-extrabold bg-red-600 text-[#FFFFFF] hover:bg-red-700 cursor-pointer"
+                      >
+                        Retur Expired
+                      </button>`
+                    : ''
+                }
+                <button
+                  type="button"
+                  onclick="navigateTo('inventory')"
+                  class="px-3 py-1.5 rounded-xl text-xs font-bold bg-[#FFFFFF] text-[#000000] border border-neutral-300 hover:border-[#000000] cursor-pointer"
+                >
+                  Cek Stok
+                </button>
+              </div>
             </div>`;
           })
           .join('');
@@ -2682,15 +3451,21 @@ WITH CHECK (true);</pre>
           recentContainer.innerHTML = `
             <div class="space-y-2.5">
               ${recentRecords
-                .map(
-                  (rec) => `
+                .map((rec) => {
+                  const badgeCls =
+                    rec.type === 'OUT'
+                      ? 'bg-red-600 text-[#FFFFFF]'
+                      : rec.type === 'RET'
+                      ? 'bg-amber-600 text-[#FFFFFF]'
+                      : 'bg-[#FFAB00] text-[#000000]';
+                  const badgeLbl = rec.type === 'OUT' ? 'KELUAR' : rec.type === 'RET' ? 'RETUR' : 'PO';
+                  const sign = rec.type === 'PO' ? '+' : '-';
+                  return `
                 <div class="p-3 rounded-xl bg-[#F5F5F5] border border-neutral-200 flex items-center justify-between gap-3">
                   <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                      <span class="px-2 py-0.5 rounded text-[10px] font-black ${
-                        rec.type === 'OUT' ? 'bg-red-600 text-[#FFFFFF]' : 'bg-[#FFAB00] text-[#000000]'
-                      }">
-                        ${rec.type === 'OUT' ? 'KELUAR' : 'PO'}
+                      <span class="px-2 py-0.5 rounded text-[10px] font-black ${badgeCls}">
+                        ${badgeLbl}
                       </span>
                       <span class="text-[11px] text-[#2C2C2C] font-semibold">${formatDateIndo(rec.tanggal)}</span>
                     </div>
@@ -2698,13 +3473,13 @@ WITH CHECK (true);</pre>
                     <p class="text-[11px] text-[#2C2C2C] truncate">${escapeHTML(rec.partner)}</p>
                   </div>
                   <div class="text-right shrink-0">
-                    <p class="text-xs font-black ${rec.type === 'OUT' ? 'text-red-600' : 'text-[#000000]'}">
-                      ${rec.type === 'OUT' ? '-' : '+'}${rec.qty} ${escapeHTML(rec.satuan)}
+                    <p class="text-xs font-black ${rec.type === 'PO' ? 'text-[#000000]' : 'text-red-600'}">
+                      ${sign}${rec.qty} ${escapeHTML(rec.satuan)}
                     </p>
                     <p class="text-[11px] font-bold text-[#2C2C2C]">${formatRupiah(rec.totalHarga)}</p>
                   </div>
-                </div>`
-                )
+                </div>`;
+                })
                 .join('')}
             </div>`;
         }
@@ -2726,6 +3501,19 @@ WITH CHECK (true);</pre>
       updatePOTotalPreview();
       if (item) {
         showToast(`Form PO diisi otomatis untuk "${item.nama}" (${item.pemasok || 'Pemasok'}).`, 'info');
+      }
+    }
+
+    function quickReturnFromReminder(itemId) {
+      const item = state.items.find((it) => it.id === itemId);
+      navigateTo('returns');
+      const retSelect = document.getElementById('ret-item-id');
+      if (retSelect) {
+        retSelect.value = itemId;
+        handleReturnItemChange();
+      }
+      if (item) {
+        showToast(`Form Retur diisi otomatis untuk "${item.nama}" (Sisa: ${item.stok} ${item.satuan}).`, 'info');
       }
     }
 
@@ -2985,6 +3773,7 @@ WITH CHECK (true);</pre>
 
       item.stok = Number(item.stok) - qty;
       const totalHarga = qty * hargaSatuan;
+      const att = tempAttachments.out;
 
       state.outgoing.unshift({
         id: 'OUT-' + Date.now(),
@@ -3000,10 +3789,14 @@ WITH CHECK (true);</pre>
         keterangan: keterangan || '-',
         sisaSetelah: item.stok,
         petugas: state.currentUser ? state.currentUser.fullName : 'Admin',
+        attachmentName: att ? att.attachmentName : '',
+        attachmentType: att ? att.attachmentType : '',
+        attachmentData: att ? att.attachmentData : '',
       });
 
       document.getElementById('form-outgoing').reset();
       document.getElementById('out-tanggal').value = getTodayISO();
+      clearTempAttachment('out');
       handleOutgoingItemChange();
       saveAllStateToStorage();
       renderAllViews();
@@ -3059,6 +3852,7 @@ WITH CHECK (true);</pre>
           <td class="py-3.5 px-4">
             <span class="text-xs font-mono text-[#2C2C2C]">${escapeHTML(o.itemKode)}</span>
             <p class="font-extrabold text-[#000000]">${escapeHTML(o.itemNama)}</p>
+            <span class="text-[11px] text-[#2C2C2C]">Sisa stok: <strong>${o.sisaSetelah} ${escapeHTML(o.satuan)}</strong></span>
           </td>
           <td class="py-3.5 px-4 text-right font-black text-red-600">-${o.qty} ${escapeHTML(o.satuan)}</td>
           <td class="py-3.5 px-4 text-right">
@@ -3069,13 +3863,259 @@ WITH CHECK (true);</pre>
             <p class="text-xs font-bold text-[#000000]">${escapeHTML(o.tujuan)}</p>
             <span class="text-[11px] text-[#2C2C2C]">${escapeHTML(o.keterangan)}</span>
           </td>
-          <td class="py-3.5 px-4 text-right text-xs font-extrabold text-[#000000]">${o.sisaSetelah} ${escapeHTML(o.satuan)}</td>
+          <td class="py-3.5 px-4 text-center">
+            ${
+              o.attachmentData
+                ? `<button type="button" onclick="openAttachmentViewer('OUT', '${escapeHTML(o.id)}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200 cursor-pointer">
+                    <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                    <span>Lihat Nota</span>
+                  </button>`
+                : `<span class="text-[11px] text-neutral-400">Tanpa nota</span>`
+            }
+          </td>
           <td class="py-3.5 px-4 text-center">
             <div class="inline-flex items-center gap-1.5">
               <button type="button" onclick="printTransactionReceiptPDF('OUT', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk PDF 80mm">
                 <i data-lucide="printer" class="w-4 h-4"></i>
               </button>
               <button type="button" onclick="openConfirmModal('deleteOutgoing', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer" title="Batalkan & Kembalikan Stok">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </td>
+        </tr>`
+        )
+        .join('');
+    }
+
+    // ==================== MENU RETUR BARANG EXPIRED ====================
+    function handleReturnItemChange() {
+      const itemId = document.getElementById('ret-item-id')?.value;
+      const hint = document.getElementById('ret-stock-hint');
+      const qtyInput = document.getElementById('ret-qty');
+      const pemasokInput = document.getElementById('ret-pemasok');
+      const priceInput = document.getElementById('ret-harga-satuan');
+      const item = state.items.find((it) => it.id === itemId);
+
+      if (!item) {
+        if (hint) hint.textContent = 'Pilih barang untuk melihat sisa stok, tanggal expired & harga modal.';
+        if (qtyInput) qtyInput.value = '';
+        if (priceInput) priceInput.value = '';
+        updateReturnTotalPreview();
+        return;
+      }
+
+      const expInfo = item.expired ? formatDateIndo(item.expired) : 'Non-Expired';
+      if (hint) {
+        hint.innerHTML = `Stok tersedia: <strong class="text-[#000000]">${item.stok} ${escapeHTML(item.satuan)}</strong> &bull; Expired: <strong class="text-red-600">${expInfo}</strong> &bull; Modal: <strong>${formatRupiah(item.hargaBeli)}</strong>`;
+      }
+      if (qtyInput && Number(item.stok) > 0) qtyInput.value = item.stok;
+      if (pemasokInput) pemasokInput.value = item.pemasok || '';
+      if (priceInput) priceInput.value = item.hargaBeli || 0;
+      updateReturnTotalPreview();
+    }
+
+    function updateReturnTotalPreview() {
+      const qty = parseInt(document.getElementById('ret-qty')?.value, 10) || 0;
+      const price = parseFloat(document.getElementById('ret-harga-satuan')?.value) || 0;
+      const previewEl = document.getElementById('ret-total-preview');
+      if (previewEl) previewEl.textContent = formatRupiah(qty * price);
+    }
+
+    function handleReturnSubmit(event) {
+      event.preventDefault();
+      const itemId = document.getElementById('ret-item-id').value;
+      const tanggal = document.getElementById('ret-tanggal').value;
+      const qty = parseInt(document.getElementById('ret-qty').value, 10);
+      const pemasok = document.getElementById('ret-pemasok').value.trim();
+      const settlement = document.getElementById('ret-settlement').value;
+      const hargaSatuan = parseFloat(document.getElementById('ret-harga-satuan').value) || 0;
+      const alasan = document.getElementById('ret-alasan').value.trim();
+
+      const item = state.items.find((it) => it.id === itemId);
+      if (!item) {
+        showToast('Silakan pilih barang yang akan diretur terlebih dahulu.', 'error');
+        return;
+      }
+
+      if (qty <= 0) {
+        showToast('Jumlah retur minimal 1 unit.', 'error');
+        return;
+      }
+
+      if (qty > Number(item.stok)) {
+        showToast(`Jumlah retur (${qty}) melebihi stok tersisa (${item.stok} ${item.satuan}).`, 'error');
+        return;
+      }
+
+      item.stok = Number(item.stok) - qty;
+      const totalHarga = qty * hargaSatuan;
+      const nomorRetur = generateReturnNumber();
+      const att = tempAttachments.ret;
+
+      state.returns.unshift({
+        id: 'RET-' + Date.now(),
+        nomorRetur,
+        tanggal,
+        itemId: item.id,
+        itemKode: item.kode,
+        itemNama: item.nama,
+        satuan: item.satuan,
+        tglExpiredBarang: item.expired || '-',
+        qty,
+        hargaSatuan,
+        totalHarga,
+        pemasok,
+        settlement,
+        alasan,
+        sisaSetelah: item.stok,
+        petugas: state.currentUser ? state.currentUser.fullName : 'Admin',
+        attachmentName: att ? att.attachmentName : '',
+        attachmentType: att ? att.attachmentType : '',
+        attachmentData: att ? att.attachmentData : '',
+      });
+
+      document.getElementById('form-return').reset();
+      document.getElementById('ret-tanggal').value = getTodayISO();
+      clearTempAttachment('ret');
+      handleReturnItemChange();
+      saveAllStateToStorage();
+      renderAllViews();
+      showToast(`Retur ${nomorRetur} berhasil dicatat (-${qty} ${item.satuan}, Nilai: ${formatRupiah(totalHarga)}).`, 'success');
+    }
+
+    function deleteReturn(id) {
+      const record = state.returns.find((r) => r.id === id);
+      if (record) {
+        const item = state.items.find((it) => it.id === record.itemId);
+        if (item) item.stok = Number(item.stok) + Number(record.qty);
+      }
+      state.returns = state.returns.filter((r) => r.id !== id);
+      saveAllStateToStorage();
+      renderAllViews();
+      showToast('Catatan retur dibatalkan & stok barang dikembalikan otomatis.', 'info');
+    }
+
+    function renderReturnsView() {
+      const warningDays = state.profile.expiryWarningDays || 30;
+      const candidatesEl = document.getElementById('return-candidates-list');
+      const badgeEl = document.getElementById('badge-return-candidates');
+
+      if (candidatesEl) {
+        const candidates = state.items
+          .filter((it) => Boolean(it.expired) && Number(it.stok) > 0)
+          .map((it) => ({ ...it, daysLeft: getDaysUntil(it.expired) }))
+          .filter((it) => it.daysLeft <= warningDays)
+          .sort((a, b) => a.daysLeft - b.daysLeft);
+
+        if (badgeEl) badgeEl.textContent = `${candidates.length} Item`;
+
+        if (candidates.length === 0) {
+          candidatesEl.innerHTML = `
+            <div class="col-span-full py-6 text-center text-xs text-[#2C2C2C]">
+              <p class="font-bold text-[#000000]">Tidak Ada Barang Expired dengan Sisa Stok</p>
+              <p class="mt-1">Anda tetap dapat memilih barang secara manual pada form di bawah jika ingin melakukan retur.</p>
+            </div>`;
+        } else {
+          candidatesEl.innerHTML = candidates
+            .map((it) => {
+              const isOverdue = it.daysLeft < 0;
+              return `
+              <div class="p-3.5 rounded-xl bg-[#F5F5F5] border ${
+                isOverdue ? 'border-red-300' : 'border-neutral-300'
+              } flex items-center justify-between gap-3">
+                <div class="min-w-0 space-y-1">
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase ${
+                      isOverdue ? 'bg-red-600 text-[#FFFFFF]' : 'bg-[#FFAB00] text-[#000000]'
+                    }">
+                      ${isOverdue ? `EXPIRED (${Math.abs(it.daysLeft)}h lalu)` : `${it.daysLeft} hari lagi`}
+                    </span>
+                    <span class="text-xs font-mono font-bold text-[#2C2C2C]">${escapeHTML(it.kode)}</span>
+                  </div>
+                  <p class="text-sm font-extrabold text-[#000000] truncate">${escapeHTML(it.nama)}</p>
+                  <p class="text-xs text-[#2C2C2C]">
+                    Stok: <strong>${it.stok} ${escapeHTML(it.satuan)}</strong> &bull;
+                    Exp: <strong>${formatDateIndo(it.expired)}</strong> &bull;
+                    Modal: <strong>${formatRupiah(it.hargaBeli)}</strong>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onclick="quickReturnFromReminder('${escapeHTML(it.id)}')"
+                  class="px-3 py-2 rounded-xl text-xs font-extrabold bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] shrink-0 cursor-pointer"
+                >
+                  Proses Retur
+                </button>
+              </div>`;
+            })
+            .join('');
+        }
+      }
+
+      renderReturnsTable();
+    }
+
+    function renderReturnsTable() {
+      const tbody = document.getElementById('tbody-returns');
+      if (!tbody) return;
+
+      const settlementFilter = document.getElementById('filter-ret-settlement')?.value || 'all';
+      const keyword = (document.getElementById('search-returns')?.value || '').toLowerCase();
+
+      const filtered = state.returns.filter((r) => {
+        const matchSettle = settlementFilter === 'all' || r.settlement === settlementFilter;
+        const matchText =
+          r.nomorRetur.toLowerCase().includes(keyword) ||
+          r.itemNama.toLowerCase().includes(keyword) ||
+          r.itemKode.toLowerCase().includes(keyword) ||
+          r.pemasok.toLowerCase().includes(keyword) ||
+          r.alasan.toLowerCase().includes(keyword);
+        return matchSettle && matchText;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-xs text-[#2C2C2C]">Belum ada riwayat retur barang expired.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map(
+          (r) => `
+        <tr class="hover:bg-[#F5F5F5]/70 transition">
+          <td class="py-3.5 px-4">
+            <span class="text-xs font-mono font-extrabold text-[#000000]">${escapeHTML(r.nomorRetur)}</span>
+            <p class="text-[11px] text-[#2C2C2C]">Tgl Retur: ${formatDateIndo(r.tanggal)}</p>
+          </td>
+          <td class="py-3.5 px-4">
+            <p class="font-extrabold text-[#000000]">${escapeHTML(r.itemNama)}</p>
+            <span class="text-xs text-[#2C2C2C]">Pemasok: <strong>${escapeHTML(r.pemasok)}</strong> &bull; Exp: ${formatDateIndo(r.tglExpiredBarang)}</span>
+          </td>
+          <td class="py-3.5 px-4 text-right">
+            <p class="font-black text-red-600">-${r.qty} ${escapeHTML(r.satuan)}</p>
+            <p class="text-xs font-extrabold text-[#000000]">${formatRupiah(r.totalHarga)}</p>
+            <span class="text-[11px] text-[#2C2C2C]">@ ${formatRupiah(r.hargaSatuan)}</span>
+          </td>
+          <td class="py-3.5 px-4">
+            <span class="inline-block px-2 py-0.5 rounded text-[10px] font-black bg-[#FFAB00] text-[#000000] mb-1">${escapeHTML(r.settlement)}</span>
+            <p class="text-xs text-[#2C2C2C]">${escapeHTML(r.alasan)}</p>
+          </td>
+          <td class="py-3.5 px-4 text-center">
+            ${
+              r.attachmentData
+                ? `<button type="button" onclick="openAttachmentViewer('RET', '${escapeHTML(r.id)}')" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200 cursor-pointer">
+                    <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                    <span>Lihat Bukti</span>
+                  </button>`
+                : `<span class="text-[11px] text-neutral-400">Tanpa bukti</span>`
+            }
+          </td>
+          <td class="py-3.5 px-4 text-center">
+            <div class="inline-flex items-center gap-1.5">
+              <button type="button" onclick="printTransactionReceiptPDF('RET', '${escapeHTML(r.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk Retur PDF 80mm">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+              </button>
+              <button type="button" onclick="openConfirmModal('deleteReturn', '${escapeHTML(r.id)}')" class="p-1.5 rounded-lg bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer" title="Batalkan Retur & Kembalikan Stok">
                 <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
               </button>
             </div>
@@ -3163,6 +4203,7 @@ WITH CHECK (true);</pre>
       document.getElementById('receive-tgl-sampai').value = getTodayISO();
       document.getElementById('receive-new-harga-beli').value = po.hargaBeli || 0;
       document.getElementById('receive-new-expired').value = '';
+      clearTempAttachment('po');
 
       const modal = document.getElementById('modal-receive-po');
       modal.classList.remove('hidden');
@@ -3174,6 +4215,7 @@ WITH CHECK (true);</pre>
       const modal = document.getElementById('modal-receive-po');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+      clearTempAttachment('po');
     }
 
     function handleConfirmReceivePO(event) {
@@ -3182,6 +4224,7 @@ WITH CHECK (true);</pre>
       const tglSampai = document.getElementById('receive-tgl-sampai').value;
       const newHargaBeli = parseFloat(document.getElementById('receive-new-harga-beli').value);
       const newExpired = document.getElementById('receive-new-expired').value;
+      const att = tempAttachments.po;
 
       const po = state.purchaseOrders.find((p) => p.id === poId);
       if (!po) return;
@@ -3191,6 +4234,11 @@ WITH CHECK (true);</pre>
       if (!isNaN(newHargaBeli) && newHargaBeli >= 0) {
         po.hargaBeli = newHargaBeli;
         po.totalHarga = Number(po.qty) * newHargaBeli;
+      }
+      if (att) {
+        po.attachmentName = att.attachmentName;
+        po.attachmentType = att.attachmentType;
+        po.attachmentData = att.attachmentData;
       }
 
       const item = state.items.find((it) => it.id === po.itemId);
@@ -3233,7 +4281,17 @@ WITH CHECK (true);</pre>
             : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFAB00] text-[#000000]">Menunggu Tiba</span>`;
 
           const arrivalCol = isArrived
-            ? `<span class="font-extrabold text-[#000000]">${formatDateIndo(po.tglSampai)}</span>`
+            ? `<div class="space-y-1">
+                <p class="font-extrabold text-[#000000]">${formatDateIndo(po.tglSampai)}</p>
+                ${
+                  po.attachmentData
+                    ? `<button type="button" onclick="openAttachmentViewer('PO', '${escapeHTML(po.id)}')" class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200 cursor-pointer">
+                        <i data-lucide="image" class="w-3 h-3"></i>
+                        <span>Lihat Nota Supplier</span>
+                      </button>`
+                    : `<span class="text-[11px] text-neutral-400">Tanpa nota</span>`
+                }
+              </div>`
             : `<span class="text-xs text-[#2C2C2C]">Belum tiba ${po.estimasiTiba ? `(Est: ${formatDateIndo(po.estimasiTiba)})` : ''}</span>`;
 
           return `
@@ -3292,7 +4350,7 @@ WITH CHECK (true);</pre>
         statusText: `Sisa Stok: ${o.sisaSetelah} ${o.satuan}`,
         note: o.keterangan || '-',
         petugas: o.petugas || 'Admin',
-        tglSampai: '-',
+        hasAttachment: Boolean(o.attachmentData),
       }));
 
       const poRecords = state.purchaseOrders.map((po) => ({
@@ -3313,10 +4371,28 @@ WITH CHECK (true);</pre>
             : 'Menunggu Tiba',
         note: po.catatan || '-',
         petugas: state.currentUser ? state.currentUser.fullName : 'Admin',
-        tglSampai: po.tglSampai || '-',
+        hasAttachment: Boolean(po.attachmentData),
       }));
 
-      return [...outRecords, ...poRecords].sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+      const retRecords = state.returns.map((r) => ({
+        rawId: r.id,
+        type: 'RET',
+        refNo: r.nomorRetur,
+        tanggal: r.tanggal,
+        itemKode: r.itemKode,
+        itemNama: r.itemNama,
+        satuan: r.satuan,
+        qty: r.qty,
+        hargaSatuan: Number(r.hargaSatuan || 0),
+        totalHarga: Number(r.totalHarga || 0),
+        partner: r.pemasok,
+        statusText: r.settlement,
+        note: r.alasan || '-',
+        petugas: r.petugas || 'Admin',
+        hasAttachment: Boolean(r.attachmentData),
+      }));
+
+      return [...outRecords, ...poRecords, ...retRecords].sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
     }
 
     function resetHistoryFilters() {
@@ -3359,15 +4435,19 @@ WITH CHECK (true);</pre>
       const filtered = getFilteredHistoryRecords();
       const outFiltered = filtered.filter((r) => r.type === 'OUT');
       const poFiltered = filtered.filter((r) => r.type === 'PO');
+      const retFiltered = filtered.filter((r) => r.type === 'RET');
 
       const outNominal = outFiltered.reduce((acc, r) => acc + r.totalHarga, 0);
       const poNominal = poFiltered.reduce((acc, r) => acc + r.totalHarga, 0);
+      const retNominal = retFiltered.reduce((acc, r) => acc + r.totalHarga, 0);
 
       document.getElementById('hist-stat-total').textContent = filtered.length;
       document.getElementById('hist-stat-out-nominal').textContent = formatRupiah(outNominal);
       document.getElementById('hist-stat-out-count').textContent = `${outFiltered.length} transaksi keluar`;
       document.getElementById('hist-stat-po-nominal').textContent = formatRupiah(poNominal);
       document.getElementById('hist-stat-po-count').textContent = `${poFiltered.length} pesanan pemasok`;
+      document.getElementById('hist-stat-ret-nominal').textContent = formatRupiah(retNominal);
+      document.getElementById('hist-stat-ret-count').textContent = `${retFiltered.length} transaksi retur`;
 
       if (filtered.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-xs text-[#2C2C2C]">Belum ada riwayat transaksi yang sesuai dengan filter.</td></tr>`;
@@ -3377,13 +4457,17 @@ WITH CHECK (true);</pre>
       tbody.innerHTML = filtered
         .map((rec) => {
           const isOut = rec.type === 'OUT';
+          const isRet = rec.type === 'RET';
           const badgeHTML = isOut
             ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-red-600 text-[#FFFFFF]">BARANG KELUAR</span>`
+            : isRet
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-amber-600 text-[#FFFFFF]">RETUR EXPIRED</span>`
             : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-[#FFAB00] text-[#000000]">PESAN PEMASOK (PO)</span>`;
 
-          const qtyHTML = isOut
-            ? `<p class="font-black text-red-600">-${rec.qty} ${escapeHTML(rec.satuan)}</p>`
-            : `<p class="font-black text-[#000000]">+${rec.qty} ${escapeHTML(rec.satuan)}</p>`;
+          const qtyHTML =
+            isOut || isRet
+              ? `<p class="font-black text-red-600">-${rec.qty} ${escapeHTML(rec.satuan)}</p>`
+              : `<p class="font-black text-[#000000]">+${rec.qty} ${escapeHTML(rec.satuan)}</p>`;
 
           return `
           <tr class="hover:bg-[#F5F5F5]/70 transition">
@@ -3407,15 +4491,30 @@ WITH CHECK (true);</pre>
               <p class="text-[11px] text-[#2C2C2C]">Ket: ${escapeHTML(rec.note)}</p>
             </td>
             <td class="py-3.5 px-4 text-center">
-              <button
-                type="button"
-                onclick="printTransactionReceiptPDF('${rec.type}', '${escapeHTML(rec.rawId)}')"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
-                title="Cetak Struk Bentuk PDF (80mm)"
-              >
-                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-                <span>Struk PDF</span>
-              </button>
+              <div class="inline-flex items-center gap-1.5">
+                ${
+                  rec.hasAttachment
+                    ? `<button
+                        type="button"
+                        onclick="openAttachmentViewer('${rec.type}', '${escapeHTML(rec.rawId)}')"
+                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200 transition cursor-pointer"
+                        title="Lihat Nota / Bukti Lampiran"
+                      >
+                        <i data-lucide="image" class="w-3.5 h-3.5"></i>
+                        <span>Nota</span>
+                      </button>`
+                    : ''
+                }
+                <button
+                  type="button"
+                  onclick="printTransactionReceiptPDF('${rec.type}', '${escapeHTML(rec.rawId)}')"
+                  class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
+                  title="Cetak Struk Bentuk PDF (80mm)"
+                >
+                  <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                  <span>Struk PDF</span>
+                </button>
+              </div>
             </td>
           </tr>`;
         })
@@ -3573,12 +4672,238 @@ WITH CHECK (true);</pre>
 
         doc.save(`Struk_PO_${po.nomorPO}.pdf`);
         showToast(`Struk PDF ${po.nomorPO} berhasil diunduh.`, 'success');
+      } else if (type === 'RET') {
+        const ret = state.returns.find((r) => r.id === id);
+        if (!ret) return;
+
+        y += 5;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('STRUK RETUR BARANG EXPIRED', 40, y, { align: 'center' });
+
+        y += 5;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text(`No. Retur     : ${ret.nomorRetur}`, 5, y);
+        y += 4;
+        doc.text(`Tgl Retur     : ${formatDateIndo(ret.tanggal)}`, 5, y);
+        y += 4;
+        doc.text(`Petugas       : ${ret.petugas || 'Admin'}`, 5, y);
+
+        y += 3.5;
+        doc.line(5, y, 75, y);
+
+        y += 5;
+        doc.setFont('helvetica', 'bold');
+        const retItemLines = doc.splitTextToSize(`${ret.itemKode} - ${ret.itemNama}`, 70);
+        doc.text(retItemLines, 5, y);
+        y += retItemLines.length * 4;
+
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Tgl Expired   : ${formatDateIndo(ret.tglExpiredBarang)}`, 5, y);
+        y += 4;
+        doc.text(`Jumlah Retur  : -${ret.qty} ${ret.satuan}`, 5, y);
+        y += 4;
+        doc.text(`Nilai Satuan  : ${formatRupiah(ret.hargaSatuan)}`, 5, y);
+        y += 4.5;
+        doc.setFont('helvetica', 'bold');
+        doc.text(`TOTAL RETUR   : ${formatRupiah(ret.totalHarga)}`, 5, y);
+
+        y += 4.5;
+        doc.setFont('helvetica', 'normal');
+        const supLines = doc.splitTextToSize(`Pemasok       : ${ret.pemasok}`, 70);
+        doc.text(supLines, 5, y);
+        y += supLines.length * 4;
+
+        const setLines = doc.splitTextToSize(`Penyelesaian  : ${ret.settlement}`, 70);
+        doc.text(setLines, 5, y);
+        y += setLines.length * 4;
+
+        const alLines = doc.splitTextToSize(`Alasan        : ${ret.alasan || '-'}`, 70);
+        doc.text(alLines, 5, y);
+        y += alLines.length * 4 + 3;
+
+        doc.line(5, y, 75, y);
+        y += 4.5;
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(7.5);
+        doc.text('Bukti retur barang kadaluarsa gudang.', 40, y, { align: 'center' });
+        y += 3.8;
+        doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`, 40, y, { align: 'center' });
+
+        doc.save(`Struk_Retur_${ret.nomorRetur}.pdf`);
+        showToast(`Struk PDF ${ret.nomorRetur} berhasil diunduh.`, 'success');
       }
     }
 
     function printHistorySummaryPDF() {
+      openReportModal();
+    }
+
+    // ==================== MODAL PENGATURAN & FILTER LAPORAN ====================
+    function openReportModal() {
+      const modal = document.getElementById('report-modal');
+      if (!modal) return;
+
+      const today = getTodayISO();
+      const [currYear, currMonth] = today.split('-');
+
+      // Kumpulkan tahun unik dari seluruh transaksi ditambah tahun berjalan
+      const allRecords = getUnifiedHistoryRecords();
+      const yearsSet = new Set([currYear, '2026']);
+      allRecords.forEach((rec) => {
+        if (rec.tanggal && rec.tanggal.length >= 4) {
+          yearsSet.add(rec.tanggal.slice(0, 4));
+        }
+      });
+      const sortedYears = Array.from(yearsSet).sort((a, b) => b.localeCompare(a));
+
+      const yearSelect = document.getElementById('rep-select-year');
+      if (yearSelect) {
+        yearSelect.innerHTML = sortedYears
+          .map((yr) => `<option value="${escapeHTML(yr)}">${escapeHTML(yr)}</option>`)
+          .join('');
+        yearSelect.value = currYear;
+      }
+
+      const monthSelect = document.getElementById('rep-select-month');
+      if (monthSelect) monthSelect.value = currMonth;
+
+      const startInput = document.getElementById('rep-date-start');
+      const endInput = document.getElementById('rep-date-end');
+      if (startInput && !startInput.value) startInput.value = `${currYear}-${currMonth}-01`;
+      if (endInput && !endInput.value) endInput.value = today;
+
+      setReportPeriodMode('month');
+      setActiveNav('report');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function closeReportModal() {
+      const modal = document.getElementById('report-modal');
+      if (!modal) return;
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      setActiveNav(state.activeTab || 'dashboard');
+    }
+
+    function setReportPeriodMode(mode) {
+      reportPeriodMode = mode;
+
+      const modes = ['month', 'range', 'all'];
+      modes.forEach((m) => {
+        const btn = document.getElementById(`rep-mode-btn-${m}`);
+        if (!btn) return;
+        if (m === mode) {
+          btn.className =
+            'rep-mode-btn py-2 px-2 rounded-lg text-xs font-extrabold bg-[#000000] text-[#FFAB00] transition cursor-pointer';
+        } else {
+          btn.className =
+            'rep-mode-btn py-2 px-2 rounded-lg text-xs font-bold text-[#2C2C2C] hover:text-[#000000] transition cursor-pointer';
+        }
+      });
+
+      const monthBox = document.getElementById('rep-controls-month');
+      const rangeBox = document.getElementById('rep-controls-range');
+      if (monthBox) monthBox.classList.toggle('hidden', mode !== 'month');
+      if (rangeBox) rangeBox.classList.toggle('hidden', mode !== 'range');
+
+      updateReportPreview();
+    }
+
+    function getReportFilteredData() {
+      const allRecords = getUnifiedHistoryRecords();
+      const typeFilter = document.getElementById('rep-select-type')?.value || 'all';
+      const selectedMonth = document.getElementById('rep-select-month')?.value || '11';
+      const selectedYear = document.getElementById('rep-select-year')?.value || '2026';
+      const startDate = document.getElementById('rep-date-start')?.value || '';
+      const endDate = document.getElementById('rep-date-end')?.value || '';
+
+      let periodLabel = 'Semua Periode';
+      let fileSlug = 'Semua_Periode';
+
+      if (reportPeriodMode === 'month') {
+        const monthName = INDONESIAN_MONTHS[selectedMonth] || selectedMonth;
+        periodLabel = `Bulan ${monthName} ${selectedYear}`;
+        fileSlug = `${monthName}_${selectedYear}`;
+      } else if (reportPeriodMode === 'range') {
+        const startText = startDate ? formatDateIndo(startDate) : 'Awal';
+        const endText = endDate ? formatDateIndo(endDate) : 'Sekarang';
+        periodLabel = `${startText} s/d ${endText}`;
+        fileSlug = `${startDate || 'Awal'}_sd_${endDate || 'Akhir'}`;
+      }
+
+      const typeLabelMap = {
+        all: 'Semua Transaksi',
+        OUT: 'Barang Keluar Gudang',
+        PO: 'Pemesanan ke Pemasok (PO)',
+        RET: 'Retur Barang Expired',
+      };
+
+      const filtered = allRecords.filter((rec) => {
+        const matchType = typeFilter === 'all' || rec.type === typeFilter;
+        if (!matchType) return false;
+
+        if (reportPeriodMode === 'month') {
+          const prefix = `${selectedYear}-${selectedMonth}`;
+          return (rec.tanggal || '').startsWith(prefix);
+        }
+
+        if (reportPeriodMode === 'range') {
+          const matchStart = !startDate || rec.tanggal >= startDate;
+          const matchEnd = !endDate || rec.tanggal <= endDate;
+          return matchStart && matchEnd;
+        }
+
+        return true;
+      });
+
+      const totalQty = filtered.reduce((acc, r) => acc + Number(r.qty || 0), 0);
+      const totalNominal = filtered.reduce((acc, r) => acc + Number(r.totalHarga || 0), 0);
+
+      return {
+        records: filtered,
+        periodLabel,
+        typeLabel: typeLabelMap[typeFilter] || 'Semua Transaksi',
+        fileSlug,
+        totalQty,
+        totalNominal,
+      };
+    }
+
+    function updateReportPreview() {
+      const data = getReportFilteredData();
+      const labelEl = document.getElementById('rep-preview-period-label');
+      const countEl = document.getElementById('rep-preview-count');
+      const qtyEl = document.getElementById('rep-preview-qty');
+      const nomEl = document.getElementById('rep-preview-nominal');
+      const warnEl = document.getElementById('rep-empty-warning');
+
+      if (labelEl) labelEl.textContent = data.periodLabel;
+      if (countEl) countEl.textContent = data.records.length;
+      if (qtyEl) qtyEl.textContent = `${data.totalQty} unit`;
+      if (nomEl) nomEl.textContent = formatRupiah(data.totalNominal);
+
+      if (warnEl) {
+        if (data.records.length === 0) {
+          warnEl.classList.remove('hidden');
+        } else {
+          warnEl.classList.add('hidden');
+        }
+      }
+    }
+
+    function downloadFilteredReportPDF() {
+      const report = getReportFilteredData();
+      if (report.records.length === 0) {
+        showToast('Tidak ada data transaksi pada periode yang dipilih untuk dicetak.', 'warning');
+        return;
+      }
+
       if (!window.jspdf || !window.jspdf.jsPDF) {
-        showToast('Library PDF belum termuat.', 'error');
+        showToast('Library PDF belum termuat. Periksa koneksi internet Anda.', 'error');
         return;
       }
 
@@ -3587,22 +4912,23 @@ WITH CHECK (true);</pre>
       const storeName = state.profile.storeName || 'Baji Artha Mart';
       const address = state.profile.address || 'Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan';
       const phone = state.profile.phone || '0812-3456-7890';
-      const records = getFilteredHistoryRecords();
 
-      // Header A4 Terpisah Rapi: Nama Toko, Alamat Toko, dan Kontak Telepon
+      // Kop Laporan A4: Nama Toko, Alamat, Kontak, serta Keterangan Periode & Jenis Transaksi
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(15);
-      doc.text(`${storeName.toUpperCase()} — REKAP RIWAYAT TRANSAKSI`, 14, 16);
+      doc.text(`${storeName.toUpperCase()} — LAPORAN TRANSAKSI GUDANG`, 14, 16);
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
-      doc.text(`Alamat : ${address}`, 14, 22);
-      doc.text(`Kontak : ${phone}  |  Dicetak: ${new Date().toLocaleString('id-ID')}`, 14, 27);
+      doc.text(`Alamat  : ${address}`, 14, 22);
+      doc.text(`Kontak  : ${phone}`, 14, 27);
+      doc.text(`Periode : ${report.periodLabel}  |  Jenis: ${report.typeLabel}`, 14, 32);
+      doc.text(`Dicetak : ${new Date().toLocaleString('id-ID')} oleh ${state.currentUser ? state.currentUser.fullName : 'Admin'}`, 14, 37);
 
       doc.setLineWidth(0.5);
-      doc.line(14, 30, 196, 30);
+      doc.line(14, 40, 196, 40);
 
-      let y = 37;
+      let y = 47;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
       doc.text('Tanggal', 14, y);
@@ -3620,13 +4946,19 @@ WITH CHECK (true);</pre>
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(8);
 
-      records.forEach((rec) => {
-        if (y > 275) {
+      report.records.forEach((rec) => {
+        if (y > 268) {
           doc.addPage();
           y = 20;
         }
-        const label = rec.type === 'OUT' ? `KELUAR (${rec.refNo})` : `PO (${rec.refNo})`;
-        const qtyStr = rec.type === 'OUT' ? `-${rec.qty} ${rec.satuan}` : `+${rec.qty} ${rec.satuan}`;
+        const label =
+          rec.type === 'OUT'
+            ? `KELUAR (${rec.refNo})`
+            : rec.type === 'RET'
+            ? `RETUR (${rec.refNo})`
+            : `PO (${rec.refNo})`;
+        const qtyStr =
+          rec.type === 'PO' ? `+${rec.qty} ${rec.satuan}` : `-${rec.qty} ${rec.satuan}`;
 
         doc.text(formatDateIndo(rec.tanggal), 14, y);
         doc.text(label.slice(0, 22), 37, y);
@@ -3637,8 +4969,76 @@ WITH CHECK (true);</pre>
         y += 6;
       });
 
-      doc.save(`Rekap_Laporan_${storeName.replace(/\s+/g, '_')}_${getTodayISO()}.pdf`);
-      showToast('Rekap Laporan Riwayat Transaksi (A4 PDF) berhasil diunduh.', 'success');
+      // Kotak Ringkasan Total di Bagian Akhir Laporan PDF
+      if (y > 260) {
+        doc.addPage();
+        y = 20;
+      }
+      y += 2;
+      doc.setLineWidth(0.4);
+      doc.line(14, y, 196, y);
+      y += 6;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(9.5);
+      doc.text(`Total Transaksi: ${report.records.length} transaksi   |   Total Qty: ${report.totalQty} unit`, 14, y);
+      doc.text(`Total Nominal: ${formatRupiah(report.totalNominal)}`, 196, y, { align: 'right' });
+
+      const cleanStore = storeName.replace(/\s+/g, '_');
+      doc.save(`Laporan_${cleanStore}_${report.fileSlug}.pdf`);
+      closeReportModal();
+      showToast(`Laporan PDF (${report.periodLabel}) berhasil diunduh.`, 'success');
+    }
+
+    function downloadFilteredReportCSV() {
+      const report = getReportFilteredData();
+      if (report.records.length === 0) {
+        showToast('Tidak ada data transaksi pada periode yang dipilih untuk diekspor.', 'warning');
+        return;
+      }
+
+      const rows = [
+        ['Tanggal', 'Jenis Transaksi', 'No. Referensi', 'Kode SKU', 'Nama Barang', 'Qty', 'Satuan', 'Harga Satuan (Rp)', 'Total Nominal (Rp)', 'Pemasok / Tujuan', 'Status / Keterangan', 'Petugas'],
+      ];
+
+      report.records.forEach((rec) => {
+        const jenisText =
+          rec.type === 'OUT'
+            ? 'Barang Keluar'
+            : rec.type === 'RET'
+            ? 'Retur Expired'
+            : 'Pemesanan PO';
+        rows.push([
+          rec.tanggal,
+          jenisText,
+          rec.refNo,
+          rec.itemKode,
+          rec.itemNama,
+          rec.qty,
+          rec.satuan,
+          rec.hargaSatuan || 0,
+          rec.totalHarga || 0,
+          rec.partner,
+          `${rec.statusText} (${rec.note})`,
+          rec.petugas || 'Admin',
+        ]);
+      });
+
+      const csvContent =
+        'data:text/csv;charset=utf-8,' +
+        rows.map((r) => r.map((cell) => `"${String(cell ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+
+      const cleanStore = (state.profile.storeName || 'Baji_Artha_Mart').replace(/\s+/g, '_');
+      const filename = `Laporan_${cleanStore}_${report.fileSlug}.csv`;
+
+      const link = document.createElement('a');
+      link.setAttribute('href', encodeURI(csvContent));
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      closeReportModal();
+      showToast(`Laporan Excel CSV (${report.periodLabel}) berhasil diunduh.`, 'success');
     }
 
     // ==================== MANAJEMEN PENGGUNA ====================
@@ -3793,6 +5193,7 @@ WITH CHECK (true);</pre>
               if (Array.isArray(p.items) && p.items.length > 0) state.items = p.items;
               if (Array.isArray(p.outgoing)) state.outgoing = p.outgoing;
               if (Array.isArray(p.purchaseOrders)) state.purchaseOrders = p.purchaseOrders;
+              if (Array.isArray(p.returns)) state.returns = p.returns;
               if (Array.isArray(p.users) && p.users.length > 0) state.users = p.users;
               if (p.profile) {
                 state.profile = {
@@ -3886,6 +5287,7 @@ WITH CHECK (true);</pre>
           items: state.items,
           outgoing: state.outgoing,
           purchaseOrders: state.purchaseOrders,
+          returns: state.returns,
           users: state.users,
           profile: state.profile,
         };
@@ -3916,6 +5318,7 @@ WITH CHECK (true);</pre>
           items: state.items,
           outgoing: state.outgoing,
           purchaseOrders: state.purchaseOrders,
+          returns: state.returns,
           users: state.users,
           profile: state.profile,
         };
@@ -3963,6 +5366,7 @@ WITH CHECK (true);</pre>
         if (Array.isArray(p.items)) state.items = p.items;
         if (Array.isArray(p.outgoing)) state.outgoing = p.outgoing;
         if (Array.isArray(p.purchaseOrders)) state.purchaseOrders = p.purchaseOrders;
+        if (Array.isArray(p.returns)) state.returns = p.returns;
         if (Array.isArray(p.users) && p.users.length > 0) state.users = p.users;
         if (p.profile) state.profile = { ...state.profile, ...p.profile };
 
@@ -4054,6 +5458,24 @@ WITH CHECK (true);</pre>
             po.catatan,
           ]);
         });
+      } else if (type === 'retur') {
+        rows.push(['No Retur', 'Tanggal Retur', 'Kode', 'Nama Barang', 'Tgl Expired Barang', 'Qty Retur', 'Satuan', 'Nilai Modal Satuan', 'Total Nilai Retur', 'Pemasok', 'Jenis Penyelesaian', 'Alasan']);
+        state.returns.forEach((r) => {
+          rows.push([
+            r.nomorRetur,
+            r.tanggal,
+            r.itemKode,
+            r.itemNama,
+            r.tglExpiredBarang || '-',
+            r.qty,
+            r.satuan,
+            r.hargaSatuan || 0,
+            r.totalHarga || 0,
+            r.pemasok,
+            r.settlement,
+            r.alasan,
+          ]);
+        });
       }
 
       const csvContent =
@@ -4080,11 +5502,12 @@ WITH CHECK (true);</pre>
         pendingConfirmCallback = () => loadSampleData(false);
       } else if (actionType === 'clearAll') {
         titleEl.textContent = 'Kosongkan Data Operasional?';
-        msgEl.textContent = 'Data barang, transaksi keluar, dan PO akan dikosongkan. Akun pengguna dan konfigurasi Supabase tetap dipertahankan.';
+        msgEl.textContent = 'Data barang, transaksi keluar, PO, dan retur akan dikosongkan. Akun pengguna dan konfigurasi Supabase tetap dipertahankan.';
         pendingConfirmCallback = () => {
           state.items = [];
           state.outgoing = [];
           state.purchaseOrders = [];
+          state.returns = [];
           saveAllStateToStorage();
           renderAllViews();
           showToast('Data operasional berhasil dikosongkan (akun & koneksi Supabase tetap aman).', 'info');
@@ -4097,6 +5520,10 @@ WITH CHECK (true);</pre>
         titleEl.textContent = 'Batalkan Transaksi Barang Keluar?';
         msgEl.textContent = 'Jumlah barang keluar akan otomatis dikembalikan ke stok gudang.';
         pendingConfirmCallback = () => deleteOutgoing(targetId);
+      } else if (actionType === 'deleteReturn') {
+        titleEl.textContent = 'Batalkan Catatan Retur Expired?';
+        msgEl.textContent = 'Jumlah barang yang diretur akan otomatis dikembalikan ke stok gudang.';
+        pendingConfirmCallback = () => deleteReturn(targetId);
       } else if (actionType === 'deletePO') {
         titleEl.textContent = 'Hapus Catatan Pemesanan (PO)?';
         msgEl.textContent = 'Riwayat pemesanan ini akan dihapus dari daftar.';
