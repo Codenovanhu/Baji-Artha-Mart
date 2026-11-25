@@ -14,6 +14,9 @@
   <!-- Supabase JS SDK v2 via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+  <!-- jsPDF via CDN untuk Cetak Struk & Laporan PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -84,11 +87,11 @@
 <body class="min-h-screen antialiased bg-[#F5F5F5] text-[#000000] selection:bg-[#FFAB00] selection:text-[#000000]">
 
   <!-- =========================================================================
-       1. HALAMAN LOGIN AWAL (TANPA TOMBOL LOGIN CEPAT)
+       1. HALAMAN LOGIN AWAL (LATAR BELAKANG PUTIH #FFFFFF, TENGAH HITAM #000000)
   ========================================================================== -->
-  <div id="login-view" class="min-h-screen flex items-center justify-center p-4 bg-[#000000]">
-    <div class="w-full max-w-md bg-[#FFFFFF] rounded-3xl shadow-2xl border border-[#2C2C2C] overflow-hidden">
-      <!-- Header Login -->
+  <div id="login-view" class="min-h-screen flex items-center justify-center p-4 bg-[#FFFFFF]">
+    <div class="w-full max-w-md bg-[#000000] rounded-3xl shadow-2xl border-2 border-[#000000] overflow-hidden">
+      <!-- Header Kartu Login (Hitam dengan Aksen Emas #FFAB00) -->
       <div class="bg-[#000000] px-6 py-8 text-[#FFFFFF] text-center border-b-4 border-[#FFAB00]">
         <div class="w-16 h-16 rounded-2xl bg-[#FFAB00] text-[#000000] flex items-center justify-center mx-auto mb-3.5 shadow-lg">
           <i data-lucide="store" class="w-9 h-9 stroke-[2.2]"></i>
@@ -99,16 +102,16 @@
         </p>
       </div>
 
-      <!-- Form Login -->
-      <div class="p-6 sm:p-8 space-y-5 bg-[#FFFFFF]">
+      <!-- Form Login di dalam Kartu Tengah -->
+      <div class="p-6 sm:p-8 space-y-5 bg-[#000000] text-[#FFFFFF]">
         <div>
-          <h2 class="text-lg font-extrabold text-[#000000]">Masuk ke Sistem Gudang</h2>
-          <p class="text-xs text-[#2C2C2C] mt-0.5">Masukkan username dan password akun pengelola Anda.</p>
+          <h2 class="text-lg font-extrabold text-[#FFFFFF]">Masuk ke Sistem Gudang</h2>
+          <p class="text-xs text-neutral-300 mt-0.5">Masukkan username dan password akun pengelola Anda.</p>
         </div>
 
         <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-4">
           <div>
-            <label for="login-username" class="block text-xs font-bold text-[#000000] mb-1.5">Username</label>
+            <label for="login-username" class="block text-xs font-bold text-[#FFFFFF] mb-1.5">Username</label>
             <div class="relative">
               <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2C2C2C]">
                 <i data-lucide="user" class="w-4 h-4"></i>
@@ -119,13 +122,13 @@
                 required
                 autocomplete="username"
                 placeholder="Masukkan username"
-                class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 text-[#000000] focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none transition"
+                class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl bg-[#FFFFFF] border border-[#2C2C2C] text-[#000000] placeholder-neutral-500 focus:ring-2 focus:ring-[#FFAB00] focus:border-[#FFAB00] outline-none transition"
               />
             </div>
           </div>
 
           <div>
-            <label for="login-password" class="block text-xs font-bold text-[#000000] mb-1.5">Password</label>
+            <label for="login-password" class="block text-xs font-bold text-[#FFFFFF] mb-1.5">Password</label>
             <div class="relative">
               <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#2C2C2C]">
                 <i data-lucide="lock" class="w-4 h-4"></i>
@@ -136,7 +139,7 @@
                 required
                 autocomplete="current-password"
                 placeholder="Masukkan password"
-                class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 text-[#000000] focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none transition"
+                class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl bg-[#FFFFFF] border border-[#2C2C2C] text-[#000000] placeholder-neutral-500 focus:ring-2 focus:ring-[#FFAB00] focus:border-[#FFAB00] outline-none transition"
               />
               <button
                 type="button"
@@ -150,8 +153,8 @@
           </div>
 
           <!-- Pesan Error Login -->
-          <div id="login-error-box" class="hidden p-3 rounded-xl bg-red-50 border border-red-300 text-xs font-semibold text-red-700 flex items-center gap-2">
-            <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-red-600"></i>
+          <div id="login-error-box" class="hidden p-3 rounded-xl bg-red-950/80 border border-red-500 text-xs font-semibold text-red-200 flex items-center gap-2">
+            <i data-lucide="alert-circle" class="w-4 h-4 shrink-0 text-red-400"></i>
             <span id="login-error-text">Username atau password salah.</span>
           </div>
 
@@ -168,11 +171,11 @@
   </div>
 
   <!-- =========================================================================
-       2. TATA LETAK UTAMA (#app-view) - TANPA SIDEBAR KIRI, MENU DI BAWAH
+       2. TATA LETAK UTAMA (#app-view) - BILAH NAVIGASI BAWAH 5 SLOT SIMETRIS
   ========================================================================== -->
   <div id="app-view" class="hidden min-h-screen flex flex-col bg-[#F5F5F5]">
 
-    <!-- HEADER ATAS (BRAND KIRI & ADMIN KANAN ATAS) -->
+    <!-- HEADER ATAS (BRAND KIRI & ADMIN + STATUS SUPABASE KANAN ATAS) -->
     <header class="sticky top-0 z-30 bg-[#000000] text-[#FFFFFF] border-b-2 border-[#FFAB00] px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 shadow-md">
       <!-- Kiri: Logo & Nama Toko Baji Artha Mart -->
       <div class="flex items-center gap-3 min-w-0">
@@ -185,18 +188,19 @@
         </div>
       </div>
 
-      <!-- Kanan Atas: Status Supabase, Lonceng Notifikasi, Dropdown Profil Admin -->
+      <!-- Kanan Atas: Status Supabase (Hijau Aktif / Merah Tidak Aktif), Lonceng Notifikasi, Dropdown Profil Admin -->
       <div class="flex items-center gap-2 sm:gap-3">
         <!-- Indikator Status Supabase -->
         <button
           type="button"
+          id="header-supabase-btn"
           onclick="navigateTo('supabase')"
-          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-bold bg-[#2C2C2C] text-[#FFFFFF] border border-neutral-700 hover:border-[#FFAB00] transition cursor-pointer"
+          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-extrabold bg-red-950/80 text-red-300 border border-red-500/70 hover:brightness-110 transition cursor-pointer"
           title="Status Sinkronisasi Supabase"
         >
-          <span id="header-supabase-dot" class="w-2 h-2 rounded-full bg-neutral-400"></span>
-          <span id="header-supabase-text" class="hidden md:inline">Mode Lokal</span>
-          <span class="md:hidden">DB</span>
+          <span id="header-supabase-dot" class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
+          <span id="header-supabase-text" class="hidden md:inline">Supabase Tidak Aktif</span>
+          <span id="header-supabase-text-mobile" class="md:hidden">Offline</span>
         </button>
 
         <!-- Lonceng Notifikasi -->
@@ -240,7 +244,7 @@
           </div>
         </div>
 
-        <!-- Dropdown Profil Admin di Pojok Kanan Atas -->
+        <!-- Dropdown Profil Admin di Pojok Kanan Atas (Akses Profil, Pengguna, Supabase, Logout) -->
         <div class="relative" id="admin-dropdown-wrapper">
           <button
             type="button"
@@ -482,7 +486,7 @@
       </section>
 
       <!-- ===================================================================
-           HALAMAN 2 (KIRI - STOK): DATA BARANG & WAKTU EXPIRED
+           HALAMAN 2 (KIRI 1 - STOK): DATA BARANG & WAKTU EXPIRED
       ==================================================================== -->
       <section id="view-inventory" class="app-section hidden space-y-6">
         <!-- Form Tambah / Edit Barang -->
@@ -689,7 +693,7 @@
       </section>
 
       <!-- ===================================================================
-           HALAMAN 3 (KIRI - KELUAR): PENCATATAN BARANG KELUAR GUDANG
+           HALAMAN 3 (KIRI 2 - KELUAR): PENCATATAN BARANG KELUAR GUDANG
       ==================================================================== -->
       <section id="view-outgoing" class="app-section hidden space-y-6">
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
@@ -778,7 +782,7 @@
           <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h3 class="text-base font-extrabold text-[#000000]">Riwayat Barang Keluar Gudang</h3>
-              <p class="text-xs text-[#2C2C2C]">Tercatat lengkap beserta sisa stok akhir setelah pengeluaran</p>
+              <p class="text-xs text-[#2C2C2C]">Tercatat lengkap beserta tombol cetak struk PDF per transaksi</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <input
@@ -827,7 +831,7 @@
       </section>
 
       <!-- ===================================================================
-           HALAMAN 4 (KIRI - PESAN PO): PEMESANAN PEMASOK & TGL SAMPAI
+           HALAMAN 4 (KANAN 1 - PESAN PO): PEMESANAN PEMASOK & TGL SAMPAI
       ==================================================================== -->
       <section id="view-po" class="app-section hidden space-y-6">
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
@@ -973,7 +977,131 @@
       </section>
 
       <!-- ===================================================================
-           HALAMAN 5 (KANAN - PENGGUNA): MANAJEMEN PENGGUNA
+           HALAMAN 5 (KANAN 2 - RIWAYAT): RIWAYAT TRANSAKSI & CETAK STRUK PDF
+      ==================================================================== -->
+      <section id="view-history" class="app-section hidden space-y-6">
+        <!-- Ringkasan & Tombol Cetak Rekap PDF -->
+        <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+          <div class="flex items-start sm:items-center gap-3">
+            <div class="w-11 h-11 rounded-xl bg-[#000000] text-[#FFAB00] flex items-center justify-center shrink-0">
+              <i data-lucide="history" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h2 class="text-lg font-extrabold text-[#000000]">Riwayat Transaksi Terpadu &amp; Cetak Struk PDF</h2>
+              <p class="text-xs text-[#2C2C2C]">Gabungan seluruh aktivitas Barang Keluar &amp; Pemesanan Pemasok (PO) beserta cetak struk PDF instan.</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onclick="printHistorySummaryPDF()"
+              class="inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
+            >
+              <i data-lucide="printer" class="w-4 h-4"></i>
+              <span>Cetak Rekap Riwayat (PDF)</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 3 Kartu Ringkasan Riwayat -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Aktivitas Tercatat</p>
+              <p id="hist-stat-total" class="text-2xl font-black text-[#000000] mt-1">0</p>
+            </div>
+            <span class="p-2.5 rounded-xl bg-[#F5F5F5] text-[#000000]">
+              <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+            </span>
+          </div>
+
+          <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Transaksi Barang Keluar</p>
+              <p id="hist-stat-out" class="text-2xl font-black text-red-600 mt-1">0</p>
+            </div>
+            <span class="p-2.5 rounded-xl bg-red-100 text-red-700">
+              <i data-lucide="package-minus" class="w-5 h-5"></i>
+            </span>
+          </div>
+
+          <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Pemesanan Pemasok (PO)</p>
+              <p id="hist-stat-po" class="text-2xl font-black text-[#000000] mt-1">0</p>
+            </div>
+            <span class="p-2.5 rounded-xl bg-[#FFAB00]/30 text-[#000000]">
+              <i data-lucide="truck" class="w-5 h-5"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Filter & Tabel Riwayat Transaksi -->
+        <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs overflow-hidden">
+          <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+            <div class="relative flex-1 max-w-md">
+              <i data-lucide="search" class="w-4 h-4 text-[#2C2C2C] absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input
+                type="text"
+                id="search-history"
+                oninput="renderHistoryTable()"
+                placeholder="Cari nomor transaksi, nama barang, pemasok / tujuan..."
+                class="w-full pl-10 pr-4 py-2 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              />
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2">
+              <select
+                id="filter-history-type"
+                onchange="renderHistoryTable()"
+                class="px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              >
+                <option value="all">Jenis Transaksi: Semua</option>
+                <option value="OUT">Barang Keluar Gudang</option>
+                <option value="PO">Pemesanan Pemasok (PO)</option>
+              </select>
+
+              <input
+                type="date"
+                id="filter-history-date"
+                onchange="renderHistoryTable()"
+                class="px-3 py-2 text-xs sm:text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+              />
+
+              <button
+                type="button"
+                onclick="resetHistoryFilters()"
+                class="px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 cursor-pointer"
+              >
+                Reset Filter
+              </button>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-[#F5F5F5] border-b border-neutral-200 text-[11px] font-extrabold uppercase tracking-wider text-[#2C2C2C]">
+                  <th class="py-3.5 px-4">Tanggal</th>
+                  <th class="py-3.5 px-4">No. Referensi &amp; Jenis</th>
+                  <th class="py-3.5 px-4">Nama Barang</th>
+                  <th class="py-3.5 px-4 text-right">Kuantitas</th>
+                  <th class="py-3.5 px-4">Pemasok / Tujuan</th>
+                  <th class="py-3.5 px-4">Status / Keterangan</th>
+                  <th class="py-3.5 px-4 text-center">Struk PDF</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-history" class="divide-y divide-neutral-200 text-sm">
+                <!-- Diisi via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================================================================
+           HALAMAN 6 (AKSES POJOK KANAN ATAS): MANAJEMEN PENGGUNA
       ==================================================================== -->
       <section id="view-users" class="app-section hidden space-y-6">
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
@@ -1082,7 +1210,7 @@
       </section>
 
       <!-- ===================================================================
-           HALAMAN 6 (KANAN - SUPABASE): SINKRONISASI CLOUD DATABASE
+           HALAMAN 7 (AKSES POJOK KANAN ATAS): SINKRONISASI SUPABASE
       ==================================================================== -->
       <section id="view-supabase" class="app-section hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1091,11 +1219,11 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-neutral-200">
               <div>
                 <h2 class="text-lg font-extrabold text-[#000000]">Konfigurasi &amp; Sinkronisasi Supabase</h2>
-                <p class="text-xs text-[#2C2C2C]">Hubungkan data persediaan Baji Artha Mart ke database cloud PostgreSQL Supabase.</p>
+                <p class="text-xs text-[#2C2C2C]">Terhubung ke database cloud PostgreSQL Supabase Baji Artha Mart.</p>
               </div>
-              <span id="sb-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#F5F5F5] text-[#2C2C2C] border border-neutral-300">
-                <span class="w-2 h-2 rounded-full bg-neutral-500"></span>
-                <span>Belum Terhubung</span>
+              <span id="sb-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-red-100 text-red-700 border border-red-300">
+                <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
+                <span>Tidak Aktif</span>
               </span>
             </div>
 
@@ -1106,18 +1234,18 @@
                   type="url"
                   id="sb-url"
                   required
-                  placeholder="https://xxxxxxxxxxxx.supabase.co"
+                  placeholder="https://vncuecitsmddedxwqbrf.supabase.co"
                   class="w-full px-3.5 py-2.5 text-sm font-mono rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
                 />
               </div>
 
               <div>
-                <label for="sb-anon-key" class="block text-xs font-bold text-[#000000] mb-1">Supabase Anon Public Key <span class="text-red-600">*</span></label>
+                <label for="sb-anon-key" class="block text-xs font-bold text-[#000000] mb-1">Supabase Publishable / Anon Key <span class="text-red-600">*</span></label>
                 <input
                   type="password"
                   id="sb-anon-key"
                   required
-                  placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  placeholder="sb_publishable_..."
                   class="w-full px-3.5 py-2.5 text-sm font-mono rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
                 />
               </div>
@@ -1204,7 +1332,7 @@ WITH CHECK (true);</pre>
       </section>
 
       <!-- ===================================================================
-           HALAMAN 7 (KANAN - PROFIL): PENGATURAN PROFIL & IDENTITAS TOKO
+           HALAMAN 8 (AKSES POJOK KANAN ATAS): PENGATURAN PROFIL & IDENTITAS TOKO
       ==================================================================== -->
       <section id="view-profile" class="app-section hidden space-y-6">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1343,14 +1471,14 @@ WITH CHECK (true);</pre>
     </main>
 
     <!-- =========================================================================
-         3. BOTTOM NAVIGATION BAR SIMETRIS (SEMUA MENU DI BAWAH, HOME DI TENGAH)
+         3. BOTTOM NAVIGATION BAR 5 SLOT SIMETRIS (HOME DI TENGAH)
     ========================================================================== -->
     <nav
       aria-label="Navigasi Utama Baji Artha Mart"
-      class="fixed bottom-0 inset-x-0 z-40 px-2 sm:px-4 pb-2.5 pt-1 pointer-events-none"
+      class="fixed bottom-0 inset-x-0 z-40 px-3 sm:px-4 pb-2.5 pt-1 pointer-events-none"
     >
-      <div class="max-w-4xl mx-auto bg-[#000000] text-[#FFFFFF] rounded-2xl sm:rounded-3xl shadow-2xl border border-[#2C2C2C] px-1.5 sm:px-3 py-1.5 pointer-events-auto">
-        <div class="grid grid-cols-7 items-center gap-0.5 sm:gap-1">
+      <div class="max-w-xl mx-auto bg-[#000000] text-[#FFFFFF] rounded-2xl sm:rounded-3xl shadow-2xl border border-[#2C2C2C] px-2 sm:px-4 py-1.5 pointer-events-auto">
+        <div class="grid grid-cols-5 items-center gap-1 sm:gap-2">
 
           <!-- KIRI 1: Stok & Expired -->
           <button
@@ -1374,18 +1502,7 @@ WITH CHECK (true);</pre>
             <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Keluar</span>
           </button>
 
-          <!-- KIRI 3: Pesan Pemasok (PO) -->
-          <button
-            type="button"
-            data-nav="po"
-            onclick="navigateTo('po')"
-            class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
-          >
-            <i data-lucide="truck" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Pesan PO</span>
-          </button>
-
-          <!-- TENGAH (SLOT 4): TOMBOL HOME UTAMA (#FFAB00) -->
+          <!-- TENGAH (SLOT 3): TOMBOL HOME UTAMA (#FFAB00) -->
           <div class="flex items-center justify-center -mt-6 sm:-mt-7">
             <button
               type="button"
@@ -1404,37 +1521,26 @@ WITH CHECK (true);</pre>
             </button>
           </div>
 
-          <!-- KANAN 1: Pengguna -->
+          <!-- KANAN 1: Pesan Pemasok (PO) -->
           <button
             type="button"
-            data-nav="users"
-            onclick="navigateTo('users')"
+            data-nav="po"
+            onclick="navigateTo('po')"
             class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
           >
-            <i data-lucide="users" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Pengguna</span>
+            <i data-lucide="truck" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
+            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Pesan PO</span>
           </button>
 
-          <!-- KANAN 2: Supabase -->
+          <!-- KANAN 2: Riwayat Transaksi & PDF -->
           <button
             type="button"
-            data-nav="supabase"
-            onclick="navigateTo('supabase')"
+            data-nav="history"
+            onclick="navigateTo('history')"
             class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
           >
-            <i data-lucide="database-zap" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Supabase</span>
-          </button>
-
-          <!-- KANAN 3: Profil -->
-          <button
-            type="button"
-            data-nav="profile"
-            onclick="navigateTo('profile')"
-            class="bottom-nav-item flex flex-col items-center justify-center py-2 px-1 rounded-xl text-neutral-300 hover:text-[#FFFFFF] hover:bg-[#2C2C2C] transition cursor-pointer"
-          >
-            <i data-lucide="user-cog" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
-            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Profil</span>
+            <i data-lucide="history" class="w-4 h-4 sm:w-5 sm:h-5 mb-1"></i>
+            <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Riwayat</span>
           </button>
 
         </div>
@@ -1552,7 +1658,7 @@ WITH CHECK (true);</pre>
   <div id="toast-container" class="fixed top-20 right-4 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
 
   <!-- =========================================================================
-       JAVASCRIPT LOGIC (STORAGE, LOGIN, BOTTOM NAV, INVENTORY, PO, SUPABASE)
+       JAVASCRIPT LOGIC (STORAGE, LOGIN, BOTTOM NAV, INVENTORY, PO, RIWAYAT PDF, SUPABASE)
   ========================================================================== -->
   <script>
     // Kunci penyimpanan LocalStorage khusus Baji Artha Mart
@@ -1594,8 +1700,8 @@ WITH CHECK (true);</pre>
     };
 
     let supabaseClient = null;
+    let supabaseConnected = false;
     let pendingConfirmCallback = null;
-    let autoSyncTimer = null;
 
     // ==================== INISIALISASI SAAT HALAMAN DIMUAT ====================
     window.addEventListener('DOMContentLoaded', async () => {
@@ -1603,13 +1709,8 @@ WITH CHECK (true);</pre>
       ensureDefaultUsersAndSeedData();
       setDefaultDates();
       applyBrandingAndProfileToUI();
-      initSupabaseClientFromConfig();
+      await initSupabaseClientFromConfig(true);
       checkAuthSession();
-
-      // Sinkronisasi awal dari Supabase Cloud jika kredensial tersedia
-      if (supabaseClient) {
-        await autoInitialCloudSync();
-      }
 
       // Tutup dropdown saat klik di luar area
       document.addEventListener('click', (e) => {
@@ -1677,7 +1778,7 @@ WITH CHECK (true);</pre>
       return `PO-BAM-${ymd}-${rand}`;
     }
 
-    // ==================== PENYIMPANAN LOCALSTORAGE ====================
+    // ==================== PENYIMPANAN LOCALSTORAGE & AUTO-SYNC ====================
     function loadStateFromStorage() {
       try {
         const items = localStorage.getItem(STORAGE_KEYS.ITEMS);
@@ -1697,8 +1798,8 @@ WITH CHECK (true);</pre>
         if (sb) {
           const parsedSb = JSON.parse(sb);
           state.supabaseConfig = {
-            url: parsedSb.url || DEFAULT_SUPABASE_CONFIG.url,
-            anonKey: parsedSb.anonKey || DEFAULT_SUPABASE_CONFIG.anonKey,
+            url: parsedSb.url !== undefined ? parsedSb.url : DEFAULT_SUPABASE_CONFIG.url,
+            anonKey: parsedSb.anonKey !== undefined ? parsedSb.anonKey : DEFAULT_SUPABASE_CONFIG.anonKey,
             lastSync: parsedSb.lastSync || '',
           };
         }
@@ -1707,7 +1808,7 @@ WITH CHECK (true);</pre>
       }
     }
 
-    function saveAllStateToStorage(triggerCloudSync = true) {
+    function saveAllStateToStorage(autoPushCloud = true) {
       try {
         localStorage.setItem(STORAGE_KEYS.ITEMS, JSON.stringify(state.items));
         localStorage.setItem(STORAGE_KEYS.OUTGOING, JSON.stringify(state.outgoing));
@@ -1721,9 +1822,8 @@ WITH CHECK (true);</pre>
           localStorage.removeItem(STORAGE_KEYS.SESSION);
         }
 
-        // Otomatis jadwalkan Push ke Supabase saat ada perubahan data
-        if (triggerCloudSync && supabaseClient) {
-          scheduleAutoPushToSupabase();
+        if (autoPushCloud && supabaseClient && supabaseConnected) {
+          backgroundPushToSupabase();
         }
       } catch (err) {
         showToast('Gagal menyimpan data ke penyimpanan browser.', 'error');
@@ -1754,7 +1854,7 @@ WITH CHECK (true);</pre>
       if (!state.items || state.items.length === 0) {
         loadSampleData(true);
       } else {
-        saveAllStateToStorage();
+        saveAllStateToStorage(false);
       }
     }
 
@@ -1879,7 +1979,7 @@ WITH CHECK (true);</pre>
         },
       ];
 
-      saveAllStateToStorage();
+      saveAllStateToStorage(!silent);
       if (!silent) {
         renderAllViews();
         showToast('Data contoh Baji Artha Mart berhasil dimuat.', 'success');
@@ -1941,7 +2041,7 @@ WITH CHECK (true);</pre>
         username: matchedUser.username,
         role: matchedUser.role,
       };
-      saveAllStateToStorage();
+      saveAllStateToStorage(false);
       document.getElementById('form-login').reset();
       checkAuthSession();
       showToast(`Selamat datang di ${state.profile.storeName}, ${matchedUser.fullName}!`, 'success');
@@ -1949,12 +2049,12 @@ WITH CHECK (true);</pre>
 
     function logoutUser() {
       state.currentUser = null;
-      saveAllStateToStorage();
+      saveAllStateToStorage(false);
       checkAuthSession();
       showToast('Anda telah keluar dari sistem.', 'info');
     }
 
-    // ==================== NAVIGASI BOTTOM BAR (HOME DI TENGAH) ====================
+    // ==================== NAVIGASI BOTTOM BAR (5 SLOT SIMETRIS, HOME DI TENGAH) ====================
     function navigateTo(tabName) {
       state.activeTab = tabName;
 
@@ -2134,6 +2234,7 @@ WITH CHECK (true);</pre>
       renderInventoryTable();
       renderOutgoingTable();
       renderPOTable();
+      renderHistoryTable();
       renderUsersTable();
       updateSupabaseStatusUI();
       if (window.lucide) lucide.createIcons();
@@ -2655,9 +2756,14 @@ WITH CHECK (true);</pre>
           <td class="py-3.5 px-4 text-xs text-[#2C2C2C]">${escapeHTML(o.keterangan)}</td>
           <td class="py-3.5 px-4 text-right text-xs font-extrabold text-[#000000]">${o.sisaSetelah} ${escapeHTML(o.satuan)}</td>
           <td class="py-3.5 px-4 text-center">
-            <button type="button" onclick="openConfirmModal('deleteOutgoing', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer" title="Batalkan & Kembalikan Stok">
-              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-            </button>
+            <div class="inline-flex items-center gap-1.5">
+              <button type="button" onclick="printTransactionReceiptPDF('OUT', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk PDF">
+                <i data-lucide="printer" class="w-4 h-4"></i>
+              </button>
+              <button type="button" onclick="openConfirmModal('deleteOutgoing', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer" title="Batalkan & Kembalikan Stok">
+                <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+              </button>
+            </div>
           </td>
         </tr>`
         )
@@ -2815,6 +2921,9 @@ WITH CHECK (true);</pre>
                       </button>`
                     : ''
                 }
+                <button type="button" onclick="printTransactionReceiptPDF('PO', '${escapeHTML(po.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk PO (PDF)">
+                  <i data-lucide="printer" class="w-4 h-4"></i>
+                </button>
                 <button type="button" onclick="openConfirmModal('deletePO', '${escapeHTML(po.id)}')" class="p-1.5 rounded-lg bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer" title="Hapus Riwayat PO">
                   <i data-lucide="trash-2" class="w-4 h-4"></i>
                 </button>
@@ -2823,6 +2932,323 @@ WITH CHECK (true);</pre>
           </tr>`;
         })
         .join('');
+    }
+
+    // ==================== RIWAYAT TRANSAKSI TERPADU & CETAK STRUK PDF ====================
+    function getUnifiedHistoryRecords() {
+      const outRecords = state.outgoing.map((o) => ({
+        rawId: o.id,
+        type: 'OUT',
+        refNo: o.id,
+        tanggal: o.tanggal,
+        itemKode: o.itemKode,
+        itemNama: o.itemNama,
+        satuan: o.satuan,
+        qty: o.qty,
+        partner: o.tujuan,
+        statusText: `Sisa Stok: ${o.sisaSetelah} ${o.satuan}`,
+        note: o.keterangan || '-',
+        petugas: o.petugas || 'Admin',
+        tglSampai: '-',
+      }));
+
+      const poRecords = state.purchaseOrders.map((po) => ({
+        rawId: po.id,
+        type: 'PO',
+        refNo: po.nomorPO,
+        tanggal: po.tglPesan,
+        itemKode: po.itemKode,
+        itemNama: po.itemNama,
+        satuan: po.satuan,
+        qty: po.qty,
+        partner: po.pemasok,
+        statusText:
+          po.status === 'Diterima'
+            ? `Sampai di Gudang: ${formatDateIndo(po.tglSampai)}`
+            : 'Dalam Perjalanan',
+        note: po.catatan || '-',
+        petugas: state.currentUser ? state.currentUser.fullName : 'Admin',
+        tglSampai: po.tglSampai || '-',
+      }));
+
+      return [...outRecords, ...poRecords].sort((a, b) => (b.tanggal || '').localeCompare(a.tanggal || ''));
+    }
+
+    function resetHistoryFilters() {
+      const searchEl = document.getElementById('search-history');
+      const typeEl = document.getElementById('filter-history-type');
+      const dateEl = document.getElementById('filter-history-date');
+      if (searchEl) searchEl.value = '';
+      if (typeEl) typeEl.value = 'all';
+      if (dateEl) dateEl.value = '';
+      renderHistoryTable();
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('tbody-history');
+      if (!tbody) return;
+
+      const allRecords = getUnifiedHistoryRecords();
+      const outCount = state.outgoing.length;
+      const poCount = state.purchaseOrders.length;
+
+      const elStatTotal = document.getElementById('hist-stat-total');
+      const elStatOut = document.getElementById('hist-stat-out');
+      const elStatPo = document.getElementById('hist-stat-po');
+      if (elStatTotal) elStatTotal.textContent = allRecords.length;
+      if (elStatOut) elStatOut.textContent = outCount;
+      if (elStatPo) elStatPo.textContent = poCount;
+
+      const keyword = (document.getElementById('search-history')?.value || '').toLowerCase();
+      const typeFilter = document.getElementById('filter-history-type')?.value || 'all';
+      const dateFilter = document.getElementById('filter-history-date')?.value || '';
+
+      const filtered = allRecords.filter((rec) => {
+        const matchType = typeFilter === 'all' || rec.type === typeFilter;
+        const matchDate = !dateFilter || rec.tanggal === dateFilter;
+        const matchText =
+          rec.refNo.toLowerCase().includes(keyword) ||
+          rec.itemNama.toLowerCase().includes(keyword) ||
+          rec.itemKode.toLowerCase().includes(keyword) ||
+          rec.partner.toLowerCase().includes(keyword) ||
+          rec.note.toLowerCase().includes(keyword);
+        return matchType && matchDate && matchText;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-xs text-[#2C2C2C]">Belum ada riwayat transaksi yang sesuai dengan filter.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered
+        .map((rec) => {
+          const isOut = rec.type === 'OUT';
+          const badgeHTML = isOut
+            ? `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-red-600 text-[#FFFFFF]">BARANG KELUAR</span>`
+            : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-[#FFAB00] text-[#000000]">PESAN PEMASOK (PO)</span>`;
+
+          const qtyHTML = isOut
+            ? `<span class="font-black text-red-600">-${rec.qty} ${escapeHTML(rec.satuan)}</span>`
+            : `<span class="font-black text-[#000000]">+${rec.qty} ${escapeHTML(rec.satuan)}</span>`;
+
+          return `
+          <tr class="hover:bg-[#F5F5F5]/70 transition">
+            <td class="py-3.5 px-4 text-xs font-bold text-[#000000]">${formatDateIndo(rec.tanggal)}</td>
+            <td class="py-3.5 px-4">
+              <div class="mb-1">${badgeHTML}</div>
+              <span class="text-xs font-mono font-bold text-[#2C2C2C]">${escapeHTML(rec.refNo)}</span>
+            </td>
+            <td class="py-3.5 px-4">
+              <span class="text-xs font-mono text-[#2C2C2C]">${escapeHTML(rec.itemKode)}</span>
+              <p class="font-extrabold text-[#000000]">${escapeHTML(rec.itemNama)}</p>
+            </td>
+            <td class="py-3.5 px-4 text-right">${qtyHTML}</td>
+            <td class="py-3.5 px-4 text-xs font-bold text-[#000000]">${escapeHTML(rec.partner)}</td>
+            <td class="py-3.5 px-4">
+              <p class="text-xs font-bold text-[#000000]">${escapeHTML(rec.statusText)}</p>
+              <p class="text-[11px] text-[#2C2C2C]">Ket: ${escapeHTML(rec.note)}</p>
+            </td>
+            <td class="py-3.5 px-4 text-center">
+              <button
+                type="button"
+                onclick="printTransactionReceiptPDF('${rec.type}', '${escapeHTML(rec.rawId)}')"
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
+                title="Cetak Struk Bentuk PDF"
+              >
+                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                <span>Cetak PDF</span>
+              </button>
+            </td>
+          </tr>`;
+        })
+        .join('');
+    }
+
+    // ==================== CETAK STRUK & REKAP LAPORAN PDF (jsPDF) ====================
+    function printTransactionReceiptPDF(type, id) {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        showToast('Library PDF belum termuat. Periksa koneksi internet Anda.', 'error');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      // Ukuran struk thermal 80mm x 145mm
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [80, 148],
+      });
+
+      const storeName = state.profile.storeName || 'Baji Artha Mart';
+      const address = state.profile.address || 'Jl. Poros Logistik No. 108';
+      const phone = state.profile.phone || '0812-4455-8899';
+
+      let y = 10;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(12);
+      doc.text(storeName.toUpperCase(), 40, y, { align: 'center' });
+
+      y += 4.5;
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.text(address, 40, y, { align: 'center' });
+      y += 3.5;
+      doc.text(`Telp: ${phone}`, 40, y, { align: 'center' });
+
+      y += 3.5;
+      doc.setLineWidth(0.4);
+      doc.line(5, y, 75, y);
+
+      if (type === 'OUT') {
+        const rec = state.outgoing.find((o) => o.id === id);
+        if (!rec) return;
+
+        y += 5;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('STRUK BARANG KELUAR GUDANG', 40, y, { align: 'center' });
+
+        y += 5;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text(`No. Transaksi : ${rec.id}`, 5, y);
+        y += 4;
+        doc.text(`Tgl Keluar    : ${formatDateIndo(rec.tanggal)}`, 5, y);
+        y += 4;
+        doc.text(`Petugas       : ${rec.petugas || 'Admin'}`, 5, y);
+
+        y += 3.5;
+        doc.line(5, y, 75, y);
+
+        y += 5;
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${rec.itemKode} - ${rec.itemNama}`, 5, y, { maxWidth: 70 });
+        y += 7;
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Jumlah Keluar : ${rec.qty} ${rec.satuan}`, 5, y);
+        y += 4.5;
+        doc.text(`Sisa Stok     : ${rec.sisaSetelah} ${rec.satuan}`, 5, y);
+        y += 4.5;
+        doc.text(`Tujuan        : ${rec.tujuan}`, 5, y, { maxWidth: 70 });
+        y += 6;
+        doc.text(`Keterangan    : ${rec.keterangan || '-'}`, 5, y, { maxWidth: 70 });
+
+        y += 8;
+        doc.line(5, y, 75, y);
+        y += 5;
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(7.5);
+        doc.text('Bukti pengeluaran barang gudang yang sah.', 40, y, { align: 'center' });
+        y += 4;
+        doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`, 40, y, { align: 'center' });
+
+        doc.save(`Struk_Keluar_${rec.id}.pdf`);
+        showToast(`Struk PDF ${rec.id} berhasil diunduh.`, 'success');
+      } else if (type === 'PO') {
+        const po = state.purchaseOrders.find((p) => p.id === id);
+        if (!po) return;
+
+        y += 5;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.text('STRUK PEMESANAN PEMASOK (PO)', 40, y, { align: 'center' });
+
+        y += 5;
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.text(`Nomor PO      : ${po.nomorPO}`, 5, y);
+        y += 4;
+        doc.text(`Tgl Pesan     : ${formatDateIndo(po.tglPesan)}`, 5, y);
+        y += 4;
+        doc.text(`Status        : ${po.status}`, 5, y);
+        y += 4;
+        doc.text(`Tgl Sampai    : ${po.tglSampai ? formatDateIndo(po.tglSampai) : 'Belum tiba'}`, 5, y);
+
+        y += 3.5;
+        doc.line(5, y, 75, y);
+
+        y += 5;
+        doc.setFont('helvetica', 'bold');
+        doc.text(`${po.itemKode} - ${po.itemNama}`, 5, y, { maxWidth: 70 });
+        y += 7;
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Jumlah Pesan  : +${po.qty} ${po.satuan}`, 5, y);
+        y += 4.5;
+        doc.text(`Pemasok       : ${po.pemasok}`, 5, y, { maxWidth: 70 });
+        y += 6;
+        doc.text(`Catatan       : ${po.catatan || '-'}`, 5, y, { maxWidth: 70 });
+
+        y += 8;
+        doc.line(5, y, 75, y);
+        y += 5;
+        doc.setFont('helvetica', 'italic');
+        doc.setFontSize(7.5);
+        doc.text('Dokumen pencatatan PO & penerimaan gudang.', 40, y, { align: 'center' });
+        y += 4;
+        doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`, 40, y, { align: 'center' });
+
+        doc.save(`Struk_PO_${po.nomorPO}.pdf`);
+        showToast(`Struk PDF ${po.nomorPO} berhasil diunduh.`, 'success');
+      }
+    }
+
+    function printHistorySummaryPDF() {
+      if (!window.jspdf || !window.jspdf.jsPDF) {
+        showToast('Library PDF belum termuat.', 'error');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+      const storeName = state.profile.storeName || 'Baji Artha Mart';
+      const address = state.profile.address || 'Jl. Poros Logistik No. 108';
+      const records = getUnifiedHistoryRecords();
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(15);
+      doc.text(`${storeName.toUpperCase()} — REKAP RIWAYAT TRANSAKSI`, 14, 18);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(9);
+      doc.text(`${address} • Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 24);
+      doc.setLineWidth(0.5);
+      doc.line(14, 27, 196, 27);
+
+      let y = 35;
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(8.5);
+      doc.text('Tanggal', 14, y);
+      doc.text('Jenis & No. Ref', 40, y);
+      doc.text('Nama Barang', 85, y);
+      doc.text('Qty', 138, y);
+      doc.text('Pemasok / Tujuan', 156, y);
+
+      y += 2;
+      doc.setLineWidth(0.2);
+      doc.line(14, y, 196, y);
+      y += 5;
+
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+
+      records.forEach((rec) => {
+        if (y > 275) {
+          doc.addPage();
+          y = 20;
+        }
+        const label = rec.type === 'OUT' ? `KELUAR (${rec.refNo})` : `PO (${rec.refNo})`;
+        const qtyStr = rec.type === 'OUT' ? `-${rec.qty} ${rec.satuan}` : `+${rec.qty} ${rec.satuan}`;
+
+        doc.text(formatDateIndo(rec.tanggal), 14, y);
+        doc.text(label.slice(0, 24), 40, y);
+        doc.text(rec.itemNama.slice(0, 28), 85, y);
+        doc.text(qtyStr, 138, y);
+        doc.text(rec.partner.slice(0, 22), 156, y);
+        y += 6;
+      });
+
+      doc.save(`Rekap_Riwayat_${storeName.replace(/\s+/g, '_')}_${getTodayISO()}.pdf`);
+      showToast('Rekap Riwayat Transaksi (PDF) berhasil diunduh.', 'success');
     }
 
     // ==================== MANAJEMEN PENGGUNA ====================
@@ -2953,97 +3379,85 @@ WITH CHECK (true);</pre>
         .join('');
     }
 
-    // ==================== SINKRONISASI SUPABASE ====================
-    function initSupabaseClientFromConfig() {
-      const url = state.supabaseConfig.url || DEFAULT_SUPABASE_CONFIG.url;
-      const anonKey = state.supabaseConfig.anonKey || DEFAULT_SUPABASE_CONFIG.anonKey;
-      state.supabaseConfig.url = url;
-      state.supabaseConfig.anonKey = anonKey;
-
+    // ==================== SINKRONISASI SUPABASE (INDIKATOR HIJAU / MERAH) ====================
+    async function initSupabaseClientFromConfig(autoPullOnLoad = false) {
+      const { url, anonKey } = state.supabaseConfig;
       const urlInput = document.getElementById('sb-url');
       const keyInput = document.getElementById('sb-anon-key');
-      if (urlInput) urlInput.value = url;
-      if (keyInput) keyInput.value = anonKey;
+      if (urlInput) urlInput.value = url || '';
+      if (keyInput) keyInput.value = anonKey || '';
 
       if (url && anonKey && window.supabase) {
         try {
           supabaseClient = window.supabase.createClient(url, anonKey);
+          const { data, error } = await supabaseClient
+            .from('baji_artha_mart_sync')
+            .select('payload')
+            .eq('id', 'main_warehouse')
+            .maybeSingle();
+
+          if (!error) {
+            supabaseConnected = true;
+            if (autoPullOnLoad && data && data.payload) {
+              const p = data.payload;
+              if (Array.isArray(p.items) && p.items.length > 0) state.items = p.items;
+              if (Array.isArray(p.outgoing)) state.outgoing = p.outgoing;
+              if (Array.isArray(p.purchaseOrders)) state.purchaseOrders = p.purchaseOrders;
+              if (Array.isArray(p.users) && p.users.length > 0) state.users = p.users;
+              if (p.profile) state.profile = { ...state.profile, ...p.profile };
+              state.supabaseConfig.lastSync = `Tersinkron Otomatis • ${new Date().toLocaleString('id-ID')}`;
+              saveAllStateToStorage(false);
+              applyBrandingAndProfileToUI();
+            }
+          } else {
+            supabaseConnected = false;
+          }
         } catch (err) {
           supabaseClient = null;
+          supabaseConnected = false;
         }
       } else {
         supabaseClient = null;
+        supabaseConnected = false;
       }
       updateSupabaseStatusUI();
     }
 
-    function scheduleAutoPushToSupabase() {
-      clearTimeout(autoSyncTimer);
-      autoSyncTimer = setTimeout(() => {
-        syncPushToSupabase(true);
-      }, 1500);
-    }
-
-    async function autoInitialCloudSync() {
-      if (!supabaseClient) return;
-      try {
-        const { data, error } = await supabaseClient
-          .from('baji_artha_mart_sync')
-          .select('payload')
-          .eq('id', 'main_warehouse')
-          .maybeSingle();
-
-        if (error) {
-          console.warn('Info koneksi Supabase:', error.message);
-          return;
-        }
-
-        if (data && data.payload) {
-          const p = data.payload;
-          if (Array.isArray(p.items)) state.items = p.items;
-          if (Array.isArray(p.outgoing)) state.outgoing = p.outgoing;
-          if (Array.isArray(p.purchaseOrders)) state.purchaseOrders = p.purchaseOrders;
-          if (Array.isArray(p.users) && p.users.length > 0) state.users = p.users;
-          if (p.profile) state.profile = { ...state.profile, ...p.profile };
-
-          state.supabaseConfig.lastSync = `Tersinkron Otomatis • ${new Date().toLocaleString('id-ID')}`;
-          saveAllStateToStorage(false);
-          applyBrandingAndProfileToUI();
-          if (state.currentUser) renderAllViews();
-          updateSupabaseStatusUI();
-        } else {
-          // Jika tabel di cloud masih kosong, unggah data awal secara otomatis
-          await syncPushToSupabase(true);
-        }
-      } catch (err) {
-        console.warn('Sinkronisasi awal Supabase dilewati:', err);
-      }
-    }
-
     function updateSupabaseStatusUI() {
-      const isConnected = Boolean(supabaseClient && state.supabaseConfig.url && state.supabaseConfig.anonKey);
+      const isConnected = Boolean(supabaseClient && supabaseConnected && state.supabaseConfig.url && state.supabaseConfig.anonKey);
+      const headerBtn = document.getElementById('header-supabase-btn');
       const headerDot = document.getElementById('header-supabase-dot');
       const headerText = document.getElementById('header-supabase-text');
+      const headerTextMobile = document.getElementById('header-supabase-text-mobile');
       const sbBadge = document.getElementById('sb-status-badge');
       const sbLast = document.getElementById('sb-last-sync');
 
-      if (headerDot && headerText) {
+      if (headerBtn && headerDot && headerText) {
         if (isConnected) {
-          headerDot.className = 'w-2 h-2 rounded-full bg-[#FFAB00]';
+          headerBtn.className =
+            'inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-extrabold bg-emerald-950/90 text-emerald-300 border border-emerald-500 hover:brightness-110 transition cursor-pointer';
+          headerDot.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]';
           headerText.textContent = 'Supabase Aktif';
+          if (headerTextMobile) headerTextMobile.textContent = 'Aktif';
         } else {
-          headerDot.className = 'w-2 h-2 rounded-full bg-neutral-400';
-          headerText.textContent = 'Mode Lokal';
+          headerBtn.className =
+            'inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-extrabold bg-red-950/90 text-red-300 border border-red-500 hover:brightness-110 transition cursor-pointer';
+          headerDot.className = 'w-2.5 h-2.5 rounded-full bg-red-500';
+          headerText.textContent = 'Supabase Tidak Aktif';
+          if (headerTextMobile) headerTextMobile.textContent = 'Offline';
         }
       }
 
       if (sbBadge) {
-        sbBadge.innerHTML = isConnected
-          ? `<span class="w-2 h-2 rounded-full bg-[#FFAB00]"></span><span>Terkoneksi Cloud</span>`
-          : `<span class="w-2 h-2 rounded-full bg-neutral-500"></span><span>Belum Terhubung</span>`;
-        sbBadge.className = isConnected
-          ? 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#000000] text-[#FFAB00]'
-          : 'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-[#F5F5F5] text-[#2C2C2C] border border-neutral-300';
+        if (isConnected) {
+          sbBadge.className =
+            'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-400';
+          sbBadge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span><span>Aktif Terhubung</span>`;
+        } else {
+          sbBadge.className =
+            'inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-red-100 text-red-700 border border-red-300';
+          sbBadge.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-red-600"></span><span>Tidak Aktif</span>`;
+        }
       }
 
       if (sbLast) {
@@ -3058,29 +3472,45 @@ WITH CHECK (true);</pre>
 
       state.supabaseConfig.url = url;
       state.supabaseConfig.anonKey = anonKey;
-      saveAllStateToStorage();
-      initSupabaseClientFromConfig();
+      saveAllStateToStorage(false);
+      await initSupabaseClientFromConfig(false);
 
-      if (!supabaseClient) {
-        showToast('Konfigurasi tidak valid atau SDK Supabase belum termuat.', 'error');
-        return;
-      }
-
-      try {
-        const { error } = await supabaseClient.from('baji_artha_mart_sync').select('id').limit(1);
-        if (error) {
-          showToast(`Koneksi tersimpan, namun tabel belum siap: ${error.message}`, 'warning');
-        } else {
-          showToast('Berhasil terhubung ke database Supabase Baji Artha Mart!', 'success');
-        }
-      } catch (err) {
-        showToast('Gagal menguji koneksi ke URL Supabase tersebut.', 'error');
+      if (supabaseConnected) {
+        showToast('Berhasil terhubung! Status Supabase kini Aktif (Hijau).', 'success');
+      } else {
+        showToast('Gagal terhubung ke tabel Supabase. Pastikan tabel baji_artha_mart_sync sudah dibuat.', 'error');
       }
     }
 
-    async function syncPushToSupabase(silent = false) {
+    async function backgroundPushToSupabase() {
+      if (!supabaseClient) return;
+      try {
+        const payload = {
+          items: state.items,
+          outgoing: state.outgoing,
+          purchaseOrders: state.purchaseOrders,
+          users: state.users,
+          profile: state.profile,
+        };
+        const { error } = await supabaseClient.from('baji_artha_mart_sync').upsert({
+          id: 'main_warehouse',
+          payload,
+          updated_at: new Date().toISOString(),
+        });
+        if (!error) {
+          supabaseConnected = true;
+          state.supabaseConfig.lastSync = `Auto-Sync • ${new Date().toLocaleString('id-ID')}`;
+          localStorage.setItem(STORAGE_KEYS.SUPABASE, JSON.stringify(state.supabaseConfig));
+          updateSupabaseStatusUI();
+        }
+      } catch (e) {
+        // Abaikan error latar belakang saat offline
+      }
+    }
+
+    async function syncPushToSupabase() {
       if (!supabaseClient) {
-        if (!silent) showToast('Harap isi dan simpan URL serta Anon Key Supabase terlebih dahulu.', 'error');
+        showToast('Harap isi dan simpan URL serta Key Supabase terlebih dahulu.', 'error');
         return;
       }
 
@@ -3101,18 +3531,21 @@ WITH CHECK (true);</pre>
 
         if (error) throw error;
 
+        supabaseConnected = true;
         state.supabaseConfig.lastSync = `Push ke Cloud • ${new Date().toLocaleString('id-ID')}`;
         saveAllStateToStorage(false);
         updateSupabaseStatusUI();
-        if (!silent) showToast('Seluruh data lokal berhasil dikirim (Push) ke Supabase!', 'success');
+        showToast('Seluruh data lokal berhasil dikirim (Push) ke Supabase!', 'success');
       } catch (err) {
-        if (!silent) showToast(`Gagal Push ke Supabase: ${err.message}`, 'error');
+        supabaseConnected = false;
+        updateSupabaseStatusUI();
+        showToast(`Gagal Push ke Supabase: ${err.message}`, 'error');
       }
     }
 
     async function syncPullFromSupabase() {
       if (!supabaseClient) {
-        showToast('Harap isi dan simpan URL serta Anon Key Supabase terlebih dahulu.', 'error');
+        showToast('Harap isi dan simpan URL serta Key Supabase terlebih dahulu.', 'error');
         return;
       }
 
@@ -3136,12 +3569,15 @@ WITH CHECK (true);</pre>
         if (Array.isArray(p.users) && p.users.length > 0) state.users = p.users;
         if (p.profile) state.profile = { ...state.profile, ...p.profile };
 
+        supabaseConnected = true;
         state.supabaseConfig.lastSync = `Pull dari Cloud • ${new Date().toLocaleString('id-ID')}`;
         saveAllStateToStorage(false);
         applyBrandingAndProfileToUI();
         renderAllViews();
         showToast('Data terbaru berhasil ditarik (Pull) dari Supabase!', 'success');
       } catch (err) {
+        supabaseConnected = false;
+        updateSupabaseStatusUI();
         showToast(`Gagal Pull dari Supabase: ${err.message}`, 'error');
       }
     }
@@ -3149,9 +3585,10 @@ WITH CHECK (true);</pre>
     function disconnectSupabase() {
       state.supabaseConfig = { url: '', anonKey: '', lastSync: '' };
       supabaseClient = null;
+      supabaseConnected = false;
       saveAllStateToStorage(false);
-      initSupabaseClientFromConfig();
-      showToast('Koneksi Supabase diputuskan. Kembali ke Mode Lokal.', 'info');
+      initSupabaseClientFromConfig(false);
+      showToast('Koneksi Supabase diputuskan (Status Tidak Aktif).', 'info');
     }
 
     function copySupabaseSQL() {
