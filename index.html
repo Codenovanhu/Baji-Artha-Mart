@@ -14,7 +14,7 @@
   <!-- Supabase JS SDK v2 via CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-  <!-- jsPDF via CDN untuk Cetak Struk & Laporan PDF -->
+  <!-- jsPDF via CDN untuk Cetak Struk 80mm & Rekap Laporan A4 PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <!-- Google Fonts: Inter -->
@@ -44,7 +44,7 @@
     @keyframes softPulseDanger {
       0%, 100% {
         opacity: 1;
-        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.5);
+        box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.55);
       }
       50% {
         opacity: 0.85;
@@ -59,7 +59,7 @@
     @keyframes softPulseAmber {
       0%, 100% {
         opacity: 1;
-        box-shadow: 0 0 0 0 rgba(255, 171, 0, 0.5);
+        box-shadow: 0 0 0 0 rgba(255, 171, 0, 0.55);
       }
       50% {
         opacity: 0.88;
@@ -91,22 +91,22 @@
   ========================================================================== -->
   <div id="login-view" class="min-h-screen flex items-center justify-center p-4 bg-[#FFFFFF]">
     <div class="w-full max-w-md bg-[#000000] rounded-3xl shadow-2xl border-2 border-[#000000] overflow-hidden">
-      <!-- Header Kartu Login (Hitam dengan Aksen Emas #FFAB00) -->
+      <!-- Header Kartu Login -->
       <div class="bg-[#000000] px-6 py-8 text-[#FFFFFF] text-center border-b-4 border-[#FFAB00]">
         <div class="w-16 h-16 rounded-2xl bg-[#FFAB00] text-[#000000] flex items-center justify-center mx-auto mb-3.5 shadow-lg">
           <i data-lucide="store" class="w-9 h-9 stroke-[2.2]"></i>
         </div>
         <h1 id="login-store-title" class="text-2xl font-black tracking-tight text-[#FFFFFF]">Baji Artha Mart</h1>
         <p class="text-xs text-neutral-300 mt-1">
-          Sistem Pencatatan Persediaan, Expired &amp; Pemesanan Pemasok
+          Sistem Manajemen Persediaan, Harga, Expired &amp; Pemasok
         </p>
       </div>
 
-      <!-- Form Login di dalam Kartu Tengah -->
+      <!-- Form Login Bersih (Tanpa Tombol Login Cepat) -->
       <div class="p-6 sm:p-8 space-y-5 bg-[#000000] text-[#FFFFFF]">
         <div>
           <h2 class="text-lg font-extrabold text-[#FFFFFF]">Masuk ke Sistem Gudang</h2>
-          <p class="text-xs text-neutral-300 mt-0.5">Masukkan username dan password akun pengelola Anda.</p>
+          <p class="text-xs text-neutral-300 mt-0.5">Silakan masukkan username dan password pengelola.</p>
         </div>
 
         <form id="form-login" onsubmit="handleLoginSubmit(event)" class="space-y-4">
@@ -175,9 +175,9 @@
   ========================================================================== -->
   <div id="app-view" class="hidden min-h-screen flex flex-col bg-[#F5F5F5]">
 
-    <!-- HEADER ATAS (BRAND KIRI & ADMIN + STATUS SUPABASE KANAN ATAS) -->
+    <!-- HEADER ATAS (BRAND KIRI & STATUS SUPABASE + NOTIFIKASI + ADMIN KANAN ATAS) -->
     <header class="sticky top-0 z-30 bg-[#000000] text-[#FFFFFF] border-b-2 border-[#FFAB00] px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 shadow-md">
-      <!-- Kiri: Logo & Nama Toko Baji Artha Mart -->
+      <!-- Kiri: Logo & Nama Toko -->
       <div class="flex items-center gap-3 min-w-0">
         <div class="w-10 h-10 rounded-xl bg-[#FFAB00] text-[#000000] flex items-center justify-center shadow-xs shrink-0">
           <i data-lucide="store" class="w-5 h-5 stroke-[2.3]"></i>
@@ -188,15 +188,15 @@
         </div>
       </div>
 
-      <!-- Kanan Atas: Status Supabase (Hijau Aktif / Merah Tidak Aktif), Lonceng Notifikasi, Dropdown Profil Admin -->
+      <!-- Kanan Atas: Lencana Supabase (Hijau/Merah), Lonceng Notifikasi, Dropdown Admin -->
       <div class="flex items-center gap-2 sm:gap-3">
         <!-- Indikator Status Supabase -->
         <button
           type="button"
           id="header-supabase-btn"
           onclick="navigateTo('supabase')"
-          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-extrabold bg-red-950/80 text-red-300 border border-red-500/70 hover:brightness-110 transition cursor-pointer"
-          title="Status Sinkronisasi Supabase"
+          class="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full text-xs font-extrabold bg-red-950/90 text-red-300 border border-red-500 hover:brightness-110 transition cursor-pointer"
+          title="Klik untuk membuka pengaturan Sinkronisasi Supabase"
         >
           <span id="header-supabase-dot" class="w-2.5 h-2.5 rounded-full bg-red-500"></span>
           <span id="header-supabase-text" class="hidden md:inline">Supabase Tidak Aktif</span>
@@ -244,7 +244,7 @@
           </div>
         </div>
 
-        <!-- Dropdown Profil Admin di Pojok Kanan Atas (Akses Profil, Pengguna, Supabase, Logout) -->
+        <!-- Dropdown Profil Admin di Pojok Kanan Atas -->
         <div class="relative" id="admin-dropdown-wrapper">
           <button
             type="button"
@@ -258,7 +258,7 @@
               AD
             </div>
             <div class="hidden sm:block text-left leading-tight">
-              <p id="header-user-name" class="text-xs font-bold text-[#FFFFFF] max-w-[130px] truncate">Administrator</p>
+              <p id="header-user-name" class="text-xs font-bold text-[#FFFFFF] max-w-[140px] truncate">Administrator</p>
               <p id="header-user-role" class="text-[10px] font-semibold text-[#FFAB00]">Administrator</p>
             </div>
             <i data-lucide="chevron-down" class="w-4 h-4 text-neutral-300"></i>
@@ -267,7 +267,7 @@
           <!-- Menu Dropdown Admin -->
           <div
             id="admin-dropdown-menu"
-            class="hidden absolute right-0 mt-2 w-60 bg-[#FFFFFF] text-[#000000] rounded-2xl shadow-2xl border border-[#2C2C2C] py-1.5 z-40"
+            class="hidden absolute right-0 mt-2 w-64 bg-[#FFFFFF] text-[#000000] rounded-2xl shadow-2xl border border-[#2C2C2C] py-1.5 z-40"
           >
             <div class="px-4 py-2.5 border-b border-neutral-200 bg-[#F5F5F5]">
               <p id="dropdown-user-fullname" class="text-xs font-extrabold text-[#000000] truncate">Administrator Utama</p>
@@ -280,16 +280,7 @@
               class="w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
             >
               <i data-lucide="user-cog" class="w-4 h-4 text-[#2C2C2C]"></i>
-              <span>Pengaturan Profil</span>
-            </button>
-
-            <button
-              type="button"
-              onclick="closeAdminDropdown(); navigateTo('users');"
-              class="w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
-            >
-              <i data-lucide="users" class="w-4 h-4 text-[#2C2C2C]"></i>
-              <span>Manajemen Pengguna</span>
+              <span>Pengaturan Profil &amp; Toko</span>
             </button>
 
             <button
@@ -299,6 +290,15 @@
             >
               <i data-lucide="database-zap" class="w-4 h-4 text-[#FFAB00]"></i>
               <span>Sinkronisasi Supabase</span>
+            </button>
+
+            <button
+              type="button"
+              onclick="closeAdminDropdown(); navigateTo('users');"
+              class="w-full text-left px-4 py-2.5 text-xs sm:text-sm font-medium text-[#000000] hover:bg-[#F5F5F5] flex items-center gap-2.5 cursor-pointer"
+            >
+              <i data-lucide="users" class="w-4 h-4 text-[#2C2C2C]"></i>
+              <span>Manajemen Pengguna</span>
             </button>
 
             <div class="border-t border-neutral-200 my-1"></div>
@@ -323,19 +323,28 @@
            HALAMAN 1 (HOME TENGAH): DASHBOARD & PUSAT REMINDER OTOMATIS
       ==================================================================== -->
       <section id="view-dashboard" class="app-section space-y-6">
-        <!-- Info Toko & Utilitas -->
-        <div class="bg-[#FFFFFF] p-4 sm:p-5 rounded-2xl border border-neutral-200 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div class="flex items-start sm:items-center gap-3">
-            <div class="w-11 h-11 rounded-xl bg-[#000000] text-[#FFAB00] flex items-center justify-center shrink-0">
-              <i data-lucide="building-2" class="w-5 h-5"></i>
+        <!-- Kartu Identitas Toko Terpisah Rapi (Nama, Alamat, Kontak) & Utilitas -->
+        <div class="bg-[#FFFFFF] p-4 sm:p-5 rounded-2xl border border-neutral-200 shadow-xs flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div class="flex items-start gap-3.5">
+            <div class="w-12 h-12 rounded-xl bg-[#000000] text-[#FFAB00] flex items-center justify-center shrink-0 mt-0.5">
+              <i data-lucide="building-2" class="w-6 h-6"></i>
             </div>
-            <div>
-              <h2 id="dash-store-title" class="text-base sm:text-lg font-extrabold text-[#000000]">Baji Artha Mart</h2>
-              <p id="dash-store-address" class="text-xs text-[#2C2C2C]">Jl. Poros Logistik No. 108 &bull; Telp: 0812-4455-8899</p>
+            <div class="space-y-1">
+              <h2 id="dash-store-title" class="text-base sm:text-lg font-extrabold text-[#000000] leading-tight">Baji Artha Mart</h2>
+              <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center gap-y-1 gap-x-4 text-xs text-[#2C2C2C]">
+                <span class="inline-flex items-center gap-1.5">
+                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-[#000000] shrink-0"></i>
+                  <span id="dash-store-address">Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan</span>
+                </span>
+                <span class="inline-flex items-center gap-1.5 font-semibold text-[#000000]">
+                  <i data-lucide="phone" class="w-3.5 h-3.5 text-[#FFAB00] shrink-0"></i>
+                  <span id="dash-store-phone">0812-3456-7890</span>
+                </span>
+              </div>
             </div>
           </div>
 
-          <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
             <button
               type="button"
               onclick="exportCSV('semua')"
@@ -350,7 +359,7 @@
               class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 transition cursor-pointer"
             >
               <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
-              <span>Data Contoh</span>
+              <span>Muat Data Contoh</span>
             </button>
             <button
               type="button"
@@ -358,7 +367,7 @@
               class="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 transition cursor-pointer"
             >
               <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
-              <span>Kosongkan</span>
+              <span>Kosongkan Data</span>
             </button>
           </div>
         </div>
@@ -378,29 +387,29 @@
 
           <div class="bg-[#FFFFFF] p-5 rounded-2xl border border-neutral-200 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">Total Stok Tersisa</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">Total Stok &amp; Modal</span>
               <span class="p-2 rounded-xl bg-[#F5F5F5] text-[#000000]">
                 <i data-lucide="layers" class="w-5 h-5"></i>
               </span>
             </div>
             <p id="stat-total-unit" class="mt-3 text-3xl font-black text-[#000000]">0</p>
-            <p class="mt-1 text-xs text-[#2C2C2C]">Akumulasi seluruh unit</p>
+            <p id="stat-total-asset" class="mt-1 text-xs font-bold text-[#2C2C2C]">Nilai Aset: Rp 0</p>
           </div>
 
           <div class="bg-[#FFFFFF] p-5 rounded-2xl border-2 border-[#FFAB00] shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#000000]">Batas Minimal Stok</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-[#000000]">Perlu Restock</span>
               <span class="p-2 rounded-xl bg-[#FFAB00] text-[#000000]">
                 <i data-lucide="bell-ring" class="w-5 h-5"></i>
               </span>
             </div>
             <p id="stat-min-stock" class="mt-3 text-3xl font-black text-[#000000]">0</p>
-            <p class="mt-1 text-xs font-bold text-[#2C2C2C]">Wajib pesan ke pemasok</p>
+            <p class="mt-1 text-xs font-bold text-[#2C2C2C]">Menyentuh batas minimal</p>
           </div>
 
           <div class="bg-[#FFFFFF] p-5 rounded-2xl border border-neutral-200 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">Hampir / Expired</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">Segera / Expired</span>
               <span class="p-2 rounded-xl bg-red-100 text-red-700">
                 <i data-lucide="clock-alert" class="w-5 h-5"></i>
               </span>
@@ -411,13 +420,13 @@
 
           <div class="bg-[#FFFFFF] p-5 rounded-2xl border border-neutral-200 shadow-xs">
             <div class="flex items-center justify-between">
-              <span class="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">PO Dalam Perjalanan</span>
+              <span class="text-xs font-bold uppercase tracking-wider text-[#2C2C2C]">PO Menunggu Tiba</span>
               <span class="p-2 rounded-xl bg-[#000000] text-[#FFAB00]">
                 <i data-lucide="truck" class="w-5 h-5"></i>
               </span>
             </div>
             <p id="stat-po-transit" class="mt-3 text-3xl font-black text-[#000000]">0</p>
-            <p class="mt-1 text-xs text-[#2C2C2C]">Menunggu tiba di gudang</p>
+            <p class="mt-1 text-xs text-[#2C2C2C]">Pesanan dalam perjalanan</p>
           </div>
         </div>
 
@@ -432,7 +441,7 @@
                 </span>
                 <div>
                   <h3 class="text-base font-extrabold leading-tight">Reminder Batas Minimal Stok</h3>
-                  <p class="text-xs text-neutral-300">Segera buat pesanan restock ke pemasok</p>
+                  <p class="text-xs text-neutral-300">Klik Buat PO untuk otomatis mengisi pesanan ke pemasok</p>
                 </div>
               </div>
               <span id="badge-panel-restock" class="px-3 py-1 rounded-full text-xs font-black bg-[#FFAB00] text-[#000000]">0 Item</span>
@@ -451,7 +460,7 @@
                   <i data-lucide="calendar-x-2" class="w-5 h-5"></i>
                 </span>
                 <div>
-                  <h3 class="text-base font-extrabold leading-tight">Reminder Waktu Expired</h3>
+                  <h3 class="text-base font-extrabold leading-tight">Reminder Kadaluarsa / Expired</h3>
                   <p id="panel-expired-subtitle" class="text-xs text-neutral-300">Sudah kadaluarsa atau &le; 30 hari lagi</p>
                 </div>
               </div>
@@ -464,37 +473,94 @@
           </div>
         </div>
 
-        <!-- Ringkasan PO Dalam Perjalanan -->
-        <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs overflow-hidden">
-          <div class="px-5 py-4 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-            <div>
-              <h3 class="text-base font-extrabold text-[#000000]">Pesanan Pemasok Dalam Perjalanan</h3>
-              <p class="text-xs text-[#2C2C2C]">Konfirmasi saat barang tiba di gudang untuk mencatat Tanggal Sampai &amp; menambah stok otomatis</p>
+        <!-- Ringkasan PO Menunggu Tiba & Aktivitas Terbaru -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs overflow-hidden">
+            <div class="px-5 py-4 border-b border-neutral-200 flex items-center justify-between gap-2">
+              <div>
+                <h3 class="text-base font-extrabold text-[#000000]">PO Menunggu Tiba di Gudang</h3>
+                <p class="text-xs text-[#2C2C2C]">Konfirmasi saat barang sampai untuk mencatat tanggal tiba</p>
+              </div>
+              <button
+                type="button"
+                onclick="navigateTo('po')"
+                class="text-xs font-extrabold text-[#000000] bg-[#FFAB00] px-3 py-1.5 rounded-xl hover:brightness-95 shrink-0 cursor-pointer"
+              >
+                Kelola PO &rarr;
+              </button>
             </div>
-            <button
-              type="button"
-              onclick="navigateTo('po')"
-              class="text-xs font-extrabold text-[#000000] bg-[#FFAB00] px-3 py-1.5 rounded-xl hover:brightness-95 self-start sm:self-auto cursor-pointer"
-            >
-              Kelola Semua PO &rarr;
-            </button>
+            <div id="dashboard-transit-list" class="p-4 max-h-72 overflow-y-auto">
+              <!-- Diisi via JS -->
+            </div>
           </div>
-          <div id="dashboard-transit-list" class="p-4">
-            <!-- Diisi via JS -->
+
+          <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs overflow-hidden">
+            <div class="px-5 py-4 border-b border-neutral-200 flex items-center justify-between gap-2">
+              <div>
+                <h3 class="text-base font-extrabold text-[#000000]">Aktivitas Transaksi Terbaru</h3>
+                <p class="text-xs text-[#2C2C2C]">5 pergerakan barang keluar &amp; pemesanan terakhir</p>
+              </div>
+              <button
+                type="button"
+                onclick="navigateTo('history')"
+                class="text-xs font-extrabold text-[#FFAB00] bg-[#000000] px-3 py-1.5 rounded-xl hover:bg-[#2C2C2C] shrink-0 cursor-pointer"
+              >
+                Semua Riwayat &rarr;
+              </button>
+            </div>
+            <div id="dashboard-recent-activity" class="p-4 max-h-72 overflow-y-auto">
+              <!-- Diisi via JS -->
+            </div>
           </div>
         </div>
       </section>
 
       <!-- ===================================================================
-           HALAMAN 2 (KIRI 1 - STOK): DATA BARANG & WAKTU EXPIRED
+           HALAMAN 2 (KIRI 1 - STOK): MASTER PERSEDIAAN, HARGA & EXPIRED
       ==================================================================== -->
       <section id="view-inventory" class="app-section hidden space-y-6">
+        <!-- 3 Kartu Ringkasan Finansial Persediaan -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="bg-[#FFFFFF] p-5 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Nilai Aset Modal Stok</p>
+              <p id="inv-fin-modal" class="text-xl sm:text-2xl font-black text-[#000000] mt-1">Rp 0</p>
+              <p class="text-[11px] text-[#2C2C2C] mt-0.5">Stok tersisa &times; Harga beli</p>
+            </div>
+            <span class="p-3 rounded-xl bg-[#000000] text-[#FFAB00]">
+              <i data-lucide="wallet" class="w-5 h-5"></i>
+            </span>
+          </div>
+
+          <div class="bg-[#FFFFFF] p-5 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Potensi Nilai Jual Stok</p>
+              <p id="inv-fin-jual" class="text-xl sm:text-2xl font-black text-[#000000] mt-1">Rp 0</p>
+              <p class="text-[11px] text-[#2C2C2C] mt-0.5">Stok tersisa &times; Harga jual</p>
+            </div>
+            <span class="p-3 rounded-xl bg-[#FFAB00] text-[#000000]">
+              <i data-lucide="badge-dollar-sign" class="w-5 h-5"></i>
+            </span>
+          </div>
+
+          <div class="bg-[#FFFFFF] p-5 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
+            <div>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Estimasi Margin Stok</p>
+              <p id="inv-fin-margin" class="text-xl sm:text-2xl font-black text-emerald-700 mt-1">Rp 0</p>
+              <p class="text-[11px] text-[#2C2C2C] mt-0.5">Selisih potensi jual &amp; modal</p>
+            </div>
+            <span class="p-3 rounded-xl bg-emerald-100 text-emerald-700">
+              <i data-lucide="trending-up" class="w-5 h-5"></i>
+            </span>
+          </div>
+        </div>
+
         <!-- Form Tambah / Edit Barang -->
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
           <div class="flex items-center justify-between mb-4">
             <div>
               <h2 id="item-form-title" class="text-lg font-extrabold text-[#000000]">Tambah Barang Baru — Baji Artha Mart</h2>
-              <p class="text-xs text-[#2C2C2C]">Atur batas minimal stok dan tanggal expired untuk peringatan otomatis.</p>
+              <p class="text-xs text-[#2C2C2C]">Lengkapi SKU, harga beli &amp; jual, pemasok default, serta tanggal expired (opsional untuk barang non-expired).</p>
             </div>
             <button
               type="button"
@@ -506,11 +572,11 @@
             </button>
           </div>
 
-          <form id="form-item" onsubmit="handleItemSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <form id="form-item" onsubmit="handleItemSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <input type="hidden" id="item-id" />
 
             <div>
-              <label for="item-kode" class="block text-xs font-bold text-[#000000] mb-1">Kode Barang (SKU) <span class="text-red-600">*</span></label>
+              <label for="item-kode" class="block text-xs font-bold text-[#000000] mb-1">Kode SKU <span class="text-red-600">*</span></label>
               <input
                 type="text"
                 id="item-kode"
@@ -520,13 +586,13 @@
               />
             </div>
 
-            <div>
+            <div class="lg:col-span-2">
               <label for="item-nama" class="block text-xs font-bold text-[#000000] mb-1">Nama Barang <span class="text-red-600">*</span></label>
               <input
                 type="text"
                 id="item-nama"
                 required
-                placeholder="Contoh: Beras Premium 5kg"
+                placeholder="Contoh: Beras Premium Pandan Wangi 5kg"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
             </div>
@@ -543,7 +609,7 @@
                 <option value="Kebutuhan Rumah Tangga">Kebutuhan Rumah Tangga</option>
                 <option value="Obat & Kesehatan">Obat &amp; Kesehatan</option>
                 <option value="Kosmetik & Perawatan">Kosmetik &amp; Perawatan</option>
-                <option value="Lainnya">Lainnya</option>
+                <option value="Non-Expired / Peralatan">Non-Expired / Peralatan</option>
               </select>
             </div>
 
@@ -591,31 +657,55 @@
             </div>
 
             <div>
-              <label for="item-expired" class="block text-xs font-bold text-[#000000] mb-1">Tanggal Expired <span class="text-red-600">*</span></label>
+              <label for="item-harga-beli" class="block text-xs font-bold text-[#000000] mb-1">Harga Beli / Modal (Rp) <span class="text-red-600">*</span></label>
               <input
-                type="date"
-                id="item-expired"
+                type="number"
+                id="item-harga-beli"
+                min="0"
+                step="100"
                 required
+                placeholder="Contoh: 62000"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
             </div>
 
             <div>
-              <label for="item-pemasok" class="block text-xs font-bold text-[#000000] mb-1">Pemasok Utama <span class="text-red-600">*</span></label>
+              <label for="item-harga-jual" class="block text-xs font-bold text-[#000000] mb-1">Harga Jual (Rp) <span class="text-red-600">*</span></label>
               <input
-                type="text"
-                id="item-pemasok"
+                type="number"
+                id="item-harga-jual"
+                min="0"
+                step="100"
                 required
-                placeholder="Contoh: PT Sumber Pangan"
+                placeholder="Contoh: 68000"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
             </div>
 
-            <div class="sm:col-span-2 lg:col-span-4 flex justify-end">
+            <div>
+              <label for="item-expired" class="block text-xs font-bold text-[#000000] mb-1">Tanggal Expired (Opsional)</label>
+              <input
+                type="date"
+                id="item-expired"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-3">
+              <label for="item-pemasok" class="block text-xs font-bold text-[#000000] mb-1">Pemasok Default / Utama (Opsional)</label>
+              <input
+                type="text"
+                id="item-pemasok"
+                placeholder="Contoh: PT Sumber Pangan Nusantara"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div class="sm:col-span-2 flex items-end justify-end">
               <button
                 type="submit"
                 id="btn-submit-item"
-                class="w-full sm:w-auto px-6 py-2.5 text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
+                class="w-full px-6 py-2.5 text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
               >
                 Simpan Data Barang
               </button>
@@ -625,14 +715,14 @@
 
         <!-- Tabel Master Persediaan -->
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs overflow-hidden">
-          <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
             <div class="relative flex-1 max-w-md">
               <i data-lucide="search" class="w-4 h-4 text-[#2C2C2C] absolute left-3.5 top-1/2 -translate-y-1/2"></i>
               <input
                 type="text"
                 id="search-inventory"
                 oninput="renderInventoryTable()"
-                placeholder="Cari kode, nama barang, kategori, pemasok..."
+                placeholder="Cari kode SKU, nama barang, kategori, pemasok..."
                 class="w-full pl-10 pr-4 py-2 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
               />
             </div>
@@ -656,7 +746,7 @@
                 <option value="all">Status Expired: Semua</option>
                 <option value="expired">Sudah Expired</option>
                 <option value="near_exp">Hampir Expired</option>
-                <option value="safe">Masa Simpan Aman</option>
+                <option value="safe">Aman / Non-Expired</option>
               </select>
 
               <button
@@ -665,7 +755,25 @@
                 class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer"
               >
                 <i data-lucide="file-spreadsheet" class="w-4 h-4"></i>
-                <span>CSV</span>
+                <span>Export CSV</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="openConfirmModal('seed')"
+                class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 cursor-pointer"
+              >
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>Data Contoh</span>
+              </button>
+
+              <button
+                type="button"
+                onclick="openConfirmModal('clearAll')"
+                class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer"
+              >
+                <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                <span>Kosongkan</span>
               </button>
             </div>
           </div>
@@ -674,10 +782,9 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-[#F5F5F5] border-b border-neutral-200 text-[11px] font-extrabold uppercase tracking-wider text-[#2C2C2C]">
-                  <th class="py-3.5 px-4">Kode &amp; Nama Barang</th>
-                  <th class="py-3.5 px-4">Pemasok</th>
-                  <th class="py-3.5 px-4 text-right">Stok Tersisa</th>
-                  <th class="py-3.5 px-4 text-right">Batas Min.</th>
+                  <th class="py-3.5 px-4">SKU &amp; Nama Barang</th>
+                  <th class="py-3.5 px-4 text-right">Harga Beli &amp; Jual</th>
+                  <th class="py-3.5 px-4 text-right">Stok / Min.</th>
                   <th class="py-3.5 px-4">Status Stok</th>
                   <th class="py-3.5 px-4">Tgl Expired</th>
                   <th class="py-3.5 px-4">Status Expired</th>
@@ -693,14 +800,14 @@
       </section>
 
       <!-- ===================================================================
-           HALAMAN 3 (KIRI 2 - KELUAR): PENCATATAN BARANG KELUAR GUDANG
+           HALAMAN 3 (KIRI 2 - KELUAR): PENCATATAN BARANG KELUAR & HARGA
       ==================================================================== -->
       <section id="view-outgoing" class="app-section hidden space-y-6">
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
           <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
             <div>
               <h2 class="text-lg font-extrabold text-[#000000]">Catat Barang Keluar dari Gudang</h2>
-              <p class="text-xs text-[#2C2C2C]">Otomatis memotong stok tersisa dan memicu reminder jika menyentuh batas minimal.</p>
+              <p class="text-xs text-[#2C2C2C]">Otomatis mengisi harga jual satuan, menghitung subtotal, dan memvalidasi agar stok tidak minus.</p>
             </div>
             <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-[#000000] text-[#FFAB00]">
               <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
@@ -714,12 +821,12 @@
               <select
                 id="out-item-id"
                 required
-                onchange="updateOutgoingStockHint()"
+                onchange="handleOutgoingItemChange()"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               >
                 <option value="">-- Pilih Barang di Gudang --</option>
               </select>
-              <p id="out-stock-hint" class="mt-1 text-xs text-[#2C2C2C]">Pilih barang untuk melihat sisa stok tersedia.</p>
+              <p id="out-stock-hint" class="mt-1 text-xs text-[#2C2C2C]">Pilih barang untuk melihat sisa stok &amp; harga jual.</p>
             </div>
 
             <div>
@@ -730,6 +837,21 @@
                 min="1"
                 step="1"
                 required
+                oninput="updateOutgoingSubtotalPreview()"
+                placeholder="0"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="out-harga-satuan" class="block text-xs font-bold text-[#000000] mb-1">Harga Satuan (Rp) <span class="text-red-600">*</span></label>
+              <input
+                type="number"
+                id="out-harga-satuan"
+                min="0"
+                step="100"
+                required
+                oninput="updateOutgoingSubtotalPreview()"
                 placeholder="0"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
@@ -756,20 +878,25 @@
               />
             </div>
 
-            <div class="sm:col-span-2">
+            <div>
               <label for="out-keterangan" class="block text-xs font-bold text-[#000000] mb-1">Keterangan (Opsional)</label>
               <input
                 type="text"
                 id="out-keterangan"
-                placeholder="Contoh: No. Nota atau Retur Expired"
+                placeholder="Contoh: No. Nota / Retur"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
             </div>
 
-            <div class="flex items-end">
+            <div class="p-3 rounded-xl bg-[#F5F5F5] border border-neutral-300 flex flex-col justify-center">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Subtotal Nominal Keluar</span>
+              <span id="out-subtotal-preview" class="text-base font-black text-[#000000]">Rp 0</span>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-4 flex justify-end">
               <button
                 type="submit"
-                class="w-full py-2.5 px-4 text-sm font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] shadow-xs transition cursor-pointer"
+                class="w-full sm:w-auto py-2.5 px-6 text-sm font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] shadow-xs transition cursor-pointer"
               >
                 Catat Barang Keluar
               </button>
@@ -782,7 +909,7 @@
           <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h3 class="text-base font-extrabold text-[#000000]">Riwayat Barang Keluar Gudang</h3>
-              <p class="text-xs text-[#2C2C2C]">Tercatat lengkap beserta tombol cetak struk PDF per transaksi</p>
+              <p class="text-xs text-[#2C2C2C]">Dilengkapi nominal Rupiah dan tombol cetak struk PDF thermal 80mm</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <input
@@ -813,11 +940,11 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="bg-[#F5F5F5] border-b border-neutral-200 text-[11px] font-extrabold uppercase tracking-wider text-[#2C2C2C]">
-                  <th class="py-3.5 px-4">Tanggal Keluar</th>
+                  <th class="py-3.5 px-4">Tanggal</th>
                   <th class="py-3.5 px-4">Barang</th>
-                  <th class="py-3.5 px-4 text-right">Jml Keluar</th>
-                  <th class="py-3.5 px-4">Tujuan / Penerima</th>
-                  <th class="py-3.5 px-4">Keterangan</th>
+                  <th class="py-3.5 px-4 text-right">Qty Keluar</th>
+                  <th class="py-3.5 px-4 text-right">Harga &amp; Total</th>
+                  <th class="py-3.5 px-4">Tujuan &amp; Ket.</th>
                   <th class="py-3.5 px-4 text-right">Sisa Stok</th>
                   <th class="py-3.5 px-4 text-center">Aksi</th>
                 </tr>
@@ -837,7 +964,7 @@
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
           <div class="mb-4">
             <h2 class="text-lg font-extrabold text-[#000000]">Pencatatan Pemesanan ke Pemasok (Purchase Order)</h2>
-            <p class="text-xs text-[#2C2C2C]">Catat pemesanan ke pemasok, dan konfirmasi tanggal barang tiba di gudang saat pengiriman sampai.</p>
+            <p class="text-xs text-[#2C2C2C]">Catat pemesanan ke pemasok beserta harga beli &amp; total biaya PO, lalu konfirmasi tanggal aktual tiba di gudang.</p>
           </div>
 
           <form id="form-po" onsubmit="handlePOSubmit(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -879,7 +1006,7 @@
                 type="text"
                 id="po-pemasok"
                 required
-                placeholder="Otomatis dari data barang"
+                placeholder="Otomatis dari pemasok default"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
             </div>
@@ -892,7 +1019,22 @@
                 min="1"
                 step="1"
                 required
+                oninput="updatePOTotalPreview()"
                 placeholder="Contoh: 20"
+                class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+              />
+            </div>
+
+            <div>
+              <label for="po-harga-beli" class="block text-xs font-bold text-[#000000] mb-1">Harga Beli Satuan (Rp) <span class="text-red-600">*</span></label>
+              <input
+                type="number"
+                id="po-harga-beli"
+                min="0"
+                step="100"
+                required
+                oninput="updatePOTotalPreview()"
+                placeholder="0"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
             </div>
@@ -906,12 +1048,17 @@
               />
             </div>
 
-            <div>
+            <div class="p-3 rounded-xl bg-[#F5F5F5] border border-neutral-300 flex flex-col justify-center">
+              <span class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Biaya PO</span>
+              <span id="po-total-preview" class="text-base font-black text-[#000000]">Rp 0</span>
+            </div>
+
+            <div class="sm:col-span-2 lg:col-span-3">
               <label for="po-catatan" class="block text-xs font-bold text-[#000000] mb-1">Catatan Pesanan (Opsional)</label>
               <input
                 type="text"
                 id="po-catatan"
-                placeholder="Contoh: Kirim pagi sebelum jam 10"
+                placeholder="Contoh: Kirim pagi sebelum jam 10 langsung ke loading dock"
                 class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
               />
             </div>
@@ -921,7 +1068,7 @@
                 type="submit"
                 class="w-full py-2.5 px-4 text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
               >
-                Buat Pesanan ke Pemasok
+                Buat Pesanan PO
               </button>
             </div>
           </form>
@@ -932,7 +1079,7 @@
           <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
               <h3 class="text-base font-extrabold text-[#000000]">Daftar Pemesanan Pemasok &amp; Tanggal Sampai di Gudang</h3>
-              <p class="text-xs text-[#2C2C2C]">Setiap pesanan yang telah tiba akan menampilkan Tanggal Sampai di Gudang secara permanen</p>
+              <p class="text-xs text-[#2C2C2C]">Konfirmasi kedatangan barang untuk mencatat tanggal tiba &amp; memperbarui stok otomatis</p>
             </div>
             <div class="flex flex-wrap items-center gap-2">
               <select
@@ -941,8 +1088,8 @@
                 class="px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
               >
                 <option value="all">Semua Status PO</option>
-                <option value="Dipesan">Dalam Perjalanan (Belum Sampai)</option>
-                <option value="Diterima">Sudah Sampai di Gudang</option>
+                <option value="Dipesan">Menunggu Tiba (Dalam Perjalanan)</option>
+                <option value="Diterima">Sudah Tiba di Gudang</option>
               </select>
               <button
                 type="button"
@@ -961,10 +1108,9 @@
                 <tr class="bg-[#F5F5F5] border-b border-neutral-200 text-[11px] font-extrabold uppercase tracking-wider text-[#2C2C2C]">
                   <th class="py-3.5 px-4">No. PO &amp; Tgl Pesan</th>
                   <th class="py-3.5 px-4">Barang &amp; Pemasok</th>
-                  <th class="py-3.5 px-4 text-right">Jml Pesan</th>
-                  <th class="py-3.5 px-4">Status Pengiriman</th>
+                  <th class="py-3.5 px-4 text-right">Qty &amp; Total Biaya</th>
+                  <th class="py-3.5 px-4">Status</th>
                   <th class="py-3.5 px-4">Tanggal Sampai di Gudang</th>
-                  <th class="py-3.5 px-4">Catatan</th>
                   <th class="py-3.5 px-4 text-center">Aksi</th>
                 </tr>
               </thead>
@@ -977,10 +1123,10 @@
       </section>
 
       <!-- ===================================================================
-           HALAMAN 5 (KANAN 2 - RIWAYAT): RIWAYAT TRANSAKSI & CETAK STRUK PDF
+           HALAMAN 5 (KANAN 2 - RIWAYAT): RIWAYAT TRANSAKSI & CETAK PDF
       ==================================================================== -->
       <section id="view-history" class="app-section hidden space-y-6">
-        <!-- Ringkasan & Tombol Cetak Rekap PDF -->
+        <!-- Header Riwayat & Cetak Rekap A4 PDF -->
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div class="flex items-start sm:items-center gap-3">
             <div class="w-11 h-11 rounded-xl bg-[#000000] text-[#FFAB00] flex items-center justify-center shrink-0">
@@ -988,7 +1134,7 @@
             </div>
             <div>
               <h2 class="text-lg font-extrabold text-[#000000]">Riwayat Transaksi Terpadu &amp; Cetak Struk PDF</h2>
-              <p class="text-xs text-[#2C2C2C]">Gabungan seluruh aktivitas Barang Keluar &amp; Pemesanan Pemasok (PO) beserta cetak struk PDF instan.</p>
+              <p class="text-xs text-[#2C2C2C]">Gabungan kronologis Barang Keluar &amp; Pemesanan PO dengan struk PDF 80mm dan rekap A4 PDF.</p>
             </div>
           </div>
 
@@ -999,17 +1145,18 @@
               class="inline-flex items-center gap-2 px-4 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs transition cursor-pointer"
             >
               <i data-lucide="printer" class="w-4 h-4"></i>
-              <span>Cetak Rekap Riwayat (PDF)</span>
+              <span>Cetak Rekap Laporan PDF (A4)</span>
             </button>
           </div>
         </div>
 
-        <!-- 3 Kartu Ringkasan Riwayat -->
+        <!-- 3 Kartu Ringkasan Riwayat & Nominal -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
             <div>
               <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Aktivitas Tercatat</p>
               <p id="hist-stat-total" class="text-2xl font-black text-[#000000] mt-1">0</p>
+              <p class="text-[11px] text-[#2C2C2C] mt-0.5">Sesuai filter aktif</p>
             </div>
             <span class="p-2.5 rounded-xl bg-[#F5F5F5] text-[#000000]">
               <i data-lucide="clipboard-list" class="w-5 h-5"></i>
@@ -1018,8 +1165,9 @@
 
           <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
             <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Transaksi Barang Keluar</p>
-              <p id="hist-stat-out" class="text-2xl font-black text-red-600 mt-1">0</p>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Nominal Barang Keluar</p>
+              <p id="hist-stat-out-nominal" class="text-xl sm:text-2xl font-black text-red-600 mt-1">Rp 0</p>
+              <p id="hist-stat-out-count" class="text-[11px] text-[#2C2C2C] mt-0.5">0 transaksi keluar</p>
             </div>
             <span class="p-2.5 rounded-xl bg-red-100 text-red-700">
               <i data-lucide="package-minus" class="w-5 h-5"></i>
@@ -1028,8 +1176,9 @@
 
           <div class="bg-[#FFFFFF] p-4 rounded-2xl border border-neutral-200 shadow-xs flex items-center justify-between">
             <div>
-              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Pemesanan Pemasok (PO)</p>
-              <p id="hist-stat-po" class="text-2xl font-black text-[#000000] mt-1">0</p>
+              <p class="text-[11px] font-bold uppercase tracking-wider text-[#2C2C2C]">Total Nominal Belanja PO</p>
+              <p id="hist-stat-po-nominal" class="text-xl sm:text-2xl font-black text-[#000000] mt-1">Rp 0</p>
+              <p id="hist-stat-po-count" class="text-[11px] text-[#2C2C2C] mt-0.5">0 pesanan pemasok</p>
             </div>
             <span class="p-2.5 rounded-xl bg-[#FFAB00]/30 text-[#000000]">
               <i data-lucide="truck" class="w-5 h-5"></i>
@@ -1039,14 +1188,14 @@
 
         <!-- Filter & Tabel Riwayat Transaksi -->
         <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs overflow-hidden">
-          <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
+          <div class="p-4 sm:p-5 border-b border-neutral-200 flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3">
             <div class="relative flex-1 max-w-md">
               <i data-lucide="search" class="w-4 h-4 text-[#2C2C2C] absolute left-3.5 top-1/2 -translate-y-1/2"></i>
               <input
                 type="text"
                 id="search-history"
                 oninput="renderHistoryTable()"
-                placeholder="Cari nomor transaksi, nama barang, pemasok / tujuan..."
+                placeholder="Cari nomor referensi, nama barang, pemasok / tujuan..."
                 class="w-full pl-10 pr-4 py-2 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
               />
             </div>
@@ -1057,24 +1206,35 @@
                 onchange="renderHistoryTable()"
                 class="px-3 py-2 text-xs sm:text-sm font-semibold rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
               >
-                <option value="all">Jenis Transaksi: Semua</option>
+                <option value="all">Jenis: Semua Transaksi</option>
                 <option value="OUT">Barang Keluar Gudang</option>
                 <option value="PO">Pemesanan Pemasok (PO)</option>
               </select>
 
-              <input
-                type="date"
-                id="filter-history-date"
-                onchange="renderHistoryTable()"
-                class="px-3 py-2 text-xs sm:text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
-              />
+              <div class="flex items-center gap-1.5 text-xs">
+                <input
+                  type="date"
+                  id="filter-history-start"
+                  onchange="renderHistoryTable()"
+                  title="Dari Tanggal"
+                  class="px-2.5 py-2 text-xs rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+                />
+                <span class="font-bold text-[#2C2C2C]">s/d</span>
+                <input
+                  type="date"
+                  id="filter-history-end"
+                  onchange="renderHistoryTable()"
+                  title="Sampai Tanggal"
+                  class="px-2.5 py-2 text-xs rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:ring-2 focus:ring-[#FFAB00] outline-none"
+                />
+              </div>
 
               <button
                 type="button"
                 onclick="resetHistoryFilters()"
                 class="px-3 py-2 text-xs font-bold rounded-xl bg-[#F5F5F5] text-[#000000] border border-neutral-300 hover:bg-neutral-200 cursor-pointer"
               >
-                Reset Filter
+                Reset
               </button>
             </div>
           </div>
@@ -1086,7 +1246,7 @@
                   <th class="py-3.5 px-4">Tanggal</th>
                   <th class="py-3.5 px-4">No. Referensi &amp; Jenis</th>
                   <th class="py-3.5 px-4">Nama Barang</th>
-                  <th class="py-3.5 px-4 text-right">Kuantitas</th>
+                  <th class="py-3.5 px-4 text-right">Qty &amp; Nominal</th>
                   <th class="py-3.5 px-4">Pemasok / Tujuan</th>
                   <th class="py-3.5 px-4">Status / Keterangan</th>
                   <th class="py-3.5 px-4 text-center">Struk PDF</th>
@@ -1219,7 +1379,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pb-4 border-b border-neutral-200">
               <div>
                 <h2 class="text-lg font-extrabold text-[#000000]">Konfigurasi &amp; Sinkronisasi Supabase</h2>
-                <p class="text-xs text-[#2C2C2C]">Terhubung ke database cloud PostgreSQL Supabase Baji Artha Mart.</p>
+                <p class="text-xs text-[#2C2C2C]">Terhubung ke tabel <code class="font-mono font-bold">baji_artha_mart_sync</code> (row id: <code class="font-mono font-bold">main_store_data</code>).</p>
               </div>
               <span id="sb-status-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold bg-red-100 text-red-700 border border-red-300">
                 <span class="w-2.5 h-2.5 rounded-full bg-red-600"></span>
@@ -1255,7 +1415,7 @@
                   type="submit"
                   class="px-5 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 transition cursor-pointer"
                 >
-                  Simpan &amp; Uji Koneksi
+                  Simpan &amp; Tes Koneksi
                 </button>
                 <button
                   type="button"
@@ -1263,7 +1423,7 @@
                   class="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs sm:text-sm font-extrabold rounded-xl bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
                 >
                   <i data-lucide="cloud-upload" class="w-4 h-4"></i>
-                  <span>Push Lokal &rarr; Cloud</span>
+                  <span>Push Manual &rarr; Cloud</span>
                 </button>
                 <button
                   type="button"
@@ -1271,7 +1431,7 @@
                   class="inline-flex items-center gap-1.5 px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl bg-[#2C2C2C] text-[#FFFFFF] hover:bg-[#000000] transition cursor-pointer"
                 >
                   <i data-lucide="cloud-download" class="w-4 h-4 text-[#FFAB00]"></i>
-                  <span>Pull Cloud &rarr; Lokal</span>
+                  <span>Pull Manual &rarr; Lokal</span>
                 </button>
                 <button
                   type="button"
@@ -1300,32 +1460,34 @@
                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#2C2C2C] text-[#FFAB00] hover:bg-neutral-700 transition cursor-pointer"
                 >
                   <i data-lucide="copy" class="w-3.5 h-3.5"></i>
-                  <span>Salin SQL</span>
+                  <span>Salin Skrip SQL</span>
                 </button>
               </div>
 
               <h3 class="text-base font-extrabold text-[#FFFFFF]">Panduan Tabel Supabase</h3>
               <p class="text-xs text-neutral-300 leading-relaxed">
-                Jalankan skrip SQL berikut pada menu <strong>SQL Editor</strong> di dashboard proyek Supabase Anda untuk menyiapkan tabel penyimpanan JSON terpusat:
+                Jalankan skrip SQL berikut pada menu <strong>SQL Editor</strong> di dashboard proyek Supabase Anda agar sinkronisasi berjalan otomatis:
               </p>
 
-              <pre id="supabase-sql-code" class="p-3 rounded-xl bg-[#2C2C2C] text-[11px] font-mono text-[#FFAB00] overflow-x-auto leading-relaxed border border-neutral-700">CREATE TABLE IF NOT EXISTS baji_artha_mart_sync (
+              <pre id="supabase-sql-code" class="p-3 rounded-xl bg-[#2C2C2C] text-[11px] font-mono text-[#FFAB00] overflow-x-auto leading-relaxed border border-neutral-700">CREATE TABLE IF NOT EXISTS public.baji_artha_mart_sync (
   id TEXT PRIMARY KEY,
   payload JSONB NOT NULL,
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
-ALTER TABLE baji_artha_mart_sync ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.baji_artha_mart_sync ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Allow public read write" ON public.baji_artha_mart_sync;
 
 CREATE POLICY "Allow public read write"
-ON baji_artha_mart_sync
+ON public.baji_artha_mart_sync
 FOR ALL
 USING (true)
 WITH CHECK (true);</pre>
             </div>
 
             <p class="text-[11px] text-neutral-400">
-              Catatan: Aplikasi tetap menyimpan data secara otomatis di penyimpanan lokal browser sehingga tetap dapat beroperasi meskipun sedang offline.
+              Catatan: Data tetap tersimpan otomatis di penyimpanan lokal browser sehingga tetap aman dan dapat digunakan meskipun sedang offline.
             </p>
           </div>
         </div>
@@ -1344,7 +1506,7 @@ WITH CHECK (true);</pre>
               </div>
               <div>
                 <h2 class="text-base font-extrabold text-[#000000]">Profil Akun Login Aktif</h2>
-                <p class="text-xs text-[#2C2C2C]">Perbarui nama tampilan dan password akun Anda</p>
+                <p class="text-xs text-[#2C2C2C]">Perbarui nama tampilan, username, dan password akun Anda secara real-time</p>
               </div>
             </div>
 
@@ -1401,7 +1563,7 @@ WITH CHECK (true);</pre>
             </form>
           </div>
 
-          <!-- Form Pengaturan Toko & Gudang Baji Artha Mart -->
+          <!-- Form Pengaturan Toko & Gudang (TERPISAH TEGAS: NAMA, ALAMAT, KONTAK) -->
           <div class="bg-[#FFFFFF] rounded-2xl border border-neutral-200 shadow-xs p-5 sm:p-6">
             <div class="flex items-center gap-3 pb-4 mb-4 border-b border-neutral-200">
               <div class="w-10 h-10 rounded-xl bg-[#FFAB00] text-[#000000] flex items-center justify-center">
@@ -1409,36 +1571,41 @@ WITH CHECK (true);</pre>
               </div>
               <div>
                 <h2 class="text-base font-extrabold text-[#000000]">Identitas Toko &amp; Ambang Reminder</h2>
-                <p class="text-xs text-[#2C2C2C]">Atur informasi toko Baji Artha Mart dan batas hari peringatan expired</p>
+                <p class="text-xs text-[#2C2C2C]">Nama toko, alamat toko, dan kontak telepon terpisah untuk struk PDF &amp; laporan</p>
               </div>
             </div>
 
             <form onsubmit="handleSaveWarehouseProfile(event)" class="space-y-4">
               <div>
-                <label for="wh-name" class="block text-xs font-bold text-[#000000] mb-1">Nama Toko / Gudang <span class="text-red-600">*</span></label>
+                <label for="wh-name" class="block text-xs font-bold text-[#000000] mb-1">1. Nama Toko <span class="text-red-600">*</span></label>
                 <input
                   type="text"
                   id="wh-name"
                   required
+                  placeholder="Baji Artha Mart"
                   class="w-full px-3.5 py-2.5 text-sm font-bold rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
                 />
               </div>
 
               <div>
-                <label for="wh-address" class="block text-xs font-bold text-[#000000] mb-1">Alamat Lengkap Toko / Gudang</label>
-                <input
-                  type="text"
+                <label for="wh-address" class="block text-xs font-bold text-[#000000] mb-1">2. Alamat Toko <span class="text-red-600">*</span></label>
+                <textarea
                   id="wh-address"
-                  class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
-                />
+                  rows="2"
+                  required
+                  placeholder="Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan"
+                  class="w-full px-3.5 py-2 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none resize-none"
+                ></textarea>
               </div>
 
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label for="wh-phone" class="block text-xs font-bold text-[#000000] mb-1">Nomor Telepon</label>
+                  <label for="wh-phone" class="block text-xs font-bold text-[#000000] mb-1">3. Kontak / No. Telepon Toko <span class="text-red-600">*</span></label>
                   <input
                     type="text"
                     id="wh-phone"
+                    required
+                    placeholder="0812-3456-7890"
                     class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] outline-none"
                   />
                 </div>
@@ -1480,7 +1647,7 @@ WITH CHECK (true);</pre>
       <div class="max-w-xl mx-auto bg-[#000000] text-[#FFFFFF] rounded-2xl sm:rounded-3xl shadow-2xl border border-[#2C2C2C] px-2 sm:px-4 py-1.5 pointer-events-auto">
         <div class="grid grid-cols-5 items-center gap-1 sm:gap-2">
 
-          <!-- KIRI 1: Stok & Expired -->
+          <!-- KIRI 1: Stok -->
           <button
             type="button"
             data-nav="inventory"
@@ -1491,7 +1658,7 @@ WITH CHECK (true);</pre>
             <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Stok</span>
           </button>
 
-          <!-- KIRI 2: Barang Keluar -->
+          <!-- KIRI 2: Keluar -->
           <button
             type="button"
             data-nav="outgoing"
@@ -1521,7 +1688,7 @@ WITH CHECK (true);</pre>
             </button>
           </div>
 
-          <!-- KANAN 1: Pesan Pemasok (PO) -->
+          <!-- KANAN 1: Pesan PO -->
           <button
             type="button"
             data-nav="po"
@@ -1532,7 +1699,7 @@ WITH CHECK (true);</pre>
             <span class="text-[10px] sm:text-xs font-bold leading-none tracking-tight text-center truncate w-full">Pesan PO</span>
           </button>
 
-          <!-- KANAN 2: Riwayat Transaksi & PDF -->
+          <!-- KANAN 2: Riwayat -->
           <button
             type="button"
             data-nav="history"
@@ -1576,7 +1743,7 @@ WITH CHECK (true);</pre>
 
         <div>
           <label for="receive-tgl-sampai" class="block text-xs font-bold text-[#000000] mb-1">
-            Tanggal Sampai di Gudang <span class="text-red-600">*</span>
+            Tanggal Aktual Sampai di Gudang <span class="text-red-600">*</span>
           </label>
           <input
             type="date"
@@ -1586,16 +1753,30 @@ WITH CHECK (true);</pre>
           />
         </div>
 
-        <div>
-          <label for="receive-new-expired" class="block text-xs font-bold text-[#000000] mb-1">
-            Perbarui Tanggal Expired Batch Baru (Opsional)
-          </label>
-          <input
-            type="date"
-            id="receive-new-expired"
-            class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
-          />
-          <p class="mt-1 text-[11px] text-[#2C2C2C]">Kosongkan jika tanggal kadaluarsa mengikuti data saat ini.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="receive-new-harga-beli" class="block text-xs font-bold text-[#000000] mb-1">
+              Harga Beli Terbaru (Rp)
+            </label>
+            <input
+              type="number"
+              id="receive-new-harga-beli"
+              min="0"
+              step="100"
+              class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+            />
+          </div>
+
+          <div>
+            <label for="receive-new-expired" class="block text-xs font-bold text-[#000000] mb-1">
+              Tgl Expired Batch Baru
+            </label>
+            <input
+              type="date"
+              id="receive-new-expired"
+              class="w-full px-3.5 py-2.5 text-sm rounded-xl bg-[#F5F5F5] border border-neutral-300 focus:bg-[#FFFFFF] focus:ring-2 focus:ring-[#FFAB00] focus:border-[#000000] outline-none"
+            />
+          </div>
         </div>
 
         <div class="flex items-center justify-end gap-2 pt-2">
@@ -1610,7 +1791,7 @@ WITH CHECK (true);</pre>
             type="submit"
             class="px-4 py-2 text-sm font-extrabold rounded-xl bg-[#FFAB00] text-[#000000] hover:brightness-95 shadow-xs cursor-pointer"
           >
-            Simpan Tanggal Sampai &amp; Tambah Stok
+            Simpan Tgl Sampai &amp; Tambah Stok
           </button>
         </div>
       </form>
@@ -1661,24 +1842,22 @@ WITH CHECK (true);</pre>
        JAVASCRIPT LOGIC (STORAGE, LOGIN, BOTTOM NAV, INVENTORY, PO, RIWAYAT PDF, SUPABASE)
   ========================================================================== -->
   <script>
-    // Kunci penyimpanan LocalStorage khusus Baji Artha Mart
     const STORAGE_KEYS = {
-      ITEMS: 'baji_artha_mart_items_v1',
-      OUTGOING: 'baji_artha_mart_outgoing_v1',
-      PO: 'baji_artha_mart_po_v1',
-      USERS: 'baji_artha_mart_users_v1',
-      SESSION: 'baji_artha_mart_session_v1',
-      PROFILE: 'baji_artha_mart_profile_v1',
-      SUPABASE: 'baji_artha_mart_supabase_v1',
+      ITEMS: 'baji_artha_mart_items_v2',
+      OUTGOING: 'baji_artha_mart_outgoing_v2',
+      PO: 'baji_artha_mart_po_v2',
+      USERS: 'baji_artha_mart_users_v2',
+      SESSION: 'baji_artha_mart_session_v2',
+      PROFILE: 'baji_artha_mart_profile_v2',
+      SUPABASE: 'baji_artha_mart_supabase_v2',
     };
 
-    // Konfigurasi Default Supabase Baji Artha Mart
     const DEFAULT_SUPABASE_CONFIG = {
       url: 'https://vncuecitsmddedxwqbrf.supabase.co',
       anonKey: 'sb_publishable_tEi_6fKxtxWudJ5JHmqQRg_b9mt7nF8',
+      rowId: 'main_store_data',
     };
 
-    // State Aplikasi Terpusat
     let state = {
       items: [],
       outgoing: [],
@@ -1687,8 +1866,8 @@ WITH CHECK (true);</pre>
       currentUser: null,
       profile: {
         storeName: 'Baji Artha Mart',
-        address: 'Jl. Poros Logistik No. 108',
-        phone: '0812-4455-8899',
+        address: 'Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan',
+        phone: '0812-3456-7890',
         expiryWarningDays: 30,
       },
       supabaseConfig: {
@@ -1703,7 +1882,7 @@ WITH CHECK (true);</pre>
     let supabaseConnected = false;
     let pendingConfirmCallback = null;
 
-    // ==================== INISIALISASI SAAT HALAMAN DIMUAT ====================
+    // ==================== INISIALISASI ====================
     window.addEventListener('DOMContentLoaded', async () => {
       loadStateFromStorage();
       ensureDefaultUsersAndSeedData();
@@ -1712,7 +1891,6 @@ WITH CHECK (true);</pre>
       await initSupabaseClientFromConfig(true);
       checkAuthSession();
 
-      // Tutup dropdown saat klik di luar area
       document.addEventListener('click', (e) => {
         const notifWrap = document.getElementById('notif-dropdown-wrapper');
         const adminWrap = document.getElementById('admin-dropdown-wrapper');
@@ -1723,7 +1901,7 @@ WITH CHECK (true);</pre>
       if (window.lucide) lucide.createIcons();
     });
 
-    // ==================== HELPER TANGGAL & FORMAT ====================
+    // ==================== HELPER TANGGAL, RUPIAH & ESCAPE ====================
     function getTodayISO() {
       const now = new Date();
       const offset = now.getTimezoneOffset() * 60000;
@@ -1743,6 +1921,11 @@ WITH CHECK (true);</pre>
       if (parts.length !== 3) return isoDate;
       const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
       return `${parts[2]} ${months[parseInt(parts[1], 10) - 1]} ${parts[0]}`;
+    }
+
+    function formatRupiah(amount) {
+      const num = Number(amount || 0);
+      return 'Rp ' + num.toLocaleString('id-ID');
     }
 
     function getDaysUntil(isoDate) {
@@ -1778,7 +1961,7 @@ WITH CHECK (true);</pre>
       return `PO-BAM-${ymd}-${rand}`;
     }
 
-    // ==================== PENYIMPANAN LOCALSTORAGE & AUTO-SYNC ====================
+    // ==================== PENYIMPANAN LOCALSTORAGE ====================
     function loadStateFromStorage() {
       try {
         const items = localStorage.getItem(STORAGE_KEYS.ITEMS);
@@ -1794,7 +1977,15 @@ WITH CHECK (true);</pre>
         if (po) state.purchaseOrders = JSON.parse(po);
         if (users) state.users = JSON.parse(users);
         if (session) state.currentUser = JSON.parse(session);
-        if (profile) state.profile = { ...state.profile, ...JSON.parse(profile) };
+        if (profile) {
+          const parsedProf = JSON.parse(profile);
+          state.profile = {
+            storeName: parsedProf.storeName || 'Baji Artha Mart',
+            address: parsedProf.address || 'Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan',
+            phone: parsedProf.phone || '0812-3456-7890',
+            expiryWarningDays: Number(parsedProf.expiryWarningDays) || 30,
+          };
+        }
         if (sb) {
           const parsedSb = JSON.parse(sb);
           state.supabaseConfig = {
@@ -1826,11 +2017,11 @@ WITH CHECK (true);</pre>
           backgroundPushToSupabase();
         }
       } catch (err) {
-        showToast('Gagal menyimpan data ke penyimpanan browser.', 'error');
+        showToast('Gagal menyimpan data ke penyimpanan lokal browser.', 'error');
       }
     }
 
-    // ==================== DATA AWAL & PENGGUNA DEFAULT ====================
+    // ==================== DATA CONTOH & AKUN DEFAULT ====================
     function ensureDefaultUsersAndSeedData() {
       if (!state.users || state.users.length === 0) {
         state.users = [
@@ -1868,6 +2059,8 @@ WITH CHECK (true);</pre>
           satuan: 'sak',
           stok: 6,
           minimal: 10,
+          hargaBeli: 64000,
+          hargaJual: 72000,
           expired: addDaysISO(120),
           pemasok: 'PT Sumber Pangan Nusantara',
         },
@@ -1879,6 +2072,8 @@ WITH CHECK (true);</pre>
           satuan: 'dus',
           stok: 4,
           minimal: 8,
+          hargaBeli: 186000,
+          hargaJual: 204000,
           expired: addDaysISO(18),
           pemasok: 'CV Sawit Makmur Abadi',
         },
@@ -1890,6 +2085,8 @@ WITH CHECK (true);</pre>
           satuan: 'dus',
           stok: 15,
           minimal: 6,
+          hargaBeli: 192000,
+          hargaJual: 216000,
           expired: addDaysISO(-3),
           pemasok: 'PT Dairy Sejahtera',
         },
@@ -1901,19 +2098,23 @@ WITH CHECK (true);</pre>
           satuan: 'pack',
           stok: 28,
           minimal: 12,
+          hargaBeli: 15500,
+          hargaJual: 17500,
           expired: addDaysISO(240),
           pemasok: 'PT Manis Alami Sulawesi',
         },
         {
           id: 'ITM-005',
           kode: 'BAM-005',
-          nama: 'Deterjen Cair Konsentrat 800ml',
-          kategori: 'Kebutuhan Rumah Tangga',
+          nama: 'Keranjang Plastik Serbaguna XL',
+          kategori: 'Non-Expired / Peralatan',
           satuan: 'pcs',
           stok: 5,
           minimal: 5,
-          expired: addDaysISO(12),
-          pemasok: 'PT Bersih Kilau Indonesia',
+          hargaBeli: 28000,
+          hargaJual: 35000,
+          expired: '',
+          pemasok: 'UD Plastik Jaya Abadi',
         },
       ];
 
@@ -1926,6 +2127,8 @@ WITH CHECK (true);</pre>
           itemNama: 'Beras Premium Pandan Wangi 5kg',
           satuan: 'sak',
           qty: 4,
+          hargaSatuan: 72000,
+          totalHarga: 288000,
           tujuan: 'Display Area Toko Depan',
           keterangan: 'Pengisian rak utama',
           sisaSetelah: 6,
@@ -1939,6 +2142,8 @@ WITH CHECK (true);</pre>
           itemNama: 'Minyak Goreng Kelapa Sawit 2L',
           satuan: 'dus',
           qty: 3,
+          hargaSatuan: 204000,
+          totalHarga: 612000,
           tujuan: 'Penjualan Grosir Pelanggan',
           keterangan: 'Nota #INV-2026-114',
           sisaSetelah: 4,
@@ -1957,6 +2162,8 @@ WITH CHECK (true);</pre>
           satuan: 'sak',
           pemasok: 'PT Sumber Pangan Nusantara',
           qty: 20,
+          hargaBeli: 64000,
+          totalHarga: 1280000,
           estimasiTiba: addDaysISO(1),
           status: 'Dipesan',
           tglSampai: '',
@@ -1972,6 +2179,8 @@ WITH CHECK (true);</pre>
           satuan: 'pack',
           pemasok: 'PT Manis Alami Sulawesi',
           qty: 30,
+          hargaBeli: 15500,
+          totalHarga: 465000,
           estimasiTiba: addDaysISO(-4),
           status: 'Diterima',
           tglSampai: addDaysISO(-4),
@@ -2054,16 +2263,14 @@ WITH CHECK (true);</pre>
       showToast('Anda telah keluar dari sistem.', 'info');
     }
 
-    // ==================== NAVIGASI BOTTOM BAR (5 SLOT SIMETRIS, HOME DI TENGAH) ====================
+    // ==================== NAVIGASI BOTTOM BAR (5 SLOT SIMETRIS) ====================
     function navigateTo(tabName) {
       state.activeTab = tabName;
 
-      // Sembunyikan semua halaman
       document.querySelectorAll('.app-section').forEach((sec) => sec.classList.add('hidden'));
       const targetSection = document.getElementById(`view-${tabName}`);
       if (targetSection) targetSection.classList.remove('hidden');
 
-      // Update gaya aktif tombol bottom navigation bar
       document.querySelectorAll('.bottom-nav-item').forEach((btn) => {
         const navKey = btn.getAttribute('data-nav');
         if (navKey === tabName) {
@@ -2075,7 +2282,6 @@ WITH CHECK (true);</pre>
         }
       });
 
-      // Highlight ring tombol Home tengah jika aktif
       const btnHome = document.getElementById('btn-bottom-home');
       if (btnHome) {
         if (tabName === 'dashboard') {
@@ -2114,11 +2320,11 @@ WITH CHECK (true);</pre>
       if (menu) menu.classList.add('hidden');
     }
 
-    // ==================== UPDATE IDENTITAS TOKO & PROFIL AKUN ====================
+    // ==================== UPDATE IDENTITAS TOKO (TERPISAH) & PROFIL AKUN ====================
     function applyBrandingAndProfileToUI() {
       const storeName = state.profile.storeName || 'Baji Artha Mart';
-      const address = state.profile.address || 'Jl. Poros Logistik No. 108';
-      const phone = state.profile.phone || '0812-4455-8899';
+      const address = state.profile.address || 'Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan';
+      const phone = state.profile.phone || '0812-3456-7890';
       const expDays = state.profile.expiryWarningDays || 30;
 
       document.title = `${storeName} — Sistem Manajemen Persediaan & Gudang`;
@@ -2127,6 +2333,7 @@ WITH CHECK (true);</pre>
       const elHeaderName = document.getElementById('header-store-name');
       const elDashTitle = document.getElementById('dash-store-title');
       const elDashAddr = document.getElementById('dash-store-address');
+      const elDashPhone = document.getElementById('dash-store-phone');
       const elTodayDate = document.getElementById('header-today-date');
       const elSubExp = document.getElementById('sub-stat-expired-days');
       const elPanelExpSub = document.getElementById('panel-expired-subtitle');
@@ -2134,12 +2341,12 @@ WITH CHECK (true);</pre>
       if (elLoginTitle) elLoginTitle.textContent = storeName;
       if (elHeaderName) elHeaderName.textContent = storeName;
       if (elDashTitle) elDashTitle.textContent = storeName;
-      if (elDashAddr) elDashAddr.textContent = `${address} • Telp: ${phone}`;
+      if (elDashAddr) elDashAddr.textContent = address;
+      if (elDashPhone) elDashPhone.textContent = phone;
       if (elTodayDate) elTodayDate.textContent = formatDateIndo(getTodayISO());
       if (elSubExp) elSubExp.textContent = `Expired & ≤ ${expDays} hari lagi`;
       if (elPanelExpSub) elPanelExpSub.textContent = `Sudah kadaluarsa atau ≤ ${expDays} hari lagi`;
 
-      // Isi form pengaturan toko
       const whName = document.getElementById('wh-name');
       const whAddr = document.getElementById('wh-address');
       const whPhone = document.getElementById('wh-phone');
@@ -2169,7 +2376,6 @@ WITH CHECK (true);</pre>
       const outLogger = document.getElementById('out-current-logger');
       if (outLogger) outLogger.textContent = u.fullName;
 
-      // Isi form profil akun
       const fullRecord = state.users.find((x) => x.id === u.id) || u;
       document.getElementById('prof-fullname').value = fullRecord.fullName || '';
       document.getElementById('prof-username').value = fullRecord.username || '';
@@ -2211,7 +2417,7 @@ WITH CHECK (true);</pre>
       saveAllStateToStorage();
       updateUserHeaderAndProfileUI();
       renderUsersTable();
-      showToast('Profil akun berhasil diperbarui.', 'success');
+      showToast('Profil akun berhasil diperbarui secara real-time.', 'success');
     }
 
     function handleSaveWarehouseProfile(event) {
@@ -2224,7 +2430,7 @@ WITH CHECK (true);</pre>
       saveAllStateToStorage();
       applyBrandingAndProfileToUI();
       renderAllViews();
-      showToast('Pengaturan toko Baji Artha Mart berhasil disimpan.', 'success');
+      showToast('Identitas toko (Nama, Alamat & Kontak) berhasil disimpan.', 'success');
     }
 
     // ==================== RENDER KESELURUHAN TAMPILAN ====================
@@ -2269,27 +2475,29 @@ WITH CHECK (true);</pre>
 
       const totalJenis = state.items.length;
       const totalUnit = state.items.reduce((acc, it) => acc + Number(it.stok || 0), 0);
+      const totalModalAsset = state.items.reduce(
+        (acc, it) => acc + Number(it.stok || 0) * Number(it.hargaBeli || 0),
+        0
+      );
 
-      // Barang menyentuh atau di bawah batas minimal
       const restockItems = state.items.filter((it) => Number(it.stok) <= Number(it.minimal));
 
-      // Barang sudah expired atau mendekati expired
       const expiryItems = state.items
+        .filter((it) => Boolean(it.expired))
         .map((it) => ({ ...it, daysLeft: getDaysUntil(it.expired) }))
         .filter((it) => it.daysLeft <= warningDays)
         .sort((a, b) => a.daysLeft - b.daysLeft);
 
-      // PO dalam perjalanan
       const transitPOs = state.purchaseOrders.filter((po) => po.status === 'Dipesan');
 
-      // Update 5 Kartu Statistik
       document.getElementById('stat-total-jenis').textContent = totalJenis;
       document.getElementById('stat-total-unit').textContent = totalUnit.toLocaleString('id-ID');
+      document.getElementById('stat-total-asset').textContent = `Aset: ${formatRupiah(totalModalAsset)}`;
       document.getElementById('stat-min-stock').textContent = restockItems.length;
       document.getElementById('stat-expired').textContent = expiryItems.length;
       document.getElementById('stat-po-transit').textContent = transitPOs.length;
 
-      // Update Badge Lonceng Header & Titik Merah Tombol Home Tengah
+      // Badge Lonceng Header & Titik Merah Tombol Home Tengah
       const totalAlerts = restockItems.length + expiryItems.length;
       const bellBadge = document.getElementById('header-bell-badge');
       const homeDot = document.getElementById('home-reminder-dot');
@@ -2320,7 +2528,7 @@ WITH CHECK (true);</pre>
                 <p class="text-[11px] text-[#2C2C2C]">Sisa <strong>${it.stok} ${escapeHTML(it.satuan)}</strong> (Min: ${it.minimal})</p>
               </div>
               <button type="button" onclick="closeNotifPopover(); quickOrderFromReminder('${escapeHTML(it.id)}')" class="px-2.5 py-1 rounded-lg text-[11px] font-extrabold bg-[#000000] text-[#FFAB00] shrink-0 cursor-pointer">
-                Pesan
+                Buat PO
               </button>
             </div>`
           );
@@ -2342,7 +2550,7 @@ WITH CHECK (true);</pre>
         }
       }
 
-      // Panel 1: Reminder Pesan ke Pemasok
+      // Panel 1: Reminder Batas Minimal Stok
       document.getElementById('badge-panel-restock').textContent = `${restockItems.length} Item`;
       const restockContainer = document.getElementById('reminder-restock-list');
       if (restockItems.length === 0) {
@@ -2370,8 +2578,8 @@ WITH CHECK (true);</pre>
                 <p class="text-sm font-extrabold text-[#000000]">${escapeHTML(it.nama)}</p>
                 <p class="text-xs text-[#2C2C2C]">
                   Sisa: <strong class="text-red-600">${it.stok} ${escapeHTML(it.satuan)}</strong> &bull;
-                  Batas Min: <strong>${it.minimal} ${escapeHTML(it.satuan)}</strong> &bull;
-                  Pemasok: <strong>${escapeHTML(it.pemasok)}</strong>
+                  Min: <strong>${it.minimal} ${escapeHTML(it.satuan)}</strong> &bull;
+                  Pemasok: <strong>${escapeHTML(it.pemasok || '-')}</strong>
                 </p>
               </div>
               <button
@@ -2379,7 +2587,7 @@ WITH CHECK (true);</pre>
                 onclick="quickOrderFromReminder('${escapeHTML(it.id)}', ${suggestedQty})"
                 class="px-3.5 py-2 rounded-xl text-xs font-extrabold bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition shrink-0 cursor-pointer"
               >
-                Pesan ke Pemasok (+${suggestedQty})
+                Buat PO (+${suggestedQty})
               </button>
             </div>`;
           })
@@ -2393,7 +2601,7 @@ WITH CHECK (true);</pre>
         expiredContainer.innerHTML = `
           <div class="py-10 text-center text-xs text-[#2C2C2C]">
             <p class="font-bold text-[#000000]">Tidak Ada Peringatan Expired</p>
-            <p class="mt-1">Semua persediaan memiliki masa simpan lebih dari ${warningDays} hari.</p>
+            <p class="mt-1">Semua persediaan memiliki masa simpan aman (&gt; ${warningDays} hari) atau non-expired.</p>
           </div>`;
       } else {
         expiredContainer.innerHTML = expiryItems
@@ -2420,7 +2628,7 @@ WITH CHECK (true);</pre>
                 <p class="text-sm font-extrabold text-[#000000]">${escapeHTML(it.nama)}</p>
                 <p class="text-xs text-[#2C2C2C]">
                   Tgl Expired: <strong class="text-[#000000]">${formatDateIndo(it.expired)}</strong> &bull;
-                  Stok di Gudang: <strong>${it.stok} ${escapeHTML(it.satuan)}</strong>
+                  Stok: <strong>${it.stok} ${escapeHTML(it.satuan)}</strong>
                 </p>
               </div>
               <button
@@ -2435,13 +2643,13 @@ WITH CHECK (true);</pre>
           .join('');
       }
 
-      // Ringkasan PO Dalam Perjalanan di Dashboard
+      // Ringkasan PO Menunggu Tiba
       const transitContainer = document.getElementById('dashboard-transit-list');
       if (transitPOs.length === 0) {
-        transitContainer.innerHTML = `<p class="text-xs text-center text-[#2C2C2C] py-4">Tidak ada pesanan pemasok yang sedang dalam perjalanan.</p>`;
+        transitContainer.innerHTML = `<p class="text-xs text-center text-[#2C2C2C] py-6">Tidak ada pesanan pemasok yang sedang dalam perjalanan.</p>`;
       } else {
         transitContainer.innerHTML = `
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="space-y-2.5">
             ${transitPOs
               .map(
                 (po) => `
@@ -2449,7 +2657,7 @@ WITH CHECK (true);</pre>
                 <div>
                   <span class="text-[11px] font-mono font-extrabold text-[#000000]">${escapeHTML(po.nomorPO)}</span>
                   <p class="text-sm font-extrabold text-[#000000]">${escapeHTML(po.itemNama)} (+${po.qty} ${escapeHTML(po.satuan)})</p>
-                  <p class="text-xs text-[#2C2C2C]">Pemasok: ${escapeHTML(po.pemasok)} &bull; Pesan: ${formatDateIndo(po.tglPesan)}</p>
+                  <p class="text-xs text-[#2C2C2C]">Pemasok: ${escapeHTML(po.pemasok)} &bull; Total: <strong>${formatRupiah(po.totalHarga)}</strong></p>
                 </div>
                 <button
                   type="button"
@@ -2463,9 +2671,48 @@ WITH CHECK (true);</pre>
               .join('')}
           </div>`;
       }
+
+      // Aktivitas Terbaru (5 item terakhir)
+      const recentContainer = document.getElementById('dashboard-recent-activity');
+      const recentRecords = getUnifiedHistoryRecords().slice(0, 5);
+      if (recentContainer) {
+        if (recentRecords.length === 0) {
+          recentContainer.innerHTML = `<p class="text-xs text-center text-[#2C2C2C] py-6">Belum ada aktivitas transaksi tercatat.</p>`;
+        } else {
+          recentContainer.innerHTML = `
+            <div class="space-y-2.5">
+              ${recentRecords
+                .map(
+                  (rec) => `
+                <div class="p-3 rounded-xl bg-[#F5F5F5] border border-neutral-200 flex items-center justify-between gap-3">
+                  <div class="min-w-0">
+                    <div class="flex items-center gap-2">
+                      <span class="px-2 py-0.5 rounded text-[10px] font-black ${
+                        rec.type === 'OUT' ? 'bg-red-600 text-[#FFFFFF]' : 'bg-[#FFAB00] text-[#000000]'
+                      }">
+                        ${rec.type === 'OUT' ? 'KELUAR' : 'PO'}
+                      </span>
+                      <span class="text-[11px] text-[#2C2C2C] font-semibold">${formatDateIndo(rec.tanggal)}</span>
+                    </div>
+                    <p class="text-xs font-extrabold text-[#000000] truncate mt-1">${escapeHTML(rec.itemNama)}</p>
+                    <p class="text-[11px] text-[#2C2C2C] truncate">${escapeHTML(rec.partner)}</p>
+                  </div>
+                  <div class="text-right shrink-0">
+                    <p class="text-xs font-black ${rec.type === 'OUT' ? 'text-red-600' : 'text-[#000000]'}">
+                      ${rec.type === 'OUT' ? '-' : '+'}${rec.qty} ${escapeHTML(rec.satuan)}
+                    </p>
+                    <p class="text-[11px] font-bold text-[#2C2C2C]">${formatRupiah(rec.totalHarga)}</p>
+                  </div>
+                </div>`
+                )
+                .join('')}
+            </div>`;
+        }
+      }
     }
 
     function quickOrderFromReminder(itemId, suggestedQty = 15) {
+      const item = state.items.find((it) => it.id === itemId);
       navigateTo('po');
       const poSelect = document.getElementById('po-item-id');
       const poQty = document.getElementById('po-qty');
@@ -2476,10 +2723,13 @@ WITH CHECK (true);</pre>
       }
       if (poQty) poQty.value = suggestedQty;
       if (poNomor) poNomor.value = generatePONumber();
-      showToast('Data barang & pemasok otomatis diisi pada form PO.', 'info');
+      updatePOTotalPreview();
+      if (item) {
+        showToast(`Form PO diisi otomatis untuk "${item.nama}" (${item.pemasok || 'Pemasok'}).`, 'info');
+      }
     }
 
-    // ==================== CRUD MASTER PERSEDIAAN ====================
+    // ==================== CRUD MASTER PERSEDIAAN & HARGA ====================
     function handleItemSubmit(event) {
       event.preventDefault();
       const editId = document.getElementById('item-id').value;
@@ -2487,22 +2737,36 @@ WITH CHECK (true);</pre>
       const nama = document.getElementById('item-nama').value.trim();
       const kategori = document.getElementById('item-kategori').value;
       const satuan = document.getElementById('item-satuan').value;
-      const stok = parseInt(document.getElementById('item-stok').value, 10);
-      const minimal = parseInt(document.getElementById('item-minimal').value, 10);
-      const expired = document.getElementById('item-expired').value;
+      const stok = parseInt(document.getElementById('item-stok').value, 10) || 0;
+      const minimal = parseInt(document.getElementById('item-minimal').value, 10) || 0;
+      const hargaBeli = parseFloat(document.getElementById('item-harga-beli').value) || 0;
+      const hargaJual = parseFloat(document.getElementById('item-harga-jual').value) || 0;
+      const expired = document.getElementById('item-expired').value || '';
       const pemasok = document.getElementById('item-pemasok').value.trim();
 
       const dupCode = state.items.find((it) => it.kode.toUpperCase() === kode && it.id !== editId);
       if (dupCode) {
-        showToast(`Kode barang "${kode}" sudah terdaftar.`, 'error');
+        showToast(`Kode SKU "${kode}" sudah digunakan oleh barang lain.`, 'error');
         return;
       }
 
       if (editId) {
         const idx = state.items.findIndex((it) => it.id === editId);
         if (idx !== -1) {
-          state.items[idx] = { id: editId, kode, nama, kategori, satuan, stok, minimal, expired, pemasok };
-          showToast('Data barang berhasil diperbarui.', 'success');
+          state.items[idx] = {
+            id: editId,
+            kode,
+            nama,
+            kategori,
+            satuan,
+            stok,
+            minimal,
+            hargaBeli,
+            hargaJual,
+            expired,
+            pemasok,
+          };
+          showToast('Data barang & harga berhasil diperbarui.', 'success');
         }
       } else {
         state.items.unshift({
@@ -2513,6 +2777,8 @@ WITH CHECK (true);</pre>
           satuan,
           stok,
           minimal,
+          hargaBeli,
+          hargaJual,
           expired,
           pemasok,
         });
@@ -2535,8 +2801,10 @@ WITH CHECK (true);</pre>
       document.getElementById('item-satuan').value = item.satuan;
       document.getElementById('item-stok').value = item.stok;
       document.getElementById('item-minimal').value = item.minimal;
-      document.getElementById('item-expired').value = item.expired;
-      document.getElementById('item-pemasok').value = item.pemasok;
+      document.getElementById('item-harga-beli').value = item.hargaBeli || 0;
+      document.getElementById('item-harga-jual').value = item.hargaJual || 0;
+      document.getElementById('item-expired').value = item.expired || '';
+      document.getElementById('item-pemasok').value = item.pemasok || '';
 
       document.getElementById('item-form-title').textContent = `Edit Data Barang: ${item.nama}`;
       document.getElementById('btn-submit-item').textContent = 'Simpan Perubahan Barang';
@@ -2563,6 +2831,18 @@ WITH CHECK (true);</pre>
       const tbody = document.getElementById('tbody-inventory');
       if (!tbody) return;
 
+      // Hitung 3 kartu finansial persediaan
+      const totalModal = state.items.reduce((acc, it) => acc + Number(it.stok || 0) * Number(it.hargaBeli || 0), 0);
+      const totalJual = state.items.reduce((acc, it) => acc + Number(it.stok || 0) * Number(it.hargaJual || 0), 0);
+      const totalMargin = totalJual - totalModal;
+
+      const elModal = document.getElementById('inv-fin-modal');
+      const elJual = document.getElementById('inv-fin-jual');
+      const elMargin = document.getElementById('inv-fin-margin');
+      if (elModal) elModal.textContent = formatRupiah(totalModal);
+      if (elJual) elJual.textContent = formatRupiah(totalJual);
+      if (elMargin) elMargin.textContent = formatRupiah(totalMargin);
+
       const keyword = (document.getElementById('search-inventory')?.value || '').toLowerCase();
       const stockFilter = document.getElementById('filter-inv-stock')?.value || 'all';
       const expiryFilter = document.getElementById('filter-inv-expiry')?.value || 'all';
@@ -2573,24 +2853,25 @@ WITH CHECK (true);</pre>
           it.kode.toLowerCase().includes(keyword) ||
           it.nama.toLowerCase().includes(keyword) ||
           it.kategori.toLowerCase().includes(keyword) ||
-          it.pemasok.toLowerCase().includes(keyword);
+          (it.pemasok || '').toLowerCase().includes(keyword);
 
         const isLow = Number(it.stok) <= Number(it.minimal);
         const matchStock =
           stockFilter === 'all' || (stockFilter === 'restock' && isLow) || (stockFilter === 'safe' && !isLow);
 
-        const daysLeft = getDaysUntil(it.expired);
+        const hasExp = Boolean(it.expired);
+        const daysLeft = hasExp ? getDaysUntil(it.expired) : 9999;
         const matchExp =
           expiryFilter === 'all' ||
-          (expiryFilter === 'expired' && daysLeft < 0) ||
-          (expiryFilter === 'near_exp' && daysLeft >= 0 && daysLeft <= warningDays) ||
-          (expiryFilter === 'safe' && daysLeft > warningDays);
+          (expiryFilter === 'expired' && hasExp && daysLeft < 0) ||
+          (expiryFilter === 'near_exp' && hasExp && daysLeft >= 0 && daysLeft <= warningDays) ||
+          (expiryFilter === 'safe' && (!hasExp || daysLeft > warningDays));
 
         return matchText && matchStock && matchExp;
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-xs text-[#2C2C2C]">Tidak ada data barang yang sesuai dengan filter.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-xs text-[#2C2C2C]">Tidak ada data barang yang sesuai dengan filter.</td></tr>`;
         return;
       }
 
@@ -2598,39 +2879,44 @@ WITH CHECK (true);</pre>
         .map((it) => {
           const isLow = Number(it.stok) <= Number(it.minimal);
           const isOut = Number(it.stok) === 0;
-          const daysLeft = getDaysUntil(it.expired);
+          const hasExp = Boolean(it.expired);
+          const daysLeft = hasExp ? getDaysUntil(it.expired) : 9999;
 
           const stockBadge = isOut
-            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-red-600 text-[#FFFFFF] badge-pulse-danger">Habis (Restock)</span>`
+            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-red-600 text-[#FFFFFF] badge-pulse-danger">Habis</span>`
             : isLow
-            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFAB00] text-[#000000] badge-pulse-amber">Batas Minimal</span>`
+            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFAB00] text-[#000000] badge-pulse-amber">Batas Min.</span>`
             : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F5F5F5] text-[#000000] border border-neutral-300">Aman</span>`;
 
-          const expBadge =
-            daysLeft < 0
-              ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-red-600 text-[#FFFFFF]">Expired (${Math.abs(daysLeft)}h lalu)</span>`
-              : daysLeft <= warningDays
-              ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFAB00] text-[#000000]">${daysLeft} hari lagi</span>`
-              : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F5F5F5] text-[#2C2C2C]">Aman (${daysLeft}h)</span>`;
+          const expBadge = !hasExp
+            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F5F5F5] text-[#2C2C2C]">Non-Expired</span>`
+            : daysLeft < 0
+            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-red-600 text-[#FFFFFF]">Expired (${Math.abs(daysLeft)}h lalu)</span>`
+            : daysLeft <= warningDays
+            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFAB00] text-[#000000]">${daysLeft} hari lagi</span>`
+            : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F5F5F5] text-[#2C2C2C]">Aman (${daysLeft}h)</span>`;
 
           return `
           <tr class="hover:bg-[#F5F5F5]/70 transition">
             <td class="py-3.5 px-4">
               <span class="text-xs font-mono font-bold text-[#2C2C2C]">${escapeHTML(it.kode)}</span>
               <p class="font-extrabold text-[#000000]">${escapeHTML(it.nama)}</p>
-              <span class="text-[11px] text-[#2C2C2C]">${escapeHTML(it.kategori)}</span>
+              <span class="text-[11px] text-[#2C2C2C]">${escapeHTML(it.kategori)}${it.pemasok ? ` &bull; Pemasok: <strong>${escapeHTML(it.pemasok)}</strong>` : ''}</span>
             </td>
-            <td class="py-3.5 px-4 text-xs font-semibold text-[#2C2C2C]">${escapeHTML(it.pemasok)}</td>
-            <td class="py-3.5 px-4 text-right font-black ${isLow ? 'text-red-600' : 'text-[#000000]'}">
-              ${it.stok} <span class="text-xs font-normal text-[#2C2C2C]">${escapeHTML(it.satuan)}</span>
+            <td class="py-3.5 px-4 text-right">
+              <p class="text-xs text-[#2C2C2C]">Modal: <strong class="text-[#000000]">${formatRupiah(it.hargaBeli)}</strong></p>
+              <p class="text-xs text-emerald-700 font-extrabold">Jual: ${formatRupiah(it.hargaJual)}</p>
             </td>
-            <td class="py-3.5 px-4 text-right text-xs font-bold text-[#2C2C2C]">${it.minimal} ${escapeHTML(it.satuan)}</td>
+            <td class="py-3.5 px-4 text-right">
+              <p class="font-black ${isLow ? 'text-red-600' : 'text-[#000000]'}">${it.stok} <span class="text-xs font-normal text-[#2C2C2C]">${escapeHTML(it.satuan)}</span></p>
+              <p class="text-[11px] text-[#2C2C2C]">Min: ${it.minimal} ${escapeHTML(it.satuan)}</p>
+            </td>
             <td class="py-3.5 px-4">${stockBadge}</td>
-            <td class="py-3.5 px-4 text-xs font-bold text-[#000000]">${formatDateIndo(it.expired)}</td>
+            <td class="py-3.5 px-4 text-xs font-bold text-[#000000]">${hasExp ? formatDateIndo(it.expired) : '-'}</td>
             <td class="py-3.5 px-4">${expBadge}</td>
             <td class="py-3.5 px-4 text-center">
               <div class="inline-flex items-center gap-1.5">
-                <button type="button" onclick="quickOrderFromReminder('${escapeHTML(it.id)}')" class="p-1.5 rounded-lg bg-[#FFAB00] text-[#000000] hover:brightness-95 cursor-pointer" title="Pesan ke Pemasok">
+                <button type="button" onclick="quickOrderFromReminder('${escapeHTML(it.id)}')" class="p-1.5 rounded-lg bg-[#FFAB00] text-[#000000] hover:brightness-95 cursor-pointer" title="Buat PO ke Pemasok">
                   <i data-lucide="truck" class="w-4 h-4"></i>
                 </button>
                 <button type="button" onclick="editItem('${escapeHTML(it.id)}')" class="p-1.5 rounded-lg bg-[#2C2C2C] text-[#FFFFFF] hover:bg-[#000000] cursor-pointer" title="Edit Barang">
@@ -2646,22 +2932,37 @@ WITH CHECK (true);</pre>
         .join('');
     }
 
-    // ==================== PENCATATAN BARANG KELUAR GUDANG ====================
-    function updateOutgoingStockHint() {
+    // ==================== PENCATATAN BARANG KELUAR & HARGA ====================
+    function handleOutgoingItemChange() {
       const itemId = document.getElementById('out-item-id').value;
       const hint = document.getElementById('out-stock-hint');
+      const priceInput = document.getElementById('out-harga-satuan');
       const item = state.items.find((it) => it.id === itemId);
+
       if (!item) {
-        hint.textContent = 'Pilih barang untuk melihat sisa stok tersedia.';
+        hint.textContent = 'Pilih barang untuk melihat sisa stok & harga jual.';
+        if (priceInput) priceInput.value = '';
+        updateOutgoingSubtotalPreview();
         return;
       }
-      hint.innerHTML = `Stok tersedia: <strong class="text-[#000000]">${item.stok} ${escapeHTML(item.satuan)}</strong> &bull; Batas minimal: <strong>${item.minimal} ${escapeHTML(item.satuan)}</strong>`;
+
+      hint.innerHTML = `Stok tersedia: <strong class="text-[#000000]">${item.stok} ${escapeHTML(item.satuan)}</strong> &bull; Harga Jual Default: <strong>${formatRupiah(item.hargaJual)}</strong>`;
+      if (priceInput) priceInput.value = item.hargaJual || 0;
+      updateOutgoingSubtotalPreview();
+    }
+
+    function updateOutgoingSubtotalPreview() {
+      const qty = parseInt(document.getElementById('out-qty')?.value, 10) || 0;
+      const price = parseFloat(document.getElementById('out-harga-satuan')?.value) || 0;
+      const previewEl = document.getElementById('out-subtotal-preview');
+      if (previewEl) previewEl.textContent = formatRupiah(qty * price);
     }
 
     function handleOutgoingSubmit(event) {
       event.preventDefault();
       const itemId = document.getElementById('out-item-id').value;
       const qty = parseInt(document.getElementById('out-qty').value, 10);
+      const hargaSatuan = parseFloat(document.getElementById('out-harga-satuan').value) || 0;
       const tanggal = document.getElementById('out-tanggal').value;
       const tujuan = document.getElementById('out-tujuan').value.trim();
       const keterangan = document.getElementById('out-keterangan').value.trim();
@@ -2672,12 +2973,18 @@ WITH CHECK (true);</pre>
         return;
       }
 
+      if (qty <= 0) {
+        showToast('Jumlah keluar minimal 1 unit.', 'error');
+        return;
+      }
+
       if (qty > Number(item.stok)) {
-        showToast(`Jumlah keluar (${qty}) melebihi stok tersisa (${item.stok} ${item.satuan}).`, 'error');
+        showToast(`Jumlah keluar (${qty}) melebihi stok tersisa (${item.stok} ${item.satuan}). Stok tidak boleh minus!`, 'error');
         return;
       }
 
       item.stok = Number(item.stok) - qty;
+      const totalHarga = qty * hargaSatuan;
 
       state.outgoing.unshift({
         id: 'OUT-' + Date.now(),
@@ -2687,6 +2994,8 @@ WITH CHECK (true);</pre>
         itemNama: item.nama,
         satuan: item.satuan,
         qty,
+        hargaSatuan,
+        totalHarga,
         tujuan,
         keterangan: keterangan || '-',
         sisaSetelah: item.stok,
@@ -2695,7 +3004,7 @@ WITH CHECK (true);</pre>
 
       document.getElementById('form-outgoing').reset();
       document.getElementById('out-tanggal').value = getTodayISO();
-      updateOutgoingStockHint();
+      handleOutgoingItemChange();
       saveAllStateToStorage();
       renderAllViews();
 
@@ -2705,7 +3014,7 @@ WITH CHECK (true);</pre>
           'warning'
         );
       } else {
-        showToast('Transaksi barang keluar berhasil dicatat.', 'success');
+        showToast(`Transaksi keluar dicatat (${formatRupiah(totalHarga)}).`, 'success');
       }
     }
 
@@ -2752,12 +3061,18 @@ WITH CHECK (true);</pre>
             <p class="font-extrabold text-[#000000]">${escapeHTML(o.itemNama)}</p>
           </td>
           <td class="py-3.5 px-4 text-right font-black text-red-600">-${o.qty} ${escapeHTML(o.satuan)}</td>
-          <td class="py-3.5 px-4 text-xs font-bold text-[#000000]">${escapeHTML(o.tujuan)}</td>
-          <td class="py-3.5 px-4 text-xs text-[#2C2C2C]">${escapeHTML(o.keterangan)}</td>
+          <td class="py-3.5 px-4 text-right">
+            <p class="font-extrabold text-[#000000]">${formatRupiah(o.totalHarga)}</p>
+            <span class="text-[11px] text-[#2C2C2C]">@ ${formatRupiah(o.hargaSatuan)}</span>
+          </td>
+          <td class="py-3.5 px-4">
+            <p class="text-xs font-bold text-[#000000]">${escapeHTML(o.tujuan)}</p>
+            <span class="text-[11px] text-[#2C2C2C]">${escapeHTML(o.keterangan)}</span>
+          </td>
           <td class="py-3.5 px-4 text-right text-xs font-extrabold text-[#000000]">${o.sisaSetelah} ${escapeHTML(o.satuan)}</td>
           <td class="py-3.5 px-4 text-center">
             <div class="inline-flex items-center gap-1.5">
-              <button type="button" onclick="printTransactionReceiptPDF('OUT', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk PDF">
+              <button type="button" onclick="printTransactionReceiptPDF('OUT', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk PDF 80mm">
                 <i data-lucide="printer" class="w-4 h-4"></i>
               </button>
               <button type="button" onclick="openConfirmModal('deleteOutgoing', '${escapeHTML(o.id)}')" class="p-1.5 rounded-lg bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer" title="Batalkan & Kembalikan Stok">
@@ -2775,9 +3090,19 @@ WITH CHECK (true);</pre>
       const itemId = document.getElementById('po-item-id').value;
       const item = state.items.find((it) => it.id === itemId);
       const pemasokInput = document.getElementById('po-pemasok');
-      if (item && pemasokInput) {
-        pemasokInput.value = item.pemasok;
+      const hargaInput = document.getElementById('po-harga-beli');
+      if (item) {
+        if (pemasokInput) pemasokInput.value = item.pemasok || '';
+        if (hargaInput) hargaInput.value = item.hargaBeli || 0;
       }
+      updatePOTotalPreview();
+    }
+
+    function updatePOTotalPreview() {
+      const qty = parseInt(document.getElementById('po-qty')?.value, 10) || 0;
+      const harga = parseFloat(document.getElementById('po-harga-beli')?.value) || 0;
+      const previewEl = document.getElementById('po-total-preview');
+      if (previewEl) previewEl.textContent = formatRupiah(qty * harga);
     }
 
     function handlePOSubmit(event) {
@@ -2787,6 +3112,7 @@ WITH CHECK (true);</pre>
       const itemId = document.getElementById('po-item-id').value;
       const pemasok = document.getElementById('po-pemasok').value.trim();
       const qty = parseInt(document.getElementById('po-qty').value, 10);
+      const hargaBeli = parseFloat(document.getElementById('po-harga-beli').value) || 0;
       const estimasiTiba = document.getElementById('po-estimasi').value;
       const catatan = document.getElementById('po-catatan').value.trim();
 
@@ -2795,6 +3121,8 @@ WITH CHECK (true);</pre>
         showToast('Silakan pilih barang yang akan dipesan.', 'error');
         return;
       }
+
+      const totalHarga = qty * hargaBeli;
 
       state.purchaseOrders.unshift({
         id: 'PO-' + Date.now(),
@@ -2806,6 +3134,8 @@ WITH CHECK (true);</pre>
         satuan: item.satuan,
         pemasok,
         qty,
+        hargaBeli,
+        totalHarga,
         estimasiTiba,
         status: 'Dipesan',
         tglSampai: '',
@@ -2815,9 +3145,10 @@ WITH CHECK (true);</pre>
       document.getElementById('form-po').reset();
       document.getElementById('po-tgl-pesan').value = getTodayISO();
       document.getElementById('po-nomor').value = generatePONumber();
+      updatePOTotalPreview();
       saveAllStateToStorage();
       renderAllViews();
-      showToast(`Pesanan ${nomorPO} berhasil dibuat!`, 'success');
+      showToast(`Pesanan ${nomorPO} berhasil dibuat (${formatRupiah(totalHarga)})!`, 'success');
     }
 
     function openReceivePOModal(poId) {
@@ -2830,6 +3161,7 @@ WITH CHECK (true);</pre>
       document.getElementById('receive-po-supplier').textContent = po.pemasok;
       document.getElementById('receive-po-qty').textContent = `${po.qty} ${po.satuan}`;
       document.getElementById('receive-tgl-sampai').value = getTodayISO();
+      document.getElementById('receive-new-harga-beli').value = po.hargaBeli || 0;
       document.getElementById('receive-new-expired').value = '';
 
       const modal = document.getElementById('modal-receive-po');
@@ -2848,6 +3180,7 @@ WITH CHECK (true);</pre>
       event.preventDefault();
       const poId = document.getElementById('receive-po-id').value;
       const tglSampai = document.getElementById('receive-tgl-sampai').value;
+      const newHargaBeli = parseFloat(document.getElementById('receive-new-harga-beli').value);
       const newExpired = document.getElementById('receive-new-expired').value;
 
       const po = state.purchaseOrders.find((p) => p.id === poId);
@@ -2855,10 +3188,15 @@ WITH CHECK (true);</pre>
 
       po.status = 'Diterima';
       po.tglSampai = tglSampai;
+      if (!isNaN(newHargaBeli) && newHargaBeli >= 0) {
+        po.hargaBeli = newHargaBeli;
+        po.totalHarga = Number(po.qty) * newHargaBeli;
+      }
 
       const item = state.items.find((it) => it.id === po.itemId);
       if (item) {
         item.stok = Number(item.stok) + Number(po.qty);
+        if (!isNaN(newHargaBeli) && newHargaBeli >= 0) item.hargaBeli = newHargaBeli;
         if (newExpired) item.expired = newExpired;
       }
 
@@ -2883,7 +3221,7 @@ WITH CHECK (true);</pre>
       const filtered = state.purchaseOrders.filter((po) => statusFilter === 'all' || po.status === statusFilter);
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-xs text-[#2C2C2C]">Belum ada catatan pemesanan ke pemasok.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-xs text-[#2C2C2C]">Belum ada catatan pemesanan ke pemasok.</td></tr>`;
         return;
       }
 
@@ -2891,8 +3229,8 @@ WITH CHECK (true);</pre>
         .map((po) => {
           const isArrived = po.status === 'Diterima';
           const statusBadge = isArrived
-            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#000000] text-[#FFAB00]">Sudah Sampai</span>`
-            : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFAB00] text-[#000000]">Dalam Perjalanan</span>`;
+            ? `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#000000] text-[#FFAB00]">Sudah Tiba</span>`
+            : `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-black bg-[#FFAB00] text-[#000000]">Menunggu Tiba</span>`;
 
           const arrivalCol = isArrived
             ? `<span class="font-extrabold text-[#000000]">${formatDateIndo(po.tglSampai)}</span>`
@@ -2908,10 +3246,13 @@ WITH CHECK (true);</pre>
               <p class="font-extrabold text-[#000000]">${escapeHTML(po.itemNama)}</p>
               <span class="text-xs text-[#2C2C2C]">Pemasok: <strong>${escapeHTML(po.pemasok)}</strong></span>
             </td>
-            <td class="py-3.5 px-4 text-right font-black text-[#000000]">+${po.qty} ${escapeHTML(po.satuan)}</td>
+            <td class="py-3.5 px-4 text-right">
+              <p class="font-black text-[#000000]">+${po.qty} ${escapeHTML(po.satuan)}</p>
+              <p class="text-xs font-extrabold text-[#000000]">${formatRupiah(po.totalHarga)}</p>
+              <span class="text-[11px] text-[#2C2C2C]">@ ${formatRupiah(po.hargaBeli)}</span>
+            </td>
             <td class="py-3.5 px-4">${statusBadge}</td>
             <td class="py-3.5 px-4">${arrivalCol}</td>
-            <td class="py-3.5 px-4 text-xs text-[#2C2C2C]">${escapeHTML(po.catatan)}</td>
             <td class="py-3.5 px-4 text-center">
               <div class="inline-flex items-center gap-1.5">
                 ${
@@ -2921,7 +3262,7 @@ WITH CHECK (true);</pre>
                       </button>`
                     : ''
                 }
-                <button type="button" onclick="printTransactionReceiptPDF('PO', '${escapeHTML(po.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk PO (PDF)">
+                <button type="button" onclick="printTransactionReceiptPDF('PO', '${escapeHTML(po.id)}')" class="p-1.5 rounded-lg bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] cursor-pointer" title="Cetak Struk PO PDF">
                   <i data-lucide="printer" class="w-4 h-4"></i>
                 </button>
                 <button type="button" onclick="openConfirmModal('deletePO', '${escapeHTML(po.id)}')" class="p-1.5 rounded-lg bg-[#F5F5F5] text-red-600 border border-neutral-300 hover:bg-red-50 cursor-pointer" title="Hapus Riwayat PO">
@@ -2934,7 +3275,7 @@ WITH CHECK (true);</pre>
         .join('');
     }
 
-    // ==================== RIWAYAT TRANSAKSI TERPADU & CETAK STRUK PDF ====================
+    // ==================== RIWAYAT TRANSAKSI TERPADU & CETAK PDF ====================
     function getUnifiedHistoryRecords() {
       const outRecords = state.outgoing.map((o) => ({
         rawId: o.id,
@@ -2945,6 +3286,8 @@ WITH CHECK (true);</pre>
         itemNama: o.itemNama,
         satuan: o.satuan,
         qty: o.qty,
+        hargaSatuan: Number(o.hargaSatuan || 0),
+        totalHarga: Number(o.totalHarga || 0),
         partner: o.tujuan,
         statusText: `Sisa Stok: ${o.sisaSetelah} ${o.satuan}`,
         note: o.keterangan || '-',
@@ -2961,11 +3304,13 @@ WITH CHECK (true);</pre>
         itemNama: po.itemNama,
         satuan: po.satuan,
         qty: po.qty,
+        hargaSatuan: Number(po.hargaBeli || 0),
+        totalHarga: Number(po.totalHarga || 0),
         partner: po.pemasok,
         statusText:
           po.status === 'Diterima'
-            ? `Sampai di Gudang: ${formatDateIndo(po.tglSampai)}`
-            : 'Dalam Perjalanan',
+            ? `Tiba di Gudang: ${formatDateIndo(po.tglSampai)}`
+            : 'Menunggu Tiba',
         note: po.catatan || '-',
         petugas: state.currentUser ? state.currentUser.fullName : 'Admin',
         tglSampai: po.tglSampai || '-',
@@ -2977,43 +3322,52 @@ WITH CHECK (true);</pre>
     function resetHistoryFilters() {
       const searchEl = document.getElementById('search-history');
       const typeEl = document.getElementById('filter-history-type');
-      const dateEl = document.getElementById('filter-history-date');
+      const startEl = document.getElementById('filter-history-start');
+      const endEl = document.getElementById('filter-history-end');
       if (searchEl) searchEl.value = '';
       if (typeEl) typeEl.value = 'all';
-      if (dateEl) dateEl.value = '';
+      if (startEl) startEl.value = '';
+      if (endEl) endEl.value = '';
       renderHistoryTable();
     }
 
-    function renderHistoryTable() {
-      const tbody = document.getElementById('tbody-history');
-      if (!tbody) return;
-
+    function getFilteredHistoryRecords() {
       const allRecords = getUnifiedHistoryRecords();
-      const outCount = state.outgoing.length;
-      const poCount = state.purchaseOrders.length;
-
-      const elStatTotal = document.getElementById('hist-stat-total');
-      const elStatOut = document.getElementById('hist-stat-out');
-      const elStatPo = document.getElementById('hist-stat-po');
-      if (elStatTotal) elStatTotal.textContent = allRecords.length;
-      if (elStatOut) elStatOut.textContent = outCount;
-      if (elStatPo) elStatPo.textContent = poCount;
-
       const keyword = (document.getElementById('search-history')?.value || '').toLowerCase();
       const typeFilter = document.getElementById('filter-history-type')?.value || 'all';
-      const dateFilter = document.getElementById('filter-history-date')?.value || '';
+      const startFilter = document.getElementById('filter-history-start')?.value || '';
+      const endFilter = document.getElementById('filter-history-end')?.value || '';
 
-      const filtered = allRecords.filter((rec) => {
+      return allRecords.filter((rec) => {
         const matchType = typeFilter === 'all' || rec.type === typeFilter;
-        const matchDate = !dateFilter || rec.tanggal === dateFilter;
+        const matchStart = !startFilter || rec.tanggal >= startFilter;
+        const matchEnd = !endFilter || rec.tanggal <= endFilter;
         const matchText =
           rec.refNo.toLowerCase().includes(keyword) ||
           rec.itemNama.toLowerCase().includes(keyword) ||
           rec.itemKode.toLowerCase().includes(keyword) ||
           rec.partner.toLowerCase().includes(keyword) ||
           rec.note.toLowerCase().includes(keyword);
-        return matchType && matchDate && matchText;
+        return matchType && matchStart && matchEnd && matchText;
       });
+    }
+
+    function renderHistoryTable() {
+      const tbody = document.getElementById('tbody-history');
+      if (!tbody) return;
+
+      const filtered = getFilteredHistoryRecords();
+      const outFiltered = filtered.filter((r) => r.type === 'OUT');
+      const poFiltered = filtered.filter((r) => r.type === 'PO');
+
+      const outNominal = outFiltered.reduce((acc, r) => acc + r.totalHarga, 0);
+      const poNominal = poFiltered.reduce((acc, r) => acc + r.totalHarga, 0);
+
+      document.getElementById('hist-stat-total').textContent = filtered.length;
+      document.getElementById('hist-stat-out-nominal').textContent = formatRupiah(outNominal);
+      document.getElementById('hist-stat-out-count').textContent = `${outFiltered.length} transaksi keluar`;
+      document.getElementById('hist-stat-po-nominal').textContent = formatRupiah(poNominal);
+      document.getElementById('hist-stat-po-count').textContent = `${poFiltered.length} pesanan pemasok`;
 
       if (filtered.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-xs text-[#2C2C2C]">Belum ada riwayat transaksi yang sesuai dengan filter.</td></tr>`;
@@ -3028,8 +3382,8 @@ WITH CHECK (true);</pre>
             : `<span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-black bg-[#FFAB00] text-[#000000]">PESAN PEMASOK (PO)</span>`;
 
           const qtyHTML = isOut
-            ? `<span class="font-black text-red-600">-${rec.qty} ${escapeHTML(rec.satuan)}</span>`
-            : `<span class="font-black text-[#000000]">+${rec.qty} ${escapeHTML(rec.satuan)}</span>`;
+            ? `<p class="font-black text-red-600">-${rec.qty} ${escapeHTML(rec.satuan)}</p>`
+            : `<p class="font-black text-[#000000]">+${rec.qty} ${escapeHTML(rec.satuan)}</p>`;
 
           return `
           <tr class="hover:bg-[#F5F5F5]/70 transition">
@@ -3042,7 +3396,11 @@ WITH CHECK (true);</pre>
               <span class="text-xs font-mono text-[#2C2C2C]">${escapeHTML(rec.itemKode)}</span>
               <p class="font-extrabold text-[#000000]">${escapeHTML(rec.itemNama)}</p>
             </td>
-            <td class="py-3.5 px-4 text-right">${qtyHTML}</td>
+            <td class="py-3.5 px-4 text-right">
+              ${qtyHTML}
+              <p class="text-xs font-extrabold text-[#000000]">${formatRupiah(rec.totalHarga)}</p>
+              <span class="text-[11px] text-[#2C2C2C]">@ ${formatRupiah(rec.hargaSatuan)}</span>
+            </td>
             <td class="py-3.5 px-4 text-xs font-bold text-[#000000]">${escapeHTML(rec.partner)}</td>
             <td class="py-3.5 px-4">
               <p class="text-xs font-bold text-[#000000]">${escapeHTML(rec.statusText)}</p>
@@ -3053,10 +3411,10 @@ WITH CHECK (true);</pre>
                 type="button"
                 onclick="printTransactionReceiptPDF('${rec.type}', '${escapeHTML(rec.rawId)}')"
                 class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold bg-[#000000] text-[#FFAB00] hover:bg-[#2C2C2C] transition cursor-pointer"
-                title="Cetak Struk Bentuk PDF"
+                title="Cetak Struk Bentuk PDF (80mm)"
               >
                 <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-                <span>Cetak PDF</span>
+                <span>Struk PDF</span>
               </button>
             </td>
           </tr>`;
@@ -3064,7 +3422,7 @@ WITH CHECK (true);</pre>
         .join('');
     }
 
-    // ==================== CETAK STRUK & REKAP LAPORAN PDF (jsPDF) ====================
+    // ==================== CETAK STRUK PDF 80MM & REKAP LAPORAN A4 PDF ====================
     function printTransactionReceiptPDF(type, id) {
       if (!window.jspdf || !window.jspdf.jsPDF) {
         showToast('Library PDF belum termuat. Periksa koneksi internet Anda.', 'error');
@@ -3072,18 +3430,18 @@ WITH CHECK (true);</pre>
       }
 
       const { jsPDF } = window.jspdf;
-      // Ukuran struk thermal 80mm x 145mm
       const doc = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
-        format: [80, 148],
+        format: [80, 165],
       });
 
       const storeName = state.profile.storeName || 'Baji Artha Mart';
-      const address = state.profile.address || 'Jl. Poros Logistik No. 108';
-      const phone = state.profile.phone || '0812-4455-8899';
+      const address = state.profile.address || 'Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan';
+      const phone = state.profile.phone || '0812-3456-7890';
 
-      let y = 10;
+      // Header Struk: Nama Toko, Alamat Toko, dan Kontak/Telp pada baris terpisah
+      let y = 9;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(12);
       doc.text(storeName.toUpperCase(), 40, y, { align: 'center' });
@@ -3091,9 +3449,11 @@ WITH CHECK (true);</pre>
       y += 4.5;
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(7.5);
-      doc.text(address, 40, y, { align: 'center' });
-      y += 3.5;
-      doc.text(`Telp: ${phone}`, 40, y, { align: 'center' });
+      const addrLines = doc.splitTextToSize(address, 68);
+      doc.text(addrLines, 40, y, { align: 'center' });
+      y += addrLines.length * 3.5;
+
+      doc.text(`Telp / Kontak: ${phone}`, 40, y, { align: 'center' });
 
       y += 3.5;
       doc.setLineWidth(0.4);
@@ -3122,24 +3482,36 @@ WITH CHECK (true);</pre>
 
         y += 5;
         doc.setFont('helvetica', 'bold');
-        doc.text(`${rec.itemKode} - ${rec.itemNama}`, 5, y, { maxWidth: 70 });
-        y += 7;
+        const itemLines = doc.splitTextToSize(`${rec.itemKode} - ${rec.itemNama}`, 70);
+        doc.text(itemLines, 5, y);
+        y += itemLines.length * 4;
+
         doc.setFont('helvetica', 'normal');
         doc.text(`Jumlah Keluar : ${rec.qty} ${rec.satuan}`, 5, y);
+        y += 4;
+        doc.text(`Harga Satuan  : ${formatRupiah(rec.hargaSatuan)}`, 5, y);
         y += 4.5;
-        doc.text(`Sisa Stok     : ${rec.sisaSetelah} ${rec.satuan}`, 5, y);
-        y += 4.5;
-        doc.text(`Tujuan        : ${rec.tujuan}`, 5, y, { maxWidth: 70 });
-        y += 6;
-        doc.text(`Keterangan    : ${rec.keterangan || '-'}`, 5, y, { maxWidth: 70 });
+        doc.setFont('helvetica', 'bold');
+        doc.text(`TOTAL NOMINAL : ${formatRupiah(rec.totalHarga)}`, 5, y);
 
-        y += 8;
+        y += 4.5;
+        doc.setFont('helvetica', 'normal');
+        doc.text(`Sisa Stok     : ${rec.sisaSetelah} ${rec.satuan}`, 5, y);
+        y += 4;
+        const tujuanLines = doc.splitTextToSize(`Tujuan        : ${rec.tujuan}`, 70);
+        doc.text(tujuanLines, 5, y);
+        y += tujuanLines.length * 4;
+
+        const ketLines = doc.splitTextToSize(`Keterangan    : ${rec.keterangan || '-'}`, 70);
+        doc.text(ketLines, 5, y);
+        y += ketLines.length * 4 + 3;
+
         doc.line(5, y, 75, y);
-        y += 5;
+        y += 4.5;
         doc.setFont('helvetica', 'italic');
         doc.setFontSize(7.5);
         doc.text('Bukti pengeluaran barang gudang yang sah.', 40, y, { align: 'center' });
-        y += 4;
+        y += 3.8;
         doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`, 40, y, { align: 'center' });
 
         doc.save(`Struk_Keluar_${rec.id}.pdf`);
@@ -3162,29 +3534,41 @@ WITH CHECK (true);</pre>
         y += 4;
         doc.text(`Status        : ${po.status}`, 5, y);
         y += 4;
-        doc.text(`Tgl Sampai    : ${po.tglSampai ? formatDateIndo(po.tglSampai) : 'Belum tiba'}`, 5, y);
+        doc.text(`Tgl Sampai    : ${po.tglSampai ? formatDateIndo(po.tglSampai) : 'Menunggu tiba'}`, 5, y);
 
         y += 3.5;
         doc.line(5, y, 75, y);
 
         y += 5;
         doc.setFont('helvetica', 'bold');
-        doc.text(`${po.itemKode} - ${po.itemNama}`, 5, y, { maxWidth: 70 });
-        y += 7;
+        const poItemLines = doc.splitTextToSize(`${po.itemKode} - ${po.itemNama}`, 70);
+        doc.text(poItemLines, 5, y);
+        y += poItemLines.length * 4;
+
         doc.setFont('helvetica', 'normal');
         doc.text(`Jumlah Pesan  : +${po.qty} ${po.satuan}`, 5, y);
+        y += 4;
+        doc.text(`Harga Beli    : ${formatRupiah(po.hargaBeli)}`, 5, y);
         y += 4.5;
-        doc.text(`Pemasok       : ${po.pemasok}`, 5, y, { maxWidth: 70 });
-        y += 6;
-        doc.text(`Catatan       : ${po.catatan || '-'}`, 5, y, { maxWidth: 70 });
+        doc.setFont('helvetica', 'bold');
+        doc.text(`TOTAL BIAYA   : ${formatRupiah(po.totalHarga)}`, 5, y);
 
-        y += 8;
+        y += 4.5;
+        doc.setFont('helvetica', 'normal');
+        const supLines = doc.splitTextToSize(`Pemasok       : ${po.pemasok}`, 70);
+        doc.text(supLines, 5, y);
+        y += supLines.length * 4;
+
+        const catLines = doc.splitTextToSize(`Catatan       : ${po.catatan || '-'}`, 70);
+        doc.text(catLines, 5, y);
+        y += catLines.length * 4 + 3;
+
         doc.line(5, y, 75, y);
-        y += 5;
+        y += 4.5;
         doc.setFont('helvetica', 'italic');
         doc.setFontSize(7.5);
         doc.text('Dokumen pencatatan PO & penerimaan gudang.', 40, y, { align: 'center' });
-        y += 4;
+        y += 3.8;
         doc.text(`Dicetak: ${new Date().toLocaleString('id-ID')}`, 40, y, { align: 'center' });
 
         doc.save(`Struk_PO_${po.nomorPO}.pdf`);
@@ -3201,27 +3585,32 @@ WITH CHECK (true);</pre>
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
       const storeName = state.profile.storeName || 'Baji Artha Mart';
-      const address = state.profile.address || 'Jl. Poros Logistik No. 108';
-      const records = getUnifiedHistoryRecords();
+      const address = state.profile.address || 'Jl. Poros Limbung - Bajeng, Gowa, Sulawesi Selatan';
+      const phone = state.profile.phone || '0812-3456-7890';
+      const records = getFilteredHistoryRecords();
 
+      // Header A4 Terpisah Rapi: Nama Toko, Alamat Toko, dan Kontak Telepon
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(15);
-      doc.text(`${storeName.toUpperCase()} — REKAP RIWAYAT TRANSAKSI`, 14, 18);
+      doc.text(`${storeName.toUpperCase()} — REKAP RIWAYAT TRANSAKSI`, 14, 16);
 
       doc.setFont('helvetica', 'normal');
       doc.setFontSize(9);
-      doc.text(`${address} • Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 14, 24);
-      doc.setLineWidth(0.5);
-      doc.line(14, 27, 196, 27);
+      doc.text(`Alamat : ${address}`, 14, 22);
+      doc.text(`Kontak : ${phone}  |  Dicetak: ${new Date().toLocaleString('id-ID')}`, 14, 27);
 
-      let y = 35;
+      doc.setLineWidth(0.5);
+      doc.line(14, 30, 196, 30);
+
+      let y = 37;
       doc.setFont('helvetica', 'bold');
       doc.setFontSize(8.5);
       doc.text('Tanggal', 14, y);
-      doc.text('Jenis & No. Ref', 40, y);
-      doc.text('Nama Barang', 85, y);
-      doc.text('Qty', 138, y);
-      doc.text('Pemasok / Tujuan', 156, y);
+      doc.text('Jenis & No. Ref', 37, y);
+      doc.text('Nama Barang', 80, y);
+      doc.text('Qty', 127, y);
+      doc.text('Nominal (Rp)', 145, y);
+      doc.text('Pemasok / Tujuan', 171, y);
 
       y += 2;
       doc.setLineWidth(0.2);
@@ -3240,15 +3629,16 @@ WITH CHECK (true);</pre>
         const qtyStr = rec.type === 'OUT' ? `-${rec.qty} ${rec.satuan}` : `+${rec.qty} ${rec.satuan}`;
 
         doc.text(formatDateIndo(rec.tanggal), 14, y);
-        doc.text(label.slice(0, 24), 40, y);
-        doc.text(rec.itemNama.slice(0, 28), 85, y);
-        doc.text(qtyStr, 138, y);
-        doc.text(rec.partner.slice(0, 22), 156, y);
+        doc.text(label.slice(0, 22), 37, y);
+        doc.text(rec.itemNama.slice(0, 24), 80, y);
+        doc.text(qtyStr, 127, y);
+        doc.text(formatRupiah(rec.totalHarga), 145, y);
+        doc.text(rec.partner.slice(0, 15), 171, y);
         y += 6;
       });
 
-      doc.save(`Rekap_Riwayat_${storeName.replace(/\s+/g, '_')}_${getTodayISO()}.pdf`);
-      showToast('Rekap Riwayat Transaksi (PDF) berhasil diunduh.', 'success');
+      doc.save(`Rekap_Laporan_${storeName.replace(/\s+/g, '_')}_${getTodayISO()}.pdf`);
+      showToast('Rekap Laporan Riwayat Transaksi (A4 PDF) berhasil diunduh.', 'success');
     }
 
     // ==================== MANAJEMEN PENGGUNA ====================
@@ -3393,7 +3783,7 @@ WITH CHECK (true);</pre>
           const { data, error } = await supabaseClient
             .from('baji_artha_mart_sync')
             .select('payload')
-            .eq('id', 'main_warehouse')
+            .eq('id', DEFAULT_SUPABASE_CONFIG.rowId)
             .maybeSingle();
 
           if (!error) {
@@ -3404,7 +3794,14 @@ WITH CHECK (true);</pre>
               if (Array.isArray(p.outgoing)) state.outgoing = p.outgoing;
               if (Array.isArray(p.purchaseOrders)) state.purchaseOrders = p.purchaseOrders;
               if (Array.isArray(p.users) && p.users.length > 0) state.users = p.users;
-              if (p.profile) state.profile = { ...state.profile, ...p.profile };
+              if (p.profile) {
+                state.profile = {
+                  storeName: p.profile.storeName || state.profile.storeName,
+                  address: p.profile.address || state.profile.address,
+                  phone: p.profile.phone || state.profile.phone,
+                  expiryWarningDays: Number(p.profile.expiryWarningDays) || state.profile.expiryWarningDays,
+                };
+              }
               state.supabaseConfig.lastSync = `Tersinkron Otomatis • ${new Date().toLocaleString('id-ID')}`;
               saveAllStateToStorage(false);
               applyBrandingAndProfileToUI();
@@ -3476,9 +3873,9 @@ WITH CHECK (true);</pre>
       await initSupabaseClientFromConfig(false);
 
       if (supabaseConnected) {
-        showToast('Berhasil terhubung! Status Supabase kini Aktif (Hijau).', 'success');
+        showToast('Koneksi Supabase berhasil! Status kini Aktif (Hijau).', 'success');
       } else {
-        showToast('Gagal terhubung ke tabel Supabase. Pastikan tabel baji_artha_mart_sync sudah dibuat.', 'error');
+        showToast('Gagal terhubung ke tabel baji_artha_mart_sync. Jalankan SQL Setup terlebih dahulu.', 'error');
       }
     }
 
@@ -3493,7 +3890,7 @@ WITH CHECK (true);</pre>
           profile: state.profile,
         };
         const { error } = await supabaseClient.from('baji_artha_mart_sync').upsert({
-          id: 'main_warehouse',
+          id: DEFAULT_SUPABASE_CONFIG.rowId,
           payload,
           updated_at: new Date().toISOString(),
         });
@@ -3524,7 +3921,7 @@ WITH CHECK (true);</pre>
         };
 
         const { error } = await supabaseClient.from('baji_artha_mart_sync').upsert({
-          id: 'main_warehouse',
+          id: DEFAULT_SUPABASE_CONFIG.rowId,
           payload,
           updated_at: new Date().toISOString(),
         });
@@ -3532,7 +3929,7 @@ WITH CHECK (true);</pre>
         if (error) throw error;
 
         supabaseConnected = true;
-        state.supabaseConfig.lastSync = `Push ke Cloud • ${new Date().toLocaleString('id-ID')}`;
+        state.supabaseConfig.lastSync = `Push Manual • ${new Date().toLocaleString('id-ID')}`;
         saveAllStateToStorage(false);
         updateSupabaseStatusUI();
         showToast('Seluruh data lokal berhasil dikirim (Push) ke Supabase!', 'success');
@@ -3553,7 +3950,7 @@ WITH CHECK (true);</pre>
         const { data, error } = await supabaseClient
           .from('baji_artha_mart_sync')
           .select('payload')
-          .eq('id', 'main_warehouse')
+          .eq('id', DEFAULT_SUPABASE_CONFIG.rowId)
           .single();
 
         if (error) throw error;
@@ -3570,7 +3967,7 @@ WITH CHECK (true);</pre>
         if (p.profile) state.profile = { ...state.profile, ...p.profile };
 
         supabaseConnected = true;
-        state.supabaseConfig.lastSync = `Pull dari Cloud • ${new Date().toLocaleString('id-ID')}`;
+        state.supabaseConfig.lastSync = `Pull Manual • ${new Date().toLocaleString('id-ID')}`;
         saveAllStateToStorage(false);
         applyBrandingAndProfileToUI();
         renderAllViews();
@@ -3602,25 +3999,60 @@ WITH CHECK (true);</pre>
       showToast('Skrip SQL Supabase berhasil disalin ke clipboard!', 'success');
     }
 
-    // ==================== EXPORT CSV & RESET DATA ====================
+    // ==================== EXPORT CSV ====================
     function exportCSV(type) {
       let rows = [];
       let filename = `BajiArthaMart_${type}_${getTodayISO()}.csv`;
 
       if (type === 'stok' || type === 'semua') {
-        rows.push(['Kode Barang', 'Nama Barang', 'Kategori', 'Satuan', 'Stok Tersisa', 'Batas Minimal', 'Tanggal Expired', 'Pemasok']);
+        rows.push(['Kode SKU', 'Nama Barang', 'Kategori', 'Satuan', 'Stok Tersisa', 'Batas Minimal', 'Harga Beli', 'Harga Jual', 'Tanggal Expired', 'Pemasok Default']);
         state.items.forEach((it) => {
-          rows.push([it.kode, it.nama, it.kategori, it.satuan, it.stok, it.minimal, it.expired, it.pemasok]);
+          rows.push([
+            it.kode,
+            it.nama,
+            it.kategori,
+            it.satuan,
+            it.stok,
+            it.minimal,
+            it.hargaBeli || 0,
+            it.hargaJual || 0,
+            it.expired || '-',
+            it.pemasok || '-',
+          ]);
         });
       } else if (type === 'keluar') {
-        rows.push(['Tanggal Keluar', 'Kode', 'Nama Barang', 'Jumlah Keluar', 'Satuan', 'Tujuan', 'Keterangan', 'Sisa Stok']);
+        rows.push(['Tanggal Keluar', 'Kode', 'Nama Barang', 'Qty Keluar', 'Satuan', 'Harga Satuan', 'Total Nominal', 'Tujuan', 'Keterangan', 'Sisa Stok']);
         state.outgoing.forEach((o) => {
-          rows.push([o.tanggal, o.itemKode, o.itemNama, o.qty, o.satuan, o.tujuan, o.keterangan, o.sisaSetelah]);
+          rows.push([
+            o.tanggal,
+            o.itemKode,
+            o.itemNama,
+            o.qty,
+            o.satuan,
+            o.hargaSatuan || 0,
+            o.totalHarga || 0,
+            o.tujuan,
+            o.keterangan,
+            o.sisaSetelah,
+          ]);
         });
       } else if (type === 'po') {
-        rows.push(['No PO', 'Tanggal Pesan', 'Kode', 'Nama Barang', 'Pemasok', 'Jumlah', 'Satuan', 'Status', 'Tanggal Sampai di Gudang', 'Catatan']);
+        rows.push(['No PO', 'Tanggal Pesan', 'Kode', 'Nama Barang', 'Pemasok', 'Qty Pesan', 'Satuan', 'Harga Beli', 'Total Biaya PO', 'Status', 'Tanggal Sampai di Gudang', 'Catatan']);
         state.purchaseOrders.forEach((po) => {
-          rows.push([po.nomorPO, po.tglPesan, po.itemKode, po.itemNama, po.pemasok, po.qty, po.satuan, po.status, po.tglSampai || '-', po.catatan]);
+          rows.push([
+            po.nomorPO,
+            po.tglPesan,
+            po.itemKode,
+            po.itemNama,
+            po.pemasok,
+            po.qty,
+            po.satuan,
+            po.hargaBeli || 0,
+            po.totalHarga || 0,
+            po.status,
+            po.tglSampai || '-',
+            po.catatan,
+          ]);
         });
       }
 
@@ -3644,18 +4076,18 @@ WITH CHECK (true);</pre>
 
       if (actionType === 'seed') {
         titleEl.textContent = 'Muat Data Contoh Baji Artha Mart?';
-        msgEl.textContent = 'Data persediaan, riwayat keluar, dan PO saat ini akan diganti dengan data simulasi awal.';
+        msgEl.textContent = 'Data persediaan, transaksi keluar, dan PO saat ini akan diganti dengan data simulasi awal.';
         pendingConfirmCallback = () => loadSampleData(false);
       } else if (actionType === 'clearAll') {
-        titleEl.textContent = 'Kosongkan Seluruh Data Gudang?';
-        msgEl.textContent = 'Semua data barang, riwayat keluar, dan PO akan dihapus permanen dari penyimpanan lokal.';
+        titleEl.textContent = 'Kosongkan Data Operasional?';
+        msgEl.textContent = 'Data barang, transaksi keluar, dan PO akan dikosongkan. Akun pengguna dan konfigurasi Supabase tetap dipertahankan.';
         pendingConfirmCallback = () => {
           state.items = [];
           state.outgoing = [];
           state.purchaseOrders = [];
           saveAllStateToStorage();
           renderAllViews();
-          showToast('Seluruh data persediaan berhasil dikosongkan.', 'info');
+          showToast('Data operasional berhasil dikosongkan (akun & koneksi Supabase tetap aman).', 'info');
         };
       } else if (actionType === 'deleteItem') {
         titleEl.textContent = 'Hapus Data Barang?';
